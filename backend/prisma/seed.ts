@@ -12,7 +12,7 @@ async function main() {
     update: {},
     create: {
       id: 'default',
-      schoolName: 'RISYS School',
+      schoolName: 'School Lab',
       defaultLanguage: 'pt',
       dateFormat: 'DD/MM/YYYY',
       currency: 'BRL',
@@ -24,10 +24,10 @@ async function main() {
   // Create admin user
   const adminPasswordHash = await bcrypt.hash('admin123', 12);
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@risys.app' },
+    where: { email: 'admin@school-lab.app' },
     update: {},
     create: {
-      email: 'admin@risys.app',
+      email: 'admin@school-lab.app',
       passwordHash: adminPasswordHash,
       displayName: 'Administrador',
       fullName: 'Administrador do Sistema',
@@ -164,17 +164,17 @@ async function main() {
 
   // Create demo users (all departments)
   const demoUsers = [
-    { email: 'manager@risys.app', displayName: 'Maria Silva', role: 'MANAGER' as UserRole, area: 'Administration' },
-    { email: 'teacher@risys.app', displayName: 'João Santos', role: 'TEACHER' as UserRole, area: 'Academic' },
-    { email: 'it@risys.app', displayName: 'Carlos Tech', role: 'IT' as UserRole, area: 'IT' },
-    { email: 'finance@risys.app', displayName: 'Ana Costa', role: 'FINANCE' as UserRole, area: 'Finance' },
-    { email: 'admissions@risys.app', displayName: 'Paula Dias', role: 'ADMISSIONS' as UserRole, area: 'Admissions' },
-    { email: 'psicologia@risys.app', displayName: 'Dra. Mariana Psico', role: 'PSYCHOLOGY' as UserRole, area: 'Psychology' },
-    { email: 'saude@risys.app', displayName: 'Dr. Roberto Saúde', role: 'HEALTH' as UserRole, area: 'Health' },
-    { email: 'juridico@risys.app', displayName: 'Carla Jurídico', role: 'LEGAL' as UserRole, area: 'Legal' },
-    { email: 'diretoria@risys.app', displayName: 'Fernando Diretor', role: 'DIRECTOR' as UserRole, area: 'Direction' },
-    { email: 'coordenacao@risys.app', displayName: 'Lucia Coord', role: 'COORDINATOR' as UserRole, area: 'Coordination' },
-    { email: 'secretaria@risys.app', displayName: 'Sandra Secretaria', role: 'SECRETARY' as UserRole, area: 'Secretariat' },
+    { email: 'manager@school-lab.app', displayName: 'Maria Silva', role: 'MANAGER' as UserRole, area: 'Administration' },
+    { email: 'teacher@school-lab.app', displayName: 'João Santos', role: 'TEACHER' as UserRole, area: 'Academic' },
+    { email: 'it@school-lab.app', displayName: 'Carlos Tech', role: 'IT' as UserRole, area: 'IT' },
+    { email: 'finance@school-lab.app', displayName: 'Ana Costa', role: 'FINANCE' as UserRole, area: 'Finance' },
+    { email: 'admissions@school-lab.app', displayName: 'Paula Dias', role: 'ADMISSIONS' as UserRole, area: 'Admissions' },
+    { email: 'psicologia@school-lab.app', displayName: 'Dra. Mariana Psico', role: 'PSYCHOLOGY' as UserRole, area: 'Psychology' },
+    { email: 'saude@school-lab.app', displayName: 'Dr. Roberto Saúde', role: 'HEALTH' as UserRole, area: 'Health' },
+    { email: 'juridico@school-lab.app', displayName: 'Carla Jurídico', role: 'LEGAL' as UserRole, area: 'Legal' },
+    { email: 'diretoria@school-lab.app', displayName: 'Fernando Diretor', role: 'DIRECTOR' as UserRole, area: 'Direction' },
+    { email: 'coordenacao@school-lab.app', displayName: 'Lucia Coord', role: 'COORDINATOR' as UserRole, area: 'Coordination' },
+    { email: 'secretaria@school-lab.app', displayName: 'Sandra Secretaria', role: 'SECRETARY' as UserRole, area: 'Secretariat' },
   ];
 
   const demoPasswordHash = await bcrypt.hash('demo123', 12);
@@ -371,8 +371,8 @@ async function main() {
   console.log('\n🎉 Seed completed successfully!');
   console.log('\n📋 Login credentials:');
   console.log('   🔑 MASTER: victorcesar2031@gmail.com / Dron3120@');
-  console.log('   Admin: admin@risys.app / admin123');
-  console.log('   Demo users: [email]@risys.app / demo123');
+  console.log('   Admin: admin@school-lab.app / admin123');
+  console.log('   Demo users: [email]@school-lab.app / demo123');
 }
 
 main()

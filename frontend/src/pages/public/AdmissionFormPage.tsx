@@ -336,7 +336,7 @@ export default function AdmissionFormPage() {
 
       {/* Footer */}
       <footer className="py-4 sm:py-6 text-center text-xs sm:text-sm text-neutral-500 border-t border-neutral-100 mt-6 sm:mt-8 safe-area-bottom">
-        <p>© {new Date().getFullYear()} RISYS. {language === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}</p>
+        <p>© {new Date().getFullYear()} School Lab. {language === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}</p>
       </footer>
     </div>
   );

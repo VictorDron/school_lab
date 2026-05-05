@@ -5,7 +5,7 @@ import { SendEmailParams } from '../../types/email.types.js';
 
 const resend = new Resend(config.resend.apiKey);
 
-const FROM_EMAIL = 'RISYS <noreply@mail.agentelab.com.br>';
+const FROM_EMAIL = 'School Lab <noreply@mail.agentelab.com.br>';
 
 export function formatExpiryLabel(hours: number): string {
   const days = Math.floor(hours / 24);

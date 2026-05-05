@@ -6,7 +6,7 @@ export default function SettingsTab() {
         <div className="card p-6 space-y-6">
           <div>
             <label className="label">Nome da Escola</label>
-            <input type="text" className="input" defaultValue="RISYS School" />
+            <input type="text" className="input" defaultValue="School Lab" />
           </div>
           <div>
             <label className="label">Idioma Padrão</label>

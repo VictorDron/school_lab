@@ -100,7 +100,7 @@ export async function downloadTemplate(_req: AuthenticatedRequest, res: Response
     const templateBuffer = ImportService.generateTemplate();
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename="template-importacao-risys.xlsx"');
+    res.setHeader('Content-Disposition', 'attachment; filename="template-importacao-school-lab.xlsx"');
     res.send(templateBuffer);
   } catch (err) {
     logger.error('Template download failed', { error: (err as Error).message });

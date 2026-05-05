@@ -114,7 +114,7 @@ async function sendFormReceivedEmail(params: {
       </p>
 
       <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">
-        Este email foi enviado automaticamente pelo sistema RISYS.
+        Este email foi enviado automaticamente pelo sistema School Lab.
       </p>
     </div>
   `;
@@ -132,7 +132,7 @@ Código: ${leadCode}
 
 Ver no CRM: ${crmLink}
 
-Este email foi enviado automaticamente pelo sistema RISYS.
+Este email foi enviado automaticamente pelo sistema School Lab.
   `;
 
   return sendEmail({

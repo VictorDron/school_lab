@@ -51,7 +51,7 @@ export async function createDocument(
   try {
     const response = await axios.post(apiUrl('/documents'), {
       document: {
-        path: `/risys/${filename}`,
+        path: `/school-lab/${filename}`,
         content_base64: `data:application/pdf;base64,${base64Content}`,
         deadline_at: `${deadline}T23:59:59-03:00`,
         auto_close: true,

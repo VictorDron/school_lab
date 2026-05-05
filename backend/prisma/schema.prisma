@@ -703,7 +703,7 @@ model Invite {
 
 model SystemSettings {
   id              String   @id @default(uuid())
-  schoolName      String   @default("RISYS School")
+  schoolName      String   @default("School Lab")
   logoUrl         String?
   defaultLanguage String   @default("pt")
   dateFormat      String   @default("DD/MM/YYYY")

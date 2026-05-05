@@ -26,7 +26,7 @@ export async function sendInviteEmail(params: {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">RISYS</div>
+          <div class="logo">School Lab</div>
         </div>
         <div class="content">
           <h2>Você foi convidado!</h2>
@@ -38,7 +38,7 @@ export async function sendInviteEmail(params: {
           <p style="font-size: 14px; color: #666;">Este link expira em 7 dias.</p>
         </div>
         <div class="footer">
-          <p>RISYS - Sistema de Gestão Escolar</p>
+          <p>School Lab - Sistema de Gestão Escolar</p>
         </div>
       </div>
     </body>
@@ -47,7 +47,7 @@ export async function sendInviteEmail(params: {
 
   return sendEmail({
     to,
-    subject: `Convite para ${schoolName} - RISYS`,
+    subject: `Convite para ${schoolName} - School Lab`,
     html,
   });
 }
@@ -77,7 +77,7 @@ export async function sendPasswordResetEmail(params: {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">RISYS</div>
+          <div class="logo">School Lab</div>
         </div>
         <div class="content">
           <h2>Redefinição de Senha</h2>
@@ -90,7 +90,7 @@ export async function sendPasswordResetEmail(params: {
           <p style="font-size: 14px; color: #666;">Este link expira em 1 hora.</p>
         </div>
         <div class="footer">
-          <p>RISYS - Sistema de Gestão Escolar</p>
+          <p>School Lab - Sistema de Gestão Escolar</p>
         </div>
       </div>
     </body>
@@ -99,7 +99,7 @@ export async function sendPasswordResetEmail(params: {
 
   return sendEmail({
     to,
-    subject: 'Redefinição de Senha - RISYS',
+    subject: 'Redefinição de Senha - School Lab',
     html,
   });
 }
@@ -136,7 +136,7 @@ export async function sendPasswordResetCredentialsEmail(params: {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">🔐 RISYS</div>
+          <div class="logo">🔐 School Lab</div>
         </div>
         <div class="content">
           <h2>Sua Senha Foi Redefinida</h2>
@@ -163,7 +163,7 @@ export async function sendPasswordResetCredentialsEmail(params: {
           </p>
         </div>
         <div class="footer">
-          <p>RISYS - Sistema de Gestão Escolar</p>
+          <p>School Lab - Sistema de Gestão Escolar</p>
           <p style="font-size: 12px; margin-top: 10px;">Este é um email automático, por favor não responda.</p>
         </div>
       </div>
@@ -173,7 +173,7 @@ export async function sendPasswordResetCredentialsEmail(params: {
 
   return sendEmail({
     to,
-    subject: 'Sua Senha Foi Redefinida - RISYS',
+    subject: 'Sua Senha Foi Redefinida - School Lab',
     html,
   });
 }
@@ -210,10 +210,10 @@ export async function sendWelcomeEmail(params: {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">🔐 RISYS</div>
+          <div class="logo">🔐 School Lab</div>
         </div>
         <div class="content">
-          <h2>Bem-vindo ao RISYS!</h2>
+          <h2>Bem-vindo ao School Lab!</h2>
           <p>Olá, <strong>${userName}</strong>,</p>
           <p>Sua conta foi criada no sistema <strong>${schoolName}</strong>. Abaixo estão suas credenciais de acesso:</p>
 
@@ -237,7 +237,7 @@ export async function sendWelcomeEmail(params: {
           </p>
         </div>
         <div class="footer">
-          <p>RISYS - Sistema de Gestão Escolar</p>
+          <p>School Lab - Sistema de Gestão Escolar</p>
           <p style="font-size: 12px; margin-top: 10px;">Este é um email automático, por favor não responda.</p>
         </div>
       </div>
@@ -247,7 +247,7 @@ export async function sendWelcomeEmail(params: {
 
   return sendEmail({
     to,
-    subject: `Bem-vindo ao ${schoolName} - RISYS`,
+    subject: `Bem-vindo ao ${schoolName} - School Lab`,
     html,
   });
 }

@@ -384,7 +384,7 @@ export async function createInvite(req: AuthenticatedRequest, res: Response) {
 
     // Get system settings for school name
     const settings = await prisma.systemSettings.findFirst();
-    const schoolName = settings?.schoolName || 'RISYS';
+    const schoolName = settings?.schoolName || 'School Lab';
 
     // Send invite email
     const emailResult = await sendInviteEmail({

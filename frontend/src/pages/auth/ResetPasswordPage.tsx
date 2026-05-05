@@ -165,7 +165,7 @@ export default function ResetPasswordPage() {
         >
           <img
             src="/logo_ris.png"
-            alt="RISYS"
+            alt="School Lab"
             className="h-16 w-auto mb-3"
           />
           <h2 className="text-xl font-semibold text-neutral-900 mb-1">

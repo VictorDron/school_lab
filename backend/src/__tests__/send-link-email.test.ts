@@ -195,7 +195,7 @@ function createTestApp(db: MockDB) {
     const link = `http://localhost:5173/admissions/apply?token=${lead.applicationToken}`;
     const emailResult = db.simulateEmailSend(
       lead.primaryContactEmail,
-      `Formulário de Inscrição - ${lead.familyName} - RISYS`
+      `Formulário de Inscrição - ${lead.familyName} - School Lab`
     );
 
     if (!emailResult.success) {
@@ -236,7 +236,7 @@ function createTestApp(db: MockDB) {
     const link = `http://localhost:5173/enrollment/apply?token=${lead.enrollmentToken}`;
     const emailResult = db.simulateEmailSend(
       lead.primaryContactEmail,
-      `Formulário de Matrícula - ${lead.familyName} - RISYS`
+      `Formulário de Matrícula - ${lead.familyName} - School Lab`
     );
 
     if (!emailResult.success) {
@@ -1057,17 +1057,17 @@ describe('Email template content validation', () => {
       expect(link).toContain(token);
     });
 
-    it('should include RISYS branding in subject', () => {
+    it('should include School Lab branding in subject', () => {
       const familyName = 'Família Costa';
-      const subject = `Formulário de Inscrição - ${familyName} - RISYS`;
-      expect(subject).toContain('RISYS');
+      const subject = `Formulário de Inscrição - ${familyName} - School Lab`;
+      expect(subject).toContain('School Lab');
       expect(subject).toContain('Inscrição');
       expect(subject).toContain(familyName);
     });
 
     it('should escape special characters in family name for subject', () => {
       const familyName = 'Família O\'Brien & Müller';
-      const subject = `Formulário de Inscrição - ${familyName} - RISYS`;
+      const subject = `Formulário de Inscrição - ${familyName} - School Lab`;
       expect(subject).toContain('O\'Brien');
       expect(subject).toContain('Müller');
     });
@@ -1083,10 +1083,10 @@ describe('Email template content validation', () => {
 
     it('should include Matrícula in subject', () => {
       const familyName = 'Família Lima';
-      const subject = `Formulário de Matrícula - ${familyName} - RISYS`;
+      const subject = `Formulário de Matrícula - ${familyName} - School Lab`;
       expect(subject).toContain('Matrícula');
       expect(subject).toContain(familyName);
-      expect(subject).toContain('RISYS');
+      expect(subject).toContain('School Lab');
     });
   });
 });

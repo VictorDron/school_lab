@@ -83,7 +83,7 @@ export function checkSiblingsAtSchool(siblings: PublicAdmissionData['siblings'])
   // School name patterns that indicate sibling is at our school
   const schoolPatterns = [
     /\bris\b/i,           // "RIS" as a word
-    /\brisys\b/i,         // "RISYS"
+    /\bschool-lab\b/i,         // "School Lab"
     /internacional/i,     // Contains "Internacional"
     /international/i,     // Contains "International" (English)
     /nossa\s*escola/i,    // "Nossa escola" (our school)

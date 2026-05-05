@@ -45,7 +45,7 @@ export default function AuthLayout() {
 
       {/* Footer */}
       <footer className="py-4 text-center text-sm text-neutral-500">
-        <p>© {new Date().getFullYear()} RISYS. Todos os direitos reservados.</p>
+        <p>© {new Date().getFullYear()} School Lab. Todos os direitos reservados.</p>
       </footer>
     </div>
   );

@@ -27,7 +27,7 @@ export async function sendAdmissionConfirmationEmail(params: {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">RISYS</div>
+          <div class="logo">School Lab</div>
         </div>
         <div class="content">
           <h2>Inscrição Recebida!</h2>
@@ -47,7 +47,7 @@ export async function sendAdmissionConfirmationEmail(params: {
           </p>
         </div>
         <div class="footer">
-          <p>RISYS - Sistema de Gestão Escolar</p>
+          <p>School Lab - Sistema de Gestão Escolar</p>
           <p style="font-size: 12px; margin-top: 10px;">Este é um email automático, por favor não responda.</p>
         </div>
       </div>
@@ -57,7 +57,7 @@ export async function sendAdmissionConfirmationEmail(params: {
 
   return sendEmail({
     to,
-    subject: `Inscrição Recebida - ${leadCode} - RISYS`,
+    subject: `Inscrição Recebida - ${leadCode} - School Lab`,
     html,
   });
 }
@@ -90,7 +90,7 @@ export async function sendApplicationLinkEmail(params: {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">RISYS</div>
+          <div class="logo">School Lab</div>
         </div>
         <div class="content">
           <h2>Formulário de Inscrição</h2>
@@ -108,7 +108,7 @@ export async function sendApplicationLinkEmail(params: {
           </p>
         </div>
         <div class="footer">
-          <p>RISYS - Sistema de Gestão Escolar</p>
+          <p>School Lab - Sistema de Gestão Escolar</p>
           <p style="font-size: 12px; margin-top: 10px;">Este é um email automático, por favor não responda.</p>
         </div>
       </div>
@@ -118,7 +118,7 @@ export async function sendApplicationLinkEmail(params: {
 
   return sendEmail({
     to,
-    subject: `Formulário de Inscrição - ${familyName} - RISYS`,
+    subject: `Formulário de Inscrição - ${familyName} - School Lab`,
     html,
   });
 }
@@ -148,7 +148,7 @@ export async function sendFormApprovedEmail(params: {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">RISYS</div>
+          <div class="logo">School Lab</div>
         </div>
         <div class="content">
           <h2>Inscrição Aprovada!</h2>
@@ -166,7 +166,7 @@ export async function sendFormApprovedEmail(params: {
           </p>
         </div>
         <div class="footer">
-          <p>RISYS - Sistema de Gestão Escolar</p>
+          <p>School Lab - Sistema de Gestão Escolar</p>
           <p style="font-size: 12px; margin-top: 10px;">Este é um email automático, por favor não responda.</p>
         </div>
       </div>
@@ -176,7 +176,7 @@ export async function sendFormApprovedEmail(params: {
 
   return sendEmail({
     to,
-    subject: `Inscrição Aprovada - Família ${familyName} - RISYS`,
+    subject: `Inscrição Aprovada - Família ${familyName} - School Lab`,
     html,
   });
 }
@@ -208,7 +208,7 @@ export async function sendVisitScheduledEmail(params: {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">RISYS</div>
+          <div class="logo">School Lab</div>
         </div>
         <div class="content">
           <h2>Visita Agendada!</h2>
@@ -228,7 +228,7 @@ export async function sendVisitScheduledEmail(params: {
           </p>
         </div>
         <div class="footer">
-          <p>RISYS - Sistema de Gestão Escolar</p>
+          <p>School Lab - Sistema de Gestão Escolar</p>
           <p style="font-size: 12px; margin-top: 10px;">Este é um email automático, por favor não responda.</p>
         </div>
       </div>
@@ -238,7 +238,7 @@ export async function sendVisitScheduledEmail(params: {
 
   return sendEmail({
     to,
-    subject: `Visita Agendada - Família ${familyName} - RISYS`,
+    subject: `Visita Agendada - Família ${familyName} - School Lab`,
     html,
   });
 }
@@ -274,7 +274,7 @@ export async function sendRejectionEmail(params: {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">RISYS</div>
+          <div class="logo">School Lab</div>
         </div>
         <div class="content">
           <h2>Atualizacao sobre sua inscricao</h2>
@@ -288,7 +288,7 @@ export async function sendRejectionEmail(params: {
           </p>
         </div>
         <div class="footer">
-          <p>RISYS - Sistema de Gestao Escolar</p>
+          <p>School Lab - Sistema de Gestao Escolar</p>
           <p style="font-size: 12px; margin-top: 10px;">Este e um email automatico, por favor nao responda.</p>
         </div>
       </div>

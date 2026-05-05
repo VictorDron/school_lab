@@ -57,7 +57,7 @@ export function useImportTemplate() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'template-importacao-risys.xlsx');
+      link.setAttribute('download', 'template-importacao-school-lab.xlsx');
       document.body.appendChild(link);
       link.click();
       link.remove();

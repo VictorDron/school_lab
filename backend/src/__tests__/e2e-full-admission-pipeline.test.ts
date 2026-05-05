@@ -205,7 +205,7 @@ class MockDB {
     // Seed default users
     const adminUser: MockUser = {
       id: 'user-admin-001',
-      email: 'admin@risys.com',
+      email: 'admin@school-lab.com',
       displayName: 'Admin User',
       fullName: 'Admin User Full',
       role: 'ADMIN',
@@ -215,7 +215,7 @@ class MockDB {
 
     const staffUser: MockUser = {
       id: 'user-staff-001',
-      email: 'staff@risys.com',
+      email: 'staff@school-lab.com',
       displayName: 'Staff User',
       fullName: 'Staff User Full',
       role: 'STAFF',
@@ -225,7 +225,7 @@ class MockDB {
 
     const directorUser: MockUser = {
       id: 'user-director-001',
-      email: 'director@risys.com',
+      email: 'director@school-lab.com',
       displayName: 'Director User',
       fullName: 'Director User Full',
       role: 'DIRECTOR',
@@ -235,7 +235,7 @@ class MockDB {
 
     const financeUser: MockUser = {
       id: 'user-finance-001',
-      email: 'finance@risys.com',
+      email: 'finance@school-lab.com',
       displayName: 'Finance User',
       fullName: 'Finance User Full',
       role: 'FINANCE',
@@ -245,7 +245,7 @@ class MockDB {
 
     const legalUser: MockUser = {
       id: 'user-legal-001',
-      email: 'legal@risys.com',
+      email: 'legal@school-lab.com',
       displayName: 'Legal User',
       fullName: 'Legal User Full',
       role: 'LEGAL',
@@ -1298,7 +1298,7 @@ describe('E2E Full Admission Pipeline', () => {
           signers: [
             { role: 'PARENT', name: 'Parent One', email: 'parent1@test.com' },
             { role: 'GUARDIAN', name: 'Guardian One', email: 'guardian@test.com' },
-            { role: 'SCHOOL_REPRESENTATIVE', name: 'School Rep', email: 'school@risys.com' },
+            { role: 'SCHOOL_REPRESENTATIVE', name: 'School Rep', email: 'school@school-lab.com' },
           ],
         });
 
@@ -2298,7 +2298,7 @@ describe('E2E Full Admission Pipeline', () => {
           installments: 12,
           signers: [
             { role: 'PARENT', name: 'Marcos Completo', email: 'marcos@completo.com' },
-            { role: 'SCHOOL_REPRESENTATIVE', name: 'Director', email: 'director@risys.com' },
+            { role: 'SCHOOL_REPRESENTATIVE', name: 'Director', email: 'director@school-lab.com' },
           ],
         });
 

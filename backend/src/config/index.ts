@@ -24,7 +24,7 @@ export const config = {
     url: process.env.SUPABASE_URL!,
     key: process.env.SUPABASE_KEY!,
     serviceKey: process.env.SUPABASE_SERVICE_KEY!,
-    bucket: process.env.SUPABASE_BUCKET || 'risys',
+    bucket: process.env.SUPABASE_BUCKET || 'school-lab',
   },
 
   // OpenAI

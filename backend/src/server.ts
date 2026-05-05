@@ -117,7 +117,7 @@ async function start() {
     }
 
     httpServer.listen(config.port, () => {
-      logger.info(`RISYS API Server started on port ${config.port} [${config.nodeEnv}]`);
+      logger.info(`School Lab API Server started on port ${config.port} [${config.nodeEnv}]`);
     });
   } catch (error) {
     logger.error('Failed to start server:', error);

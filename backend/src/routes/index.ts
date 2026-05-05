@@ -36,7 +36,7 @@ const router = Router();
 router.get('/health', (req, res) => {
   res.json({
     success: true,
-    message: 'RISYS API is running',
+    message: 'School Lab API is running',
     timestamp: new Date().toISOString(),
   });
 });

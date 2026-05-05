@@ -120,7 +120,7 @@ export default function RegisterPage() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.1 }}
         >
-          <h1 className="text-3xl font-bold text-primary-600 mb-2">RISYS</h1>
+          <h1 className="text-3xl font-bold text-primary-600 mb-2">School Lab</h1>
           <p className="text-neutral-500 text-sm">{t('auth.completeRegistration')}</p>
         </motion.div>
       </div>

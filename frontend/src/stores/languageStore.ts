@@ -565,7 +565,7 @@ export const useLanguageStore = create<LanguageState>()(
       },
     }),
     {
-      name: 'risys-language',
+      name: 'school-lab-language',
     }
   )
 );

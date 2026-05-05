@@ -1,4 +1,4 @@
-# RISYS - Sistema de Gestão Escolar
+# School Lab - Sistema de Gestão Escolar
 
 Sistema modular de gestão escolar desenvolvido com React + Node.js + PostgreSQL.
 
@@ -50,8 +50,8 @@ Sistema modular de gestão escolar desenvolvido com React + Node.js + PostgreSQL
 
 ### 1. Clone o repositório
 ```bash
-git clone https://github.com/seu-usuario/risys.git
-cd risys
+git clone https://github.com/seu-usuario/school-lab.git
+cd school-lab
 ```
 
 ### 2. Instale as dependências
@@ -87,17 +87,17 @@ Após executar o seed:
 
 | Email | Senha | Role |
 |-------|-------|------|
-| admin@risys.app | admin123 | Administrador |
-| manager@risys.app | demo123 | Gestor |
-| teacher@risys.app | demo123 | Professor |
-| it@risys.app | demo123 | TI |
-| finance@risys.app | demo123 | Financeiro |
-| admissions@risys.app | demo123 | Admissões |
+| admin@school-lab.app | admin123 | Administrador |
+| manager@school-lab.app | demo123 | Gestor |
+| teacher@school-lab.app | demo123 | Professor |
+| it@school-lab.app | demo123 | TI |
+| finance@school-lab.app | demo123 | Financeiro |
+| admissions@school-lab.app | demo123 | Admissões |
 
 ## 📁 Estrutura do Projeto
 
 ```
-risysproject/
+school-lab/
 ├── backend/
 │   ├── prisma/
 │   │   ├── schema.prisma    # Schema do banco

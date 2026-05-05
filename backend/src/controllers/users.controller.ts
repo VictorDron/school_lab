@@ -116,7 +116,7 @@ export async function createUser(req: AuthenticatedRequest, res: Response) {
 
     // Busca informações do sistema para o email
     const systemSettings = await prisma.systemSettings.findFirst();
-    const schoolName = systemSettings?.schoolName || "RISYS";
+    const schoolName = systemSettings?.schoolName || "School Lab";
     const loginUrl = config.frontendUrl || "http://localhost:5173";
 
     // Envia email de boas-vindas se solicitado
@@ -414,7 +414,7 @@ export async function updateUser(req: AuthenticatedRequest, res: Response) {
         userId: id,
         type: "account_activated",
         title: "Conta Ativada",
-        message: "Sua conta foi aprovada e ativada. Bem-vindo ao RISYS!",
+        message: "Sua conta foi aprovada e ativada. Bem-vindo ao School Lab!",
         sendEmail: true,
       });
     }

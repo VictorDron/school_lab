@@ -1,7 +1,7 @@
 # COPIE ESTE ARQUIVO PARA .env E PREENCHA COM SUAS CREDENCIAIS
 
 # Database
-DATABASE_URL="postgresql://user:password@localhost:5432/risys"
+DATABASE_URL="postgresql://user:password@localhost:5432/school_lab"
 
 # Redis
 REDIS_URL="redis://localhost:6379"
@@ -13,7 +13,7 @@ OPENAI_API_KEY="your_openai_api_key"
 SUPABASE_URL="https://your-project.supabase.co"
 SUPABASE_KEY="your_supabase_anon_key"
 SUPABASE_SERVICE_KEY="your_supabase_service_key"
-SUPABASE_BUCKET="risys"
+SUPABASE_BUCKET="school-lab"
 
 # Resend (Email)
 RESEND_API_KEY="your_resend_api_key"

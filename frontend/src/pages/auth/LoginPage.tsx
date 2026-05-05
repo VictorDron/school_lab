@@ -45,7 +45,7 @@ export default function LoginPage() {
         >
           <img 
             src="/logo_ris.png" 
-            alt="RISYS" 
+            alt="School Lab" 
             className="h-16 w-auto mb-3"
           />
           <p className="text-neutral-500 text-sm">Sistema de Gestão Escolar</p>

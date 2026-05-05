@@ -34,7 +34,7 @@ export async function sendNotificationEmail(params: {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">RISYS</div>
+          <div class="logo">School Lab</div>
         </div>
         <div class="content">
           <h2>${title}</h2>
@@ -43,7 +43,7 @@ export async function sendNotificationEmail(params: {
           ${actionButton}
         </div>
         <div class="footer">
-          <p>RISYS - Sistema de Gestão Escolar</p>
+          <p>School Lab - Sistema de Gestão Escolar</p>
         </div>
       </div>
     </body>
@@ -52,7 +52,7 @@ export async function sendNotificationEmail(params: {
 
   return sendEmail({
     to,
-    subject: `${title} - RISYS`,
+    subject: `${title} - School Lab`,
     html,
   });
 }
@@ -88,7 +88,7 @@ export async function sendGateApprovalEmail(params: {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">RISYS</div>
+          <div class="logo">School Lab</div>
         </div>
         <div class="content">
           <h2>Aprovação Pendente</h2>
@@ -104,11 +104,11 @@ export async function sendGateApprovalEmail(params: {
             <a href="${leadUrl}" class="button">Resolver Aprovação</a>
           </p>
           <p style="font-size: 14px; color: #666;">
-            Este email foi enviado porque você tem as notificações por email habilitadas no sistema RISYS.
+            Este email foi enviado porque você tem as notificações por email habilitadas no sistema School Lab.
           </p>
         </div>
         <div class="footer">
-          <p>RISYS - Sistema de Gestão Escolar</p>
+          <p>School Lab - Sistema de Gestão Escolar</p>
           <p style="font-size: 12px; margin-top: 10px;">Este é um email automático, por favor não responda.</p>
         </div>
       </div>
@@ -118,7 +118,7 @@ export async function sendGateApprovalEmail(params: {
 
   return sendEmail({
     to,
-    subject: `Aprovação Pendente: ${departmentLabel} - ${familyName} - RISYS`,
+    subject: `Aprovação Pendente: ${departmentLabel} - ${familyName} - School Lab`,
     html,
   });
 }

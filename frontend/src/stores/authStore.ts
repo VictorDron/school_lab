@@ -139,7 +139,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'risys-auth',
+      name: 'school-lab-auth',
       partialize: (state) => ({
         token: state.token,
         user: state.user,

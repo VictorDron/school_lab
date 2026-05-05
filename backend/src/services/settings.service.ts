@@ -22,7 +22,7 @@ export const DEFAULT_FOOD_TABLE = [
 ] as const;
 
 const DEFAULT_SETTINGS = {
-  schoolName: 'RISYS School',
+  schoolName: 'School Lab',
   defaultLanguage: 'pt',
   dateFormat: 'DD/MM/YYYY',
   currency: 'BRL',

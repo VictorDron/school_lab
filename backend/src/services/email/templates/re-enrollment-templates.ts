@@ -34,7 +34,7 @@ export async function sendReEnrollmentInviteEmail(params: {
 </style>
 </head><body>
 <div class="container">
-  <div class="header"><div class="logo">RISYS</div></div>
+  <div class="header"><div class="logo">School Lab</div></div>
   <div class="content">
     <h2>Rematrícula ${schoolName}</h2>
     <p>Olá, <strong>${familyName}</strong>,</p>
@@ -49,7 +49,7 @@ export async function sendReEnrollmentInviteEmail(params: {
     </p>
     <p style="font-size: 14px; color: #666;">Este link é exclusivo para sua família. Não compartilhe.</p>
   </div>
-  <div class="footer"><p>RISYS — Sistema de Gestão Escolar</p></div>
+  <div class="footer"><p>School Lab — Sistema de Gestão Escolar</p></div>
 </div>
 </body></html>`;
 
@@ -82,7 +82,7 @@ export async function sendReEnrollmentFormConfirmationEmail(params: {
 </style>
 </head><body>
 <div class="container">
-  <div class="header"><div class="logo">RISYS</div></div>
+  <div class="header"><div class="logo">School Lab</div></div>
   <div class="content">
     <h2>Confirmação de Rematrícula — ${schoolName}</h2>
     <p>Olá, <strong>${familyName}</strong>,</p>
@@ -92,7 +92,7 @@ export async function sendReEnrollmentFormConfirmationEmail(params: {
     </div>
     <p>Caso tenha dúvidas, entre em contato com a secretaria da escola.</p>
   </div>
-  <div class="footer"><p>RISYS — Sistema de Gestão Escolar</p></div>
+  <div class="footer"><p>School Lab — Sistema de Gestão Escolar</p></div>
 </div>
 </body></html>`;
 
@@ -125,7 +125,7 @@ export async function sendReEnrollmentContractSentEmail(params: {
 </style>
 </head><body>
 <div class="container">
-  <div class="header"><div class="logo">RISYS</div></div>
+  <div class="header"><div class="logo">School Lab</div></div>
   <div class="content">
     <h2>Contrato de Renovação Enviado — ${schoolName}</h2>
     <p>Olá, <strong>${familyName}</strong>,</p>
@@ -135,7 +135,7 @@ export async function sendReEnrollmentContractSentEmail(params: {
     </div>
     <p>Após a assinatura de todos os responsáveis, a rematrícula será concluída automaticamente.</p>
   </div>
-  <div class="footer"><p>RISYS — Sistema de Gestão Escolar</p></div>
+  <div class="footer"><p>School Lab — Sistema de Gestão Escolar</p></div>
 </div>
 </body></html>`;
 
@@ -174,7 +174,7 @@ export async function sendReEnrollmentWelcomeEmail(params: {
 </style>
 </head><body>
 <div class="container">
-  <div class="header"><div class="logo">RISYS</div></div>
+  <div class="header"><div class="logo">School Lab</div></div>
   <div class="content">
     <h2>Rematrícula Confirmada — ${schoolName}</h2>
     <p>Olá, <strong>${familyName}</strong>,</p>
@@ -185,7 +185,7 @@ export async function sendReEnrollmentWelcomeEmail(params: {
     </div>
     <p>Ficamos felizes em ter <strong>${studentName}</strong> conosco por mais um ano. Nos vemos em breve!</p>
   </div>
-  <div class="footer"><p>RISYS — Sistema de Gestão Escolar</p></div>
+  <div class="footer"><p>School Lab — Sistema de Gestão Escolar</p></div>
 </div>
 </body></html>`;
 
@@ -233,7 +233,7 @@ export async function sendPreReEnrollmentEmail(params: {
 </style>
 </head><body>
 <div class="container">
-  <div class="header"><div class="logo">RISYS</div></div>
+  <div class="header"><div class="logo">School Lab</div></div>
   <div class="content">
     <h2>Comunicado de Pré-Rematrícula</h2>
     <p>Olá, <strong>${familyName}</strong>,</p>
@@ -258,7 +258,7 @@ export async function sendPreReEnrollmentEmail(params: {
     <div class="deadline">Prazo para manifestação: ${deadline}</div>
     <p style="font-size: 14px; color: #666;">Este link é exclusivo para sua família. Não compartilhe com terceiros.</p>
   </div>
-  <div class="footer"><p>RISYS — Sistema de Gestão Escolar</p></div>
+  <div class="footer"><p>School Lab — Sistema de Gestão Escolar</p></div>
 </div>
 </body></html>`;
 
@@ -308,7 +308,7 @@ export async function sendDocumentRejectionEmail(params: {
 </style>
 </head><body>
 <div class="container">
-  <div class="header"><div class="logo">RISYS</div></div>
+  <div class="header"><div class="logo">School Lab</div></div>
   <div class="content">
     <h2>Documentos Pendentes — Rematrícula</h2>
     <p>Olá, <strong>${familyName}</strong>,</p>
@@ -323,7 +323,7 @@ export async function sendDocumentRejectionEmail(params: {
     </p>
     <p style="font-size: 14px; color: #666;">Este link é exclusivo para sua família. Não compartilhe.</p>
   </div>
-  <div class="footer"><p>RISYS — Sistema de Gestão Escolar</p></div>
+  <div class="footer"><p>School Lab — Sistema de Gestão Escolar</p></div>
 </div>
 </body></html>`;
 

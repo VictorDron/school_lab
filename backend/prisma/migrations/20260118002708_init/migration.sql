@@ -101,7 +101,7 @@ CREATE TABLE "Invite" (
 -- CreateTable
 CREATE TABLE "SystemSettings" (
     "id" TEXT NOT NULL,
-    "schoolName" TEXT NOT NULL DEFAULT 'RISYS School',
+    "schoolName" TEXT NOT NULL DEFAULT 'School Lab',
     "logoUrl" TEXT,
     "defaultLanguage" TEXT NOT NULL DEFAULT 'pt',
     "dateFormat" TEXT NOT NULL DEFAULT 'DD/MM/YYYY',

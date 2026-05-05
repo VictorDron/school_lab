@@ -66,7 +66,7 @@ export function PublicFormShell({
       <header className="bg-white border-b border-neutral-200 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {logoSrc && <img src={logoSrc} alt="RISYS" className="h-8 w-auto object-contain" />}
+            {logoSrc && <img src={logoSrc} alt="School Lab" className="h-8 w-auto object-contain" />}
             {headerTitle && <p className="text-sm text-neutral-500">{headerTitle}</p>}
           </div>
           <div className="flex items-center gap-1 bg-neutral-100 rounded-lg p-0.5">

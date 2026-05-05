@@ -209,7 +209,7 @@ describe('Merge Service', () => {
     });
 
     it('should detect RIS school name variations', () => {
-      const variations = ['RIS', 'ris', 'RISYS', 'Rio Internacional School', 'School International'];
+      const variations = ['RIS', 'ris', 'School Lab', 'Rio Internacional School', 'School International'];
       for (const school of variations) {
         expect(checkSiblingsAtSchool([
           { name: 'A', cpf: '', dateOfBirth: '', grade: '', school },

@@ -105,7 +105,7 @@ export default function MainLayout() {
           >
             <img 
               src="/logo_ris.png" 
-              alt="RISYS" 
+              alt="School Lab" 
               className={`transition-all duration-300 ${sidebarExpanded ? 'h-10' : 'h-8'} w-auto`}
             />
           </motion.div>
@@ -362,7 +362,7 @@ export default function MainLayout() {
               <div className="h-16 flex items-center justify-between px-4 border-b border-neutral-100">
                 <img 
                   src="/logo_ris.png" 
-                  alt="RISYS" 
+                  alt="School Lab" 
                   className="h-9 w-auto"
                 />
                 <button

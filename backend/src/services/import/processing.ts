@@ -112,7 +112,7 @@ export async function processImportInBackground(
       const studentCode = generateCode('STU');
       const surname = extractSurname(row.studentName);
       const emergencyEmail = row.emergencyContacts[0]?.email;
-      const contactEmail = emergencyEmail || `import-${leadCode.toLowerCase()}@sem-email.risys.local`;
+      const contactEmail = emergencyEmail || `import-${leadCode.toLowerCase()}@sem-email.school-lab.local`;
       const contactName = row.emergencyContacts[0]?.name || surname;
 
       const student = await prisma.$transaction(
