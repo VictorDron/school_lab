@@ -1,5 +1,6 @@
 import { prisma } from '../config/database.js';
 import { ContractSignerRole } from '@prisma/client';
+import { requireTenantId } from '../lib/tenant-context.js';
 import logger from '../utils/logger.js';
 
 export interface DefaultSignerData {
@@ -42,6 +43,7 @@ export async function upsert(data: DefaultSignerData) {
 
   return prisma.contractDefaultSigner.create({
     data: {
+      tenantId: requireTenantId(),
       role: data.role,
       name: data.name,
       email: data.email,
@@ -68,13 +70,21 @@ export async function remove(id: string) {
 }
 
 export async function replaceAll(signers: DefaultSignerData[]) {
+  // Read tenantId once outside the loop so each signer create stamps the
+  // same tenant (and so requireTenantId throws cleanly if context is
+  // missing instead of failing the first insert).
+  const tenantId = requireTenantId();
   return prisma.$transaction(async (tx) => {
+    // deleteMany auto-scopes via the middleware once
+    // ContractDefaultSigner is in TENANT_SCOPED_MODELS — only this
+    // tenant's signers get cleared.
     await tx.contractDefaultSigner.deleteMany({});
 
     const created = [];
     for (const s of signers) {
       const record = await tx.contractDefaultSigner.create({
         data: {
+          tenantId,
           role: s.role,
           name: s.name,
           email: s.email,

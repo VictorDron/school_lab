@@ -593,11 +593,15 @@ model Tenant {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  // Relations — Phase 0/2a/2b wires these; later phases extend.
-  settings SystemSettings?
-  users    User[]
-  invites  Invite[]
-  leads    Lead[]
+  // Relations — Phase 0/2a/2b/2d wires these; later phases extend.
+  settings              SystemSettings?
+  users                 User[]
+  invites               Invite[]
+  leads                 Lead[]
+  contracts             Contract[]
+  addendums             ContractAddendum[]
+  contractDefaultSigners ContractDefaultSigner[]
+  gateStepConfigs       GateStepConfig[]
 
   @@index([slug])
 }
@@ -2382,6 +2386,11 @@ model AdmissionGateApproval {
 
 model GateStepConfig {
   id            String              @id @default(uuid())
+  // Tenancy: per-tenant admission-gate configuration. Each tenant
+  // configures which department gates which step. Unique constraint
+  // becomes (tenantId, gateStep, department) so different tenants can
+  // have independent gate setups.
+  tenantId      String
   gateStep      AdmissionGateStatus
   department    AdmissionDepartment
   isRequired    Boolean             @default(true)
@@ -2391,7 +2400,10 @@ model GateStepConfig {
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
 
-  @@unique([gateStep, department])
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, gateStep, department])
+  @@index([tenantId])
   @@index([gateStep])
 }
 
@@ -2426,6 +2438,10 @@ model CriticalIssueEscalation {
 
 model Contract {
   id              String         @id @default(uuid())
+  // Tenancy: denormalized from Lead so the auto-scope middleware can
+  // filter directly. Always equals Lead.tenantId — invariant enforced
+  // by the create paths and migration backfill.
+  tenantId        String
   leadId          String
   code            String         @unique
   status          ContractStatus @default(DRAFT)
@@ -2478,6 +2494,7 @@ model Contract {
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 
+  tenant              Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   lead                Lead              @relation(fields: [leadId], references: [id], onDelete: Cascade)
   student             Student?          @relation(fields: [studentId], references: [id], onDelete: SetNull)
   legalApprovedBy     User?             @relation("ContractLegalApprover", fields: [legalApprovedById], references: [id], onDelete: SetNull)
@@ -2487,6 +2504,7 @@ model Contract {
   payments            ContractPayment[]
   addendums           ContractAddendum[]
 
+  @@index([tenantId])
   @@index([leadId])
   @@index([studentId])
   @@index([status])
@@ -2522,6 +2540,10 @@ model ContractSigner {
 
 model ContractDefaultSigner {
   id        String             @id @default(uuid())
+  // Tenancy: per-tenant default signer roster. Each tenant configures
+  // their own school-side signers (legal rep, director, etc.) for new
+  // contracts. Pure root — no parent FK to derive from.
+  tenantId  String
   role      ContractSignerRole
   name      String
   email     String
@@ -2531,6 +2553,9 @@ model ContractDefaultSigner {
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
 
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
 }
 
 model ContractPayment {
@@ -2569,6 +2594,9 @@ enum AddendumStatus {
 
 model ContractAddendum {
   id          String         @id @default(uuid())
+  // Tenancy: denormalized from Contract → Lead so the auto-scope
+  // middleware filters directly. Always equals Contract.tenantId.
+  tenantId    String
   contractId  String
   code        String         @unique
   type        AddendumType
@@ -2592,9 +2620,11 @@ model ContractAddendum {
   updatedAt DateTime  @updatedAt
   signedAt  DateTime?
 
+  tenant   Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   contract Contract         @relation(fields: [contractId], references: [id], onDelete: Cascade)
   signers  AddendumSigner[]
 
+  @@index([tenantId])
   @@index([contractId])
   @@index([status])
 }

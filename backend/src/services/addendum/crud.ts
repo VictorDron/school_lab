@@ -24,8 +24,13 @@ export async function createAddendum(data: CreateAddendumData) {
 
   const code = generateAddendumCode();
 
+  // Inherit tenantId from the parent Contract — invariant ensured by
+  // schema (Contract.tenantId NOT NULL) and our scope middleware
+  // would have rejected the contract lookup if it didn't belong to
+  // the active tenant.
   const addendum = await prisma.contractAddendum.create({
     data: {
+      tenantId: contract.tenantId,
       contractId: data.contractId,
       code,
       type: data.type,

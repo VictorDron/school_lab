@@ -385,9 +385,15 @@ async function main() {
 
   for (const cfg of gateConfigs) {
     await prisma.gateStepConfig.upsert({
-      where: { gateStep_department: { gateStep: cfg.gateStep, department: cfg.department } },
+      where: {
+        tenantId_gateStep_department: {
+          tenantId: tenant.id,
+          gateStep: cfg.gateStep,
+          department: cfg.department,
+        },
+      },
       update: { isRequired: cfg.isRequired, approvalOrder: cfg.approvalOrder, allowedRoles: cfg.allowedRoles, description: cfg.description },
-      create: cfg,
+      create: { ...cfg, tenantId: tenant.id },
     });
   }
   console.log('✅ Gate step configurations created (10 configs)');

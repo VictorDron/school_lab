@@ -11,7 +11,14 @@ import { runWithTenant, currentTenantId } from '../lib/tenant-context.js';
 // Keeping the test middleware in-test (rather than importing the global
 // prisma) avoids the connection-init dance and the retry loop.
 function attachTenantScopeMiddleware(client: PrismaClient): void {
-  const TENANT_SCOPED_MODELS = new Set<Prisma.ModelName>(['Lead']);
+  // Mirror the production list in src/config/database.ts.
+  const TENANT_SCOPED_MODELS = new Set<Prisma.ModelName>([
+    'Lead',
+    'Contract',
+    'ContractAddendum',
+    'ContractDefaultSigner',
+    'GateStepConfig',
+  ]);
   const SCOPED_READ_ACTIONS = new Set<Prisma.PrismaAction>([
     'findFirst',
     'findFirstOrThrow',
@@ -130,11 +137,49 @@ describe('Prisma auto-scope middleware (Phase 2b)', () => {
     expect(captured?.params.args.where).toEqual({ id: 'lead-1' });
   });
 
-  it('does NOT scope queries on non-Lead models (Phase 2b is Lead-only)', async () => {
+  it('does NOT scope queries on non-tenant-scoped models (e.g. User)', async () => {
     await runWithTenant('tenant-A', async () => {
       await runQuery(() => client.user.findMany({ where: { email: 'x@y.com' } }));
     });
     expect(captured?.params.args).toEqual({ where: { email: 'x@y.com' } });
+  });
+
+  it('scopes Contract.findMany (Phase 2d)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.contract.findMany({ where: { code: 'CT-1' } }));
+    });
+    expect(captured?.params.args.where).toMatchObject({
+      code: 'CT-1',
+      tenantId: 'tenant-A',
+    });
+  });
+
+  it('scopes ContractAddendum.findMany (Phase 2d)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.contractAddendum.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes ContractDefaultSigner.findMany (Phase 2d)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.contractDefaultSigner.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes GateStepConfig.findMany (Phase 2d)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.gateStepConfig.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes ContractDefaultSigner.deleteMany (Phase 2d)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.contractDefaultSigner.deleteMany({}));
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
   });
 
   it('parallel runs scope correctly to their own tenant', async () => {

@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import {
   ContractSignerRole,
   Prisma,
@@ -135,6 +136,7 @@ export async function createContract(
 
     const created = await tx.contract.create({
       data: {
+        tenantId: requireTenantId(),
         leadId,
         code,
         status: 'PENDING_LEGAL',
@@ -256,6 +258,7 @@ export async function createRenewalContract(
 
       const created = await tx.contract.create({
         data: {
+          tenantId: requireTenantId(),
           leadId,
           code,
           status: 'PENDING_LEGAL',

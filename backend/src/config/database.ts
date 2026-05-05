@@ -22,10 +22,18 @@ function isRetryableError(error: unknown): boolean {
   return false;
 }
 
-// Models that auto-scope by tenantId. Phase 2b ships Lead; later phases
-// add the rest as their domain models gain a tenantId column. Listed as a
-// Set so the middleware lookup is O(1) on every query.
-const TENANT_SCOPED_MODELS = new Set<Prisma.ModelName>(['Lead']);
+// Models that auto-scope by tenantId. Each phase adds the roots of its
+// domain as tenantId columns land. Listed as a Set so the middleware
+// lookup is O(1) on every query.
+//   Phase 2b: Lead
+//   Phase 2d: Contract, ContractAddendum, ContractDefaultSigner, GateStepConfig
+const TENANT_SCOPED_MODELS = new Set<Prisma.ModelName>([
+  'Lead',
+  'Contract',
+  'ContractAddendum',
+  'ContractDefaultSigner',
+  'GateStepConfig',
+]);
 
 // Read-style actions where merging tenantId into args.where is safe.
 // Excluded: findUnique / findUniqueOrThrow / update / delete / upsert —
