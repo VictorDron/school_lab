@@ -16,7 +16,7 @@ export interface AuthUser {
   fullName: string;
   role: UserRole;
   status: string;
-  tenantId: string | null;
+  tenantId: string;
   isPlatformAdmin: boolean;
   moduleAccess: ModuleAccessItem[];
 }
@@ -33,7 +33,9 @@ export interface JwtPayload {
   // Tenant the token was issued for. Validated against user.tenantId on
   // every request — a token whose tenant disagrees with the user record
   // is rejected to defend against tampering / role copying across tenants.
-  tenantId: string | null;
+  // Tokens issued before Phase 2a may have null here; they fail integrity
+  // check (since user.tenantId is now NOT NULL) and force a fresh login.
+  tenantId: string;
 }
 
 export interface ApiResponse<T = any> {

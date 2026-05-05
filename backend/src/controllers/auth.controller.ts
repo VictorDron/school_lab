@@ -136,11 +136,10 @@ export async function register(req: Request, res: Response) {
   try {
     const data = registerSchema.parse(req.body);
 
-    // Validate invite token. Pulls the inviter's tenantId so the newly
-    // created user lands in the same tenant as whoever invited them.
+    // Validate invite token. The invite carries its own tenantId, so the
+    // newly created user lands in that tenant directly — no inviter join.
     const invite = await prisma.invite.findUnique({
       where: { token: data.token },
-      include: { inviter: { select: { tenantId: true } } },
     });
 
     if (!invite) {
@@ -188,7 +187,7 @@ export async function register(req: Request, res: Response) {
         dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : undefined,
         role: invite.role,
         status: 'PENDING',
-        tenantId: invite.inviter.tenantId,
+        tenantId: invite.tenantId,
       },
     });
 
@@ -373,6 +372,9 @@ export async function createInvite(req: AuthenticatedRequest, res: Response) {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 
+    if (!req.tenantId) {
+      return res.status(401).json({ success: false, error: 'Tenant não resolvido' });
+    }
     const invite = await prisma.invite.create({
       data: {
         email: email.toLowerCase(),
@@ -380,6 +382,7 @@ export async function createInvite(req: AuthenticatedRequest, res: Response) {
         role: inviteRole,
         token,
         invitedBy: req.user!.id,
+        tenantId: req.tenantId,
         expiresAt,
       },
     });

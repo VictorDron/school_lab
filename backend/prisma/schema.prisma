@@ -593,9 +593,10 @@ model Tenant {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  // Relations — only the ones we wire in Phase 0; later phases extend.
+  // Relations — Phase 0/2a wires these; later phases extend.
   settings SystemSettings?
   users    User[]
+  invites  Invite[]
 
   @@index([slug])
 }
@@ -609,10 +610,10 @@ enum TenantStatus {
 
 model User {
   id                    String     @id @default(uuid())
-  // Tenancy: every user belongs to exactly one tenant (1:N). Made nullable
-  // here only because the migration backfills existing rows in two steps;
-  // Phase 1 / 2a will tighten this to required after onboarding flow exists.
-  tenantId              String?
+  // Tenancy: every user belongs to exactly one tenant (1:N). NOT NULL since
+  // Phase 2a — every code path that creates a User now stamps tenantId
+  // (auth.controller register, users.controller createUser, seed).
+  tenantId              String
   // Platform-level admin (cross-tenant view for support/billing). Defaults
   // to false; flipped manually for ops staff.
   isPlatformAdmin       Boolean    @default(false)
@@ -635,7 +636,7 @@ model User {
   updatedAt             DateTime   @updatedAt
 
   // Relations
-  tenant               Tenant?                @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  tenant               Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   moduleAccess         ModuleAccess[]
   createdTickets       Ticket[]               @relation("TicketCreator")
   assignedTickets      Ticket[]               @relation("TicketAssignee")
@@ -721,6 +722,10 @@ model ModuleAccess {
 
 model Invite {
   id        String    @id @default(uuid())
+  // Tenancy: invite belongs to a tenant. Stored explicitly (not derived
+  // from the inviter) so an invite stays anchored to its tenant even if
+  // the inviter is reassigned or deleted before the invite is consumed.
+  tenantId  String
   email     String
   name      String?
   role      UserRole  @default(STAFF)
@@ -730,10 +735,12 @@ model Invite {
   usedAt    DateTime?
   createdAt DateTime  @default(now())
 
-  inviter User @relation(fields: [invitedBy], references: [id], onDelete: Cascade)
+  tenant  Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  inviter User   @relation(fields: [invitedBy], references: [id], onDelete: Cascade)
 
   @@index([token])
   @@index([email])
+  @@index([tenantId])
 }
 
 model SystemSettings {

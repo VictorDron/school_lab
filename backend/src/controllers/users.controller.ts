@@ -88,9 +88,15 @@ export async function createUser(req: AuthenticatedRequest, res: Response) {
     const passwordHash = await hashPassword(temporaryPassword);
 
     // Cria usuário no MESMO tenant do admin que está chamando este
-    // endpoint. Phase 1 — req.tenantId é setado pelo authenticate(); a
-    // ausência ali significa rota inacessível, então não tratamos null.
+    // endpoint. authenticate() seta req.tenantId; a ausência aqui significa
+    // rota mal-configurada (não atrás de auth) — falha alta.
     const tenantId = req.tenantId;
+    if (!tenantId) {
+      return res.status(401).json({
+        success: false,
+        error: 'Tenant não resolvido',
+      });
+    }
     const user = await prisma.user.create({
       data: {
         email: data.email.toLowerCase(),
