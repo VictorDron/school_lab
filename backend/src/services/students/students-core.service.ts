@@ -1,5 +1,6 @@
 import { Prisma, StudentStatus } from '@prisma/client';
 import { prisma } from '../../config/database.js';
+import { withTenantTx } from '../../lib/tenant-context.js';
 import { redis } from '../../config/redis.js';
 import { getIO } from '../../socket/io.js';
 import { createAppError } from '../../lib/error-messages.js';
@@ -511,7 +512,7 @@ export async function bulkUpdate(
   const historyAction =
     action.type === 'changeGrade' ? 'GRADE_CHANGED' : 'STATUS_CHANGED';
 
-  await prisma.$transaction(async (tx) => {
+  await withTenantTx(prisma, async (tx) => {
     await tx.student.updateMany({
       where: { id: { in: ids } },
       data: updateData,

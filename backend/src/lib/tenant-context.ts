@@ -89,7 +89,7 @@ type PrismaLike = { $transaction: (...args: any[]) => any };
  * isolationLevel). `platformAdmin` swaps the GUC value to the sentinel
  * that bypasses RLS for cross-tenant operations.
  */
-export async function withTenantTx<T, Tx = TxClient>(
+export async function withTenantTx<T, Tx = any>(
   prisma: PrismaLike,
   fn: (tx: Tx) => Promise<T>,
   options?: { platformAdmin?: boolean; txOptions?: TxOptions },

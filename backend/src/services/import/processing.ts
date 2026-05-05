@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 import { prisma } from '../../config/database.js';
-import { requireTenantId } from '../../lib/tenant-context.js';
+import { requireTenantId, withTenantTx } from '../../lib/tenant-context.js';
 import { generateCode } from '../../utils/helpers.js';
 import { createAuditLog } from '../audit.service.js';
 import { COLUMN_MAP } from '../import-mapping.js';
@@ -117,7 +117,8 @@ export async function processImportInBackground(
       const contactEmail = emergencyEmail || `import-${leadCode.toLowerCase()}@sem-email.school-lab.local`;
       const contactName = row.emergencyContacts[0]?.name || surname;
 
-      const student = await prisma.$transaction(
+      const student = await withTenantTx(
+        prisma,
         async (tx) => {
           const lead = await tx.lead.create({
             data: {
@@ -228,7 +229,7 @@ export async function processImportInBackground(
 
           return newStudent;
         },
-        { maxWait: 15000, timeout: 30000 },
+        { txOptions: { maxWait: 15000, timeout: 30000 } },
       );
 
       createdStudentIds.push(student.id);

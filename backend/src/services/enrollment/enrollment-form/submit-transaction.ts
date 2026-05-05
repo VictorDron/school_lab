@@ -99,9 +99,9 @@ export async function runSubmissionTransaction(
   // Phase 6: withTenantTx scopes app.current_tenant_id for RLS
   // enforcement. ALS is established by withTenantFromToken on the
   // public route — the GUC inherits that tenantId.
-  return withTenantTx<SubmissionTransactionResult, Tx>(
+  return withTenantTx(
     prisma,
-    (tx) => runSubmissionWrites(tx, data, metadata),
+    (tx: Tx) => runSubmissionWrites(tx, data, metadata),
     { txOptions: TX_OPTIONS },
   );
 }

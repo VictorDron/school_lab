@@ -1,5 +1,5 @@
 import { prisma } from '../config/database.js';
-import { requireTenantId } from '../lib/tenant-context.js';
+import { requireTenantId, withTenantTx } from '../lib/tenant-context.js';
 import { redis } from '../config/redis.js';
 import { AppModule } from '@prisma/client';
 import logger from '../utils/logger.js';
@@ -27,7 +27,7 @@ export async function createModuleChannel(params: {
     const ownerId = memberUserIds[0];
     const tenantId = requireTenantId();
 
-    return await prisma.$transaction(async (tx) => {
+    return await withTenantTx(prisma, async (tx) => {
       // 1. Create private channel
       const channel = await tx.channel.create({
         data: {

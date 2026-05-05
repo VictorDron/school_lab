@@ -1,5 +1,5 @@
 import { prisma } from '../config/database.js';
-import { requireTenantId } from '../lib/tenant-context.js';
+import { requireTenantId, withTenantTx } from '../lib/tenant-context.js';
 import { createAppError } from '../lib/error-messages.js';
 import logger from '../utils/logger.js';
 
@@ -103,7 +103,7 @@ export async function upsertPriceTable(periodId: string, entries: PriceTableEntr
   await assertPeriodEditable(periodId);
 
   const tenantId = requireTenantId();
-  await prisma.$transaction(async (tx) => {
+  await withTenantTx(prisma, async (tx) => {
     await tx.periodPriceTable.deleteMany({ where: { periodId } });
     await tx.periodPriceTable.createMany({
       data: entries.map((e) => ({

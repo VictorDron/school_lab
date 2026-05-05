@@ -43,6 +43,10 @@ vi.mock('../lib/tenant-context.js', () => ({
   requireTenantId: vi.fn().mockReturnValue('test-tenant-id'),
   currentTenantId: vi.fn().mockReturnValue('test-tenant-id'),
   runWithTenant: <T>(_id: string, fn: () => T) => fn(),
+  // Phase 6: bypass the GUC plumbing in tests — just delegate to the
+  // mocked $transaction.
+  withTenantTx: <T>(p: any, fn: (tx: any) => Promise<T>) =>
+    p.$transaction(fn),
 }));
 
 // ── Pure calculation tests ──────────────────────────────────────────

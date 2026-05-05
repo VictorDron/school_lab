@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { withTenantTx } from '../../lib/tenant-context.js';
 import { AppError } from '../../middlewares/errorHandler.js';
 import { createNotification } from '../notification.service.js';
 import { postTaskUpdateToChannel } from '../task-boards.service.js';
@@ -41,7 +42,7 @@ export async function moveCard(
   const fromColumnName = existingCard.column.name;
   const toColumnName = targetColumn.name;
 
-  const card = await prisma.$transaction(async (tx) => {
+  const card = await withTenantTx(prisma, async (tx) => {
     await tx.taskCard.updateMany({
       where: {
         columnId: targetColumnId,

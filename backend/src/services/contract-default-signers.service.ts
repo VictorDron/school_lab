@@ -1,6 +1,6 @@
 import { prisma } from '../config/database.js';
 import { ContractSignerRole } from '@prisma/client';
-import { requireTenantId } from '../lib/tenant-context.js';
+import { requireTenantId, withTenantTx } from '../lib/tenant-context.js';
 import logger from '../utils/logger.js';
 
 export interface DefaultSignerData {
@@ -74,7 +74,7 @@ export async function replaceAll(signers: DefaultSignerData[]) {
   // same tenant (and so requireTenantId throws cleanly if context is
   // missing instead of failing the first insert).
   const tenantId = requireTenantId();
-  return prisma.$transaction(async (tx) => {
+  return withTenantTx(prisma, async (tx) => {
     // deleteMany auto-scopes via the middleware once
     // ContractDefaultSigner is in TENANT_SCOPED_MODELS — only this
     // tenant's signers get cleared.

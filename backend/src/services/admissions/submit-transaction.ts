@@ -102,9 +102,9 @@ export async function runSubmissionTransaction(
   // the duration of the tx. RLS rejects any row that doesn't match —
   // backstop against a malicious payload smuggling an attacker tenantId
   // through the public form.
-  return withTenantTx<SubmissionTransactionResult, Tx>(
+  return withTenantTx(
     prisma,
-    (tx) => runSubmissionWrites(tx, data, metadata, schoolName),
+    (tx: Tx) => runSubmissionWrites(tx, data, metadata, schoolName),
     { txOptions: TX_OPTIONS },
   );
 }

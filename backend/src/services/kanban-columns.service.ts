@@ -1,5 +1,5 @@
 import { prisma } from '../config/database.js';
-import { requireTenantId } from '../lib/tenant-context.js';
+import { requireTenantId, withTenantTx } from '../lib/tenant-context.js';
 
 // Types
 export interface CreateColumnData {
@@ -134,15 +134,17 @@ export async function reorder(columns: ReorderColumnData[]) {
     throw new Error('COLUMNS_NOT_FOUND');
   }
 
-  // Update orders in a transaction
-  await prisma.$transaction(
-    columns.map(col =>
-      prisma.kanbanColumn.update({
+  // Update orders in a transaction. Sequential under withTenantTx so the
+  // GUC is set on the same connection as the updates — RLS rejects any
+  // cross-tenant update even if a malicious column id is smuggled in.
+  await withTenantTx(prisma, async (tx) => {
+    for (const col of columns) {
+      await tx.kanbanColumn.update({
         where: { id: col.id },
         data: { order: col.order },
-      })
-    )
-  );
+      });
+    }
+  });
 
   // Fetch updated columns
   return prisma.kanbanColumn.findMany({
