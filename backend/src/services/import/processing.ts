@@ -21,9 +21,10 @@ const PROGRESS_CHECKPOINT_EVERY = 5;
 export async function previewImport(
   buffer: Buffer,
   fileName: string,
+  schoolName: string,
 ): Promise<ImportPreviewResult> {
   const { rows: rawRows, headers } = parseImportFile(buffer, fileName);
-  const { parsedRows, errors } = validateRows(rawRows, headers);
+  const { parsedRows, errors } = validateRows(rawRows, headers, schoolName);
   const familyGroups = detectFamilies(parsedRows);
   const duplicates = await detectDuplicates(parsedRows);
 

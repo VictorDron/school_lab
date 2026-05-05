@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { AuthenticatedRequest } from '../types/index.js';
 import * as ImportService from '../services/import.service.js';
 import * as ImportDocumentsService from '../services/import-documents.service.js';
+import { getOrCreateSettings } from '../services/settings.service.js';
 import { prisma } from '../config/database.js';
 import { getIO } from '../socket/io.js';
 import logger from '../utils/logger.js';
@@ -33,7 +34,8 @@ export async function preview(req: AuthenticatedRequest, res: Response) {
       });
     }
 
-    const previewResult = await ImportService.previewImport(req.file.buffer, req.file.originalname);
+    const { schoolName } = await getOrCreateSettings();
+    const previewResult = await ImportService.previewImport(req.file.buffer, req.file.originalname, schoolName);
 
     res.json({ success: true, data: previewResult });
   } catch (err) {

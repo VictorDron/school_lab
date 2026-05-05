@@ -1,5 +1,6 @@
 import { Lead, LeadChild } from '@prisma/client';
 import { PublicAdmissionData } from './admissions.service.js';
+import { getSchoolNameTokens } from '../utils/school-name-tokens.js';
 
 /**
  * Merge strategy types
@@ -74,15 +75,6 @@ export function calculateNumberOfChildren(incoming: PublicAdmissionData): number
   return 1 + incoming.siblings.length;
 }
 
-// Tokens too generic to identify a specific school. Stripped when deriving
-// brand-specific patterns from the configured schoolName so that strings like
-// "Other School" don't false-positive against a schoolName of "School Lab".
-const SCHOOL_NAME_STOPWORDS = new Set([
-  'school', 'schools', 'escola', 'escolas',
-  'colegio', 'colégio', 'college', 'institute', 'instituto',
-  'the', 'a', 'an', 'do', 'da', 'de', 'dos', 'das', 'of',
-]);
-
 // Language hints that mean "this same school" regardless of the operator's
 // brand name. Apply on top of the brand-derived patterns.
 const GENERIC_SAME_SCHOOL_PATTERNS: readonly RegExp[] = [
@@ -112,16 +104,7 @@ export function buildSchoolNamePatterns(schoolName: string): RegExp[] {
   patterns.push(new RegExp(escapedFull, 'i'));
 
   // Distinctive tokens (>= 2 chars, alphanumeric, not a stopword).
-  const tokens = trimmed
-    .toLowerCase()
-    .split(/[\s\-_/.,]+/)
-    .filter(token =>
-      token.length >= 2 &&
-      !SCHOOL_NAME_STOPWORDS.has(token) &&
-      /^[\p{L}\p{N}]+$/u.test(token)
-    );
-
-  for (const token of new Set(tokens)) {
+  for (const token of getSchoolNameTokens(trimmed)) {
     patterns.push(new RegExp(`\\b${escapeRegex(token)}\\b`, 'i'));
   }
 

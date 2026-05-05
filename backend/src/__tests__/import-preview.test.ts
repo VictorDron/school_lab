@@ -59,7 +59,7 @@ describe('Import Preview', () => {
 
     const csv = createTestCSV([header, row1]);
 
-    const result = await previewImport(csv, 'test.csv');
+    const result = await previewImport(csv, 'test.csv', 'RIS - Rio Internacional School');
 
     expect(result.rows.length).toBe(1);
     expect(result.rows[0].studentName).toBe('Joao Silva');
@@ -79,7 +79,7 @@ describe('Import Preview', () => {
 
     const csv = createTestCSV([header, row1]);
 
-    const result = await previewImport(csv, 'test.csv');
+    const result = await previewImport(csv, 'test.csv', 'RIS - Rio Internacional School');
 
     expect(result.errors.length).toBeGreaterThan(0);
     const nameError = result.errors.find((e) => e.field === 'studentName');
@@ -101,7 +101,7 @@ describe('Import Preview', () => {
 
     const csv = createTestCSV([header, row1, row2, row3]);
 
-    const result = await previewImport(csv, 'test.csv');
+    const result = await previewImport(csv, 'test.csv', 'RIS - Rio Internacional School');
 
     expect(result.summary.totalRows).toBe(3);
     // 1 row missing studentName = 1 error row

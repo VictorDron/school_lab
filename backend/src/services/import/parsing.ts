@@ -1,7 +1,7 @@
 import * as iconv from 'iconv-lite';
 import * as XLSX from 'xlsx';
 import {
-  GRADE_MAP,
+  normalizeGrade,
   buildEmergencyContacts,
   buildEnrollmentInfoData,
   buildHealthData,
@@ -64,10 +64,15 @@ export function parseImportFile(
  * builders to materialize health / transport / emergency / health-plan /
  * enrollment-info structs. Errors collect missing-required fields per
  * row; the caller decides whether to continue importing the valid rows.
+ *
+ * `schoolName` (typically SystemSettings.schoolName) is used by
+ * normalizeGrade to strip a tenant-specific brand prefix off raw module
+ * values like "RIS Pre-K3" → "Pre-K3" before canonicalizing.
  */
 export function validateRows(
   rows: string[][],
   _headers: string[],
+  schoolName: string,
 ): { parsedRows: ParsedRow[]; errors: RowError[] } {
   const parsedRows: ParsedRow[] = [];
   const errors: RowError[] = [];
@@ -95,7 +100,7 @@ export function validateRows(
       });
     }
 
-    const grade = GRADE_MAP[module] ?? module;
+    const grade = normalizeGrade(module, schoolName);
 
     const parsedRow: ParsedRow = {
       rowNumber,

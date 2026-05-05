@@ -5,7 +5,7 @@ import {
   decodeCSVBuffer,
   validateRows,
 } from '../services/import.service.js';
-import { parseHeader, parseCSVBoolean } from '../services/import-mapping.js';
+import { parseHeader, parseCSVBoolean, normalizeGrade } from '../services/import-mapping.js';
 
 // Mock prisma to prevent actual DB calls
 vi.mock('../config/database.js', () => ({
@@ -126,7 +126,7 @@ describe('Import Parser', () => {
       const rows = [['Pre-school', 'RIS Pre-K3', 'Pre-K3 A', '']];
       const headers = ['Course', 'Module', 'Class', 'Student'];
 
-      const { errors } = validateRows(rows, headers);
+      const { errors } = validateRows(rows, headers, 'RIS - Rio Internacional School');
 
       expect(errors.length).toBeGreaterThan(0);
       const nameError = errors.find((e) => e.field === 'studentName');
@@ -139,7 +139,7 @@ describe('Import Parser', () => {
       const rows = [['Pre-school', 'RIS Pre-K3', 'Pre-K3 A', 'Joao Silva']];
       const headers = ['Course', 'Module', 'Class', 'Student'];
 
-      const { errors } = validateRows(rows, headers);
+      const { errors } = validateRows(rows, headers, 'RIS - Rio Internacional School');
 
       const cpfError = errors.find((e) => e.field === 'cpf');
       expect(cpfError).toBeUndefined();
@@ -149,7 +149,7 @@ describe('Import Parser', () => {
       const rows = [['Pre-school', 'RIS Pre-K3', 'Pre-K3 A', 'Joao Silva']];
       const headers = ['Course', 'Module', 'Class', 'Student'];
 
-      const { parsedRows } = validateRows(rows, headers);
+      const { parsedRows } = validateRows(rows, headers, 'RIS - Rio Internacional School');
 
       expect(parsedRows.length).toBe(1);
       expect(parsedRows[0].studentName).toBe('Joao Silva');
@@ -161,9 +161,37 @@ describe('Import Parser', () => {
       const rows = [['Elem', '1st Grade (1o Ano)', 'Class A', 'Ana Lima']];
       const headers = ['Course', 'Module', 'Class', 'Student'];
 
-      const { parsedRows } = validateRows(rows, headers);
+      const { parsedRows } = validateRows(rows, headers, 'RIS - Rio Internacional School');
 
       expect(parsedRows[0].grade).toBe('1st Grade');
+    });
+  });
+
+  describe('normalizeGrade', () => {
+    it('returns canonical mapping for an unprefixed value', () => {
+      expect(normalizeGrade('Pre-K3', 'School Lab')).toBe('Pre-K3');
+      expect(normalizeGrade('Kinder', 'School Lab')).toBe('Kindergarten');
+      expect(normalizeGrade('1st Grade (1o Ano)', 'School Lab')).toBe('1st Grade');
+    });
+
+    it('strips a leading schoolName-derived brand prefix', () => {
+      expect(normalizeGrade('RIS Pre-K3', 'RIS - Rio Internacional School')).toBe('Pre-K3');
+      expect(normalizeGrade('RIS Kinder', 'RIS - Rio Internacional School')).toBe('Kindergarten');
+      expect(normalizeGrade('Acme Pre-K4', 'Acme Academy')).toBe('Pre-K4');
+    });
+
+    it('does NOT strip a prefix that does not belong to the tenant', () => {
+      // "RIS" is not a token of "Acme Academy" → leave the value alone
+      expect(normalizeGrade('RIS Pre-K3', 'Acme Academy')).toBe('RIS Pre-K3');
+    });
+
+    it('falls back to the raw value when no canonical mapping exists', () => {
+      expect(normalizeGrade('Some Custom Grade', 'School Lab')).toBe('Some Custom Grade');
+    });
+
+    it('returns empty string for empty input', () => {
+      expect(normalizeGrade('', 'School Lab')).toBe('');
+      expect(normalizeGrade('   ', 'School Lab')).toBe('');
     });
   });
 });

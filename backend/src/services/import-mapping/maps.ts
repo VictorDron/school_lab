@@ -1,11 +1,16 @@
 import type { ColumnMapping } from '../../types/import.types.js';
+import { getSchoolNameTokens } from '../../utils/school-name-tokens.js';
 
-// Grade mapping: CSV Module values -> system grade strings
+// Grade mapping: CSV Module values -> system grade strings.
+// Brand-prefixed variants (e.g. "RIS Pre-K3") are NOT listed here — those are
+// stripped dynamically by normalizeGrade() based on the tenant's schoolName,
+// so a school whose CSV exports "Acme Pre-K3" canonicalizes the same way
+// without us having to maintain a per-tenant table here.
 export const GRADE_MAP: Record<string, string> = {
-  'RIS Nursery': 'Nursery',
-  'RIS Pre-K3': 'Pre-K3',
-  'RIS Pre-K4': 'Pre-K4',
-  'RIS Kinder': 'Kindergarten',
+  Nursery: 'Nursery',
+  'Pre-K3': 'Pre-K3',
+  'Pre-K4': 'Pre-K4',
+  Kinder: 'Kindergarten',
   '1st Grade (1o Ano)': '1st Grade',
   '2nd Grade (2o Ano)': '2nd Grade',
   '3rd Grade (3o Ano)': '3rd Grade',
@@ -20,11 +25,38 @@ export const GRADE_MAP: Record<string, string> = {
   '12th Grade (3a Serie)': '12th Grade',
 };
 
+/**
+ * Map a raw module value (e.g. "RIS Pre-K3", "Acme Nursery", "Pre-K3") to a
+ * canonical grade string. Tries a direct GRADE_MAP lookup first; if that
+ * misses, strips a leading whitespace-separated word that matches one of the
+ * tenant's schoolName tokens (so "RIS Pre-K3" → "Pre-K3" when schoolName
+ * contains "RIS") and retries the lookup. Falls back to the raw value when
+ * no canonical mapping is known.
+ */
+export function normalizeGrade(rawValue: string, schoolName: string): string {
+  const value = rawValue?.trim() ?? '';
+  if (!value) return value;
+
+  if (GRADE_MAP[value]) return GRADE_MAP[value];
+
+  const firstSpace = value.indexOf(' ');
+  if (firstSpace > 0) {
+    const head = value.slice(0, firstSpace).toLowerCase();
+    const tail = value.slice(firstSpace + 1).trim();
+    if (tail && getSchoolNameTokens(schoolName).includes(head)) {
+      if (GRADE_MAP[tail]) return GRADE_MAP[tail];
+      return tail;
+    }
+  }
+
+  return value;
+}
+
 // Complete 96-column CSV-to-Prisma mapping based on dados_base.csv headers
 export const COLUMN_MAP: ColumnMapping[] = [
   // --- Enrollment Info (columns 0-2) ---
   { csvIndex: 0, csvHeaderEN: 'Course', csvHeaderPT: 'Curso', targetModel: 'LeadEnrollmentInfo', targetField: 'course', example: 'Pre-school / Pré Escola' },
-  { csvIndex: 1, csvHeaderEN: 'Module', csvHeaderPT: 'Módulo', targetModel: 'LeadEnrollmentInfo', targetField: 'module', transform: 'grade', example: 'RIS Pre-K3' },
+  { csvIndex: 1, csvHeaderEN: 'Module', csvHeaderPT: 'Módulo', targetModel: 'LeadEnrollmentInfo', targetField: 'module', transform: 'grade', example: 'Pre-K3' },
   { csvIndex: 2, csvHeaderEN: 'Class', csvHeaderPT: 'Turma', targetModel: 'LeadEnrollmentInfo', targetField: 'classGroup', example: 'Pre-K3 A' },
 
   // --- Student / LeadChild (column 3) ---
