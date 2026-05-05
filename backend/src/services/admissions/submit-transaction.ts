@@ -3,6 +3,7 @@ import { prisma } from '../../config/database.js';
 import type { PublicAdmissionData } from './index.js';
 import { assertSubmissionAllowed, normalizeStudentList } from './validators.js';
 import { applyLeadUpdate } from './lead-update.js';
+import { getOrCreateSettings } from '../settings.service.js';
 import {
   cleanupFormSubmittedEntities,
   createAddress,
@@ -40,6 +41,7 @@ async function runSubmissionWrites(
   tx: Tx,
   data: PublicAdmissionData,
   metadata: RequestMetadata | undefined,
+  schoolName: string,
 ): Promise<SubmissionTransactionResult> {
   const students = normalizeStudentList(data);
 
@@ -53,7 +55,7 @@ async function runSubmissionWrites(
 
   assertSubmissionAllowed(existingLead);
 
-  const lead = await applyLeadUpdate(tx, existingLead, data, students);
+  const lead = await applyLeadUpdate(tx, existingLead, data, students, schoolName);
 
   await cleanupFormSubmittedEntities(tx, lead.id);
 
@@ -88,8 +90,12 @@ export async function runSubmissionTransaction(
   data: PublicAdmissionData,
   metadata: RequestMetadata | undefined,
 ): Promise<SubmissionTransactionResult> {
+  // Read once outside the transaction — settings is small and per-tenant
+  // immutable for the request, so there's no value in including it in the tx.
+  const { schoolName } = await getOrCreateSettings();
+
   return prisma.$transaction(
-    (tx) => runSubmissionWrites(tx, data, metadata),
+    (tx) => runSubmissionWrites(tx, data, metadata, schoolName),
     TX_OPTIONS,
   );
 }
