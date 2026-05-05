@@ -87,7 +87,10 @@ export async function createUser(req: AuthenticatedRequest, res: Response) {
     const temporaryPassword = data.password || generateTemporaryPassword();
     const passwordHash = await hashPassword(temporaryPassword);
 
-    // Cria usuário
+    // Cria usuário no MESMO tenant do admin que está chamando este
+    // endpoint. Phase 1 — req.tenantId é setado pelo authenticate(); a
+    // ausência ali significa rota inacessível, então não tratamos null.
+    const tenantId = req.tenantId;
     const user = await prisma.user.create({
       data: {
         email: data.email.toLowerCase(),
@@ -99,6 +102,7 @@ export async function createUser(req: AuthenticatedRequest, res: Response) {
         passwordHash,
         emailVerified: true, // Marcado como verificado pois foi criado pelo admin
         requirePasswordChange: true, // Força troca de senha no primeiro login
+        tenantId,
       },
       include: { moduleAccess: true },
     });

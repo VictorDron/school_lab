@@ -40,11 +40,23 @@ export function initializeSocket(httpServer: HttpServer) {
       const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
       const user = await prisma.user.findUnique({
         where: { id: decoded.userId },
-        select: { id: true, email: true, displayName: true, status: true },
+        select: {
+          id: true,
+          email: true,
+          displayName: true,
+          status: true,
+          tenantId: true,
+          isPlatformAdmin: true,
+        },
       });
 
       if (!user || user.status !== 'ACTIVE') {
         return next(new Error('User not found or inactive'));
+      }
+
+      // Mirror the HTTP middleware's tenant-integrity check.
+      if (!user.isPlatformAdmin && decoded.tenantId !== user.tenantId) {
+        return next(new Error('Token tenant mismatch'));
       }
 
       socket.data.user = {
@@ -52,6 +64,7 @@ export function initializeSocket(httpServer: HttpServer) {
         email: user.email,
         displayName: user.displayName,
       };
+      socket.data.tenantId = user.tenantId;
 
       next();
     } catch (error) {

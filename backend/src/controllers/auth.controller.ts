@@ -99,6 +99,7 @@ export async function login(req: Request, res: Response) {
       userId: user.id,
       email: user.email,
       role: user.role,
+      tenantId: user.tenantId,
     });
 
     await createAuditLog({
@@ -135,9 +136,11 @@ export async function register(req: Request, res: Response) {
   try {
     const data = registerSchema.parse(req.body);
 
-    // Validate invite token
+    // Validate invite token. Pulls the inviter's tenantId so the newly
+    // created user lands in the same tenant as whoever invited them.
     const invite = await prisma.invite.findUnique({
       where: { token: data.token },
+      include: { inviter: { select: { tenantId: true } } },
     });
 
     if (!invite) {
@@ -185,6 +188,7 @@ export async function register(req: Request, res: Response) {
         dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : undefined,
         role: invite.role,
         status: 'PENDING',
+        tenantId: invite.inviter.tenantId,
       },
     });
 

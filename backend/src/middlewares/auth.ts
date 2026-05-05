@@ -46,13 +46,33 @@ export async function authenticate(
       });
     }
 
-    req.user = {
+    // Tenant integrity: the token's tenantId must match the user's current
+    // tenantId. Stops a copied/replayed token from a moved/reassigned user
+    // from carrying its old tenant context. Platform admins bypass this
+    // check — they intentionally cross-tenant.
+    if (!user.isPlatformAdmin && decoded.tenantId !== user.tenantId) {
+      logger.warn('Auth: token tenantId mismatch', {
+        userId: user.id,
+        tokenTenantId: decoded.tenantId,
+        userTenantId: user.tenantId,
+      });
+      return res.status(401).json({
+        success: false,
+        error: 'Token inválido (tenant mismatch)',
+      });
+    }
+
+    const authReq = req as AuthenticatedRequest;
+    authReq.tenantId = user.tenantId ?? undefined;
+    authReq.user = {
       id: user.id,
       email: user.email,
       displayName: user.displayName,
       fullName: user.fullName,
       role: user.role,
       status: user.status,
+      tenantId: user.tenantId,
+      isPlatformAdmin: user.isPlatformAdmin,
       moduleAccess: user.moduleAccess.map((ma) => ({
         module: ma.module,
         accessLevel: ma.accessLevel,

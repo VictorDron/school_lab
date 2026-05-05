@@ -3,15 +3,34 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
+// Phase 0 seed tenant id — matches the migration 20260505040000 backfill so
+// fresh `prisma migrate reset && db:seed` puts demo data on the same row
+// the migration would attach pre-existing rows to.
+const SEED_TENANT_ID = '00000000-0000-0000-0000-000000000001';
+
 async function main() {
   console.log('🌱 Starting seed...');
 
-  // Create system settings
-  const settings = await prisma.systemSettings.upsert({
-    where: { id: 'default' },
+  // Create the seed tenant first — every other entity needs a tenantId
+  // foreign key. Idempotent for re-runs.
+  const tenant = await prisma.tenant.upsert({
+    where: { id: SEED_TENANT_ID },
     update: {},
     create: {
-      id: 'default',
+      id: SEED_TENANT_ID,
+      slug: 'ics',
+      name: 'International Christian School of Rio de Janeiro',
+      status: 'ACTIVE',
+    },
+  });
+  console.log('✅ Seed tenant created:', tenant.slug);
+
+  // Create system settings
+  const settings = await prisma.systemSettings.upsert({
+    where: { tenantId: tenant.id },
+    update: {},
+    create: {
+      tenantId: tenant.id,
       schoolName: 'School Lab',
       defaultLanguage: 'pt',
       dateFormat: 'DD/MM/YYYY',
@@ -34,6 +53,7 @@ async function main() {
       role: 'ADMIN',
       status: 'ACTIVE',
       emailVerified: true,
+      tenantId: tenant.id,
     },
   });
   console.log('✅ Admin user created:', admin.email);
@@ -56,6 +76,8 @@ async function main() {
       role: 'ADMIN',
       status: 'ACTIVE',
       emailVerified: true,
+      isPlatformAdmin: true,
+      tenantId: tenant.id,
     },
   });
   console.log('✅ Master user created:', master.email);
@@ -78,6 +100,7 @@ async function main() {
       role: 'ADMIN',
       status: 'ACTIVE',
       emailVerified: true,
+      tenantId: tenant.id,
     },
   });
   console.log('✅ Admin user created:', bpellegrino.email);
@@ -192,6 +215,7 @@ async function main() {
         area: user.area,
         status: 'ACTIVE',
         emailVerified: true,
+        tenantId: tenant.id,
       },
     });
 
