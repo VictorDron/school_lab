@@ -616,6 +616,19 @@ model Tenant {
   tickets                  Ticket[]
   taskBoards               TaskBoard[]
   taskCards                TaskCard[]
+  // Phase 2g
+  purchaseRequests         PurchaseRequest[]
+  suppliers                Supplier[]
+  assets                   Asset[]
+  assetCategories          AssetCategory[]
+  assetLocations           AssetLocation[]
+  inventorySessions        InventorySession[]
+  documents                Document[]
+  notifications            Notification[]
+  auditLogs                AuditLog[]
+  calendarEvents           CalendarEvent[]
+  students                 Student[]
+  importHistory            ImportHistory[]
 
   @@index([slug])
 }
@@ -977,7 +990,9 @@ model TicketActivity {
 
 model PurchaseRequest {
   id            String           @id @default(uuid())
-  code          String           @unique
+  // Tenancy: per-tenant. `code` widens to (tenantId, code).
+  tenantId      String
+  code          String
   title         String
   department    String
   priority      PurchasePriority @default(NORMAL)
@@ -994,11 +1009,14 @@ model PurchaseRequest {
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
 
+  tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   creator         User             @relation("PurchaseCreator", fields: [createdById], references: [id], onDelete: Restrict)
   items           PurchaseItem[]
   approvalActions ApprovalAction[]
   purchaseOrder   PurchaseOrder?
 
+  @@unique([tenantId, code])
+  @@index([tenantId])
   @@index([code])
   @@index([status])
   @@index([department])
@@ -1060,6 +1078,8 @@ model PurchaseOrder {
 
 model Supplier {
   id        String   @id @default(uuid())
+  // Tenancy: per-tenant supplier roster.
+  tenantId  String
   name      String
   email     String?
   phone     String?
@@ -1070,8 +1090,10 @@ model Supplier {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   purchaseOrders PurchaseOrder[]
 
+  @@index([tenantId])
   @@index([name])
 }
 
@@ -1079,24 +1101,33 @@ model Supplier {
 
 model AssetCategory {
   id          String   @id @default(uuid())
-  name        String   @unique
+  // Tenancy: per-tenant asset categories. Name unique per tenant.
+  tenantId    String
+  name        String
   description String?
   icon        String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  tenant            Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   assets            Asset[]
   inventorySessions InventorySession[] @relation("InventoryCategory")
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
 }
 
 model AssetLocation {
   id          String   @id @default(uuid())
-  name        String   @unique
+  // Tenancy: per-tenant location tree. Name unique per tenant.
+  tenantId    String
+  name        String
   description String?
   parentId    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  tenant            Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   parent            AssetLocation?     @relation("LocationHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
   children          AssetLocation[]    @relation("LocationHierarchy")
   assets            Asset[]
@@ -1104,12 +1135,16 @@ model AssetLocation {
   movementsTo       AssetMovement[]    @relation("ToLocation")
   inventorySessions InventorySession[] @relation("InventoryLocation")
 
+  @@unique([tenantId, name])
+  @@index([tenantId])
   @@index([parentId])
 }
 
 model Asset {
   id               String      @id @default(uuid())
-  code             String      @unique
+  // Tenancy: per-tenant asset registry. `code` unique per tenant.
+  tenantId         String
+  code             String
   name             String
   description      String?
   categoryId       String
@@ -1133,6 +1168,7 @@ model Asset {
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 
+  tenant         Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   category       AssetCategory      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   location       AssetLocation      @relation(fields: [locationId], references: [id], onDelete: Restrict)
   responsible    User?              @relation("AssetResponsible", fields: [responsibleId], references: [id], onDelete: SetNull)
@@ -1142,6 +1178,8 @@ model Asset {
   maintenance    AssetMaintenance[]
   inventoryItems InventoryItem[]
 
+  @@unique([tenantId, code])
+  @@index([tenantId])
   @@index([code])
   @@index([status])
   @@index([categoryId])
@@ -1197,7 +1235,9 @@ model AssetMaintenance {
 
 model InventorySession {
   id            String                 @id @default(uuid())
-  code          String                 @unique
+  // Tenancy: per-tenant inventory check. `code` unique per tenant.
+  tenantId      String
+  code          String
   name          String
   description   String?
   status        InventorySessionStatus @default(DRAFT)
@@ -1214,12 +1254,15 @@ model InventorySession {
   createdAt     DateTime               @default(now())
   updatedAt     DateTime               @updatedAt
 
+  tenant      Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   startedBy   User            @relation(fields: [startedById], references: [id], onDelete: Restrict)
   completedBy User?           @relation("InventoryCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
   location    AssetLocation?  @relation("InventoryLocation", fields: [locationId], references: [id], onDelete: SetNull)
   category    AssetCategory?  @relation("InventoryCategory", fields: [categoryId], references: [id], onDelete: SetNull)
   items       InventoryItem[]
 
+  @@unique([tenantId, code])
+  @@index([tenantId])
   @@index([code])
   @@index([status])
   @@index([locationId])
@@ -2048,6 +2091,8 @@ model FormDraft {
 
 model Document {
   id            String                @id @default(uuid())
+  // Tenancy: per-tenant GED documents.
+  tenantId      String
   title         String
   description   String?
   fileName      String
@@ -2064,8 +2109,10 @@ model Document {
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
 
-  uploadedBy User @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+  tenant     Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  uploadedBy User   @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
 
+  @@index([tenantId])
   @@index([module])
   @@index([securityLevel])
   @@index([uploadedById])
@@ -2075,6 +2122,9 @@ model Document {
 
 model Notification {
   id        String    @id @default(uuid())
+  // Tenancy: denormalized from User. Each notification is for a single
+  // user, but admin-side aggregations need direct tenant scope.
+  tenantId  String
   userId    String
   type      String
   title     String
@@ -2084,8 +2134,10 @@ model Notification {
   readAt    DateTime?
   createdAt DateTime  @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([tenantId])
   @@index([userId])
   @@index([isRead])
   @@index([createdAt])
@@ -2095,6 +2147,10 @@ model Notification {
 
 model AuditLog {
   id         String      @id @default(uuid())
+  // Tenancy: per-tenant audit trail. Compliance-critical — every actor
+  // action lives in their tenant's audit; cross-tenant reads must be
+  // explicitly platform-admin scoped.
+  tenantId   String
   actorId    String?
   actorEmail String
   action     AuditAction
@@ -2105,8 +2161,10 @@ model AuditLog {
   metadata   Json?
   createdAt  DateTime    @default(now())
 
-  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  actor  User?  @relation(fields: [actorId], references: [id], onDelete: SetNull)
 
+  @@index([tenantId])
   @@index([actorId])
   @@index([action])
   @@index([entityType])
@@ -2362,6 +2420,8 @@ model TaskActivity {
 
 model CalendarEvent {
   id          String            @id @default(uuid())
+  // Tenancy: per-tenant calendar.
+  tenantId    String
   title       String
   description String?
   eventType   CalendarEventType @default(CUSTOM)
@@ -2383,12 +2443,14 @@ model CalendarEvent {
   recurrenceEndDate   DateTime?
   recurrenceParentId  String?
 
+  tenant       Tenant                     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   channel      Channel?                   @relation("ChannelCalEvents", fields: [channelId], references: [id], onDelete: SetNull)
   taskCard     TaskCard?                  @relation("TaskCalEvents", fields: [taskCardId], references: [id], onDelete: SetNull)
   creator      User                       @relation("CalEventCreator", fields: [createdById], references: [id], onDelete: Restrict)
   participants CalendarEventParticipant[]
   reminders    CalendarEventReminder[]
 
+  @@index([tenantId])
   @@index([startTime])
   @@index([endTime])
   @@index([channelId])
@@ -2751,7 +2813,9 @@ model ClickSignWebhookLog {
 // Manual migration: manual_add_student_models (AppModule enum + Student tables)
 model Student {
   id           String        @id @default(uuid())
-  code         String        @unique
+  // Tenancy: denormalized from Lead. `code` widens to (tenantId, code).
+  tenantId     String
+  code         String
   leadId       String
   // Manual migration: modify_contract_unique_and_student_child_for_renewal (leadChildId unique -> composite with academicYear)
   leadChildId  String
@@ -2773,6 +2837,7 @@ model Student {
   previousStudent   Student?  @relation("StudentProgression", fields: [previousStudentId], references: [id], onDelete: SetNull)
   nextStudents      Student[] @relation("StudentProgression")
 
+  tenant  Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   lead    Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
   child   LeadChild @relation(fields: [leadChildId], references: [id], onDelete: Cascade)
   history StudentHistory[]
@@ -2781,7 +2846,9 @@ model Student {
   familyPriceExceptions FamilyPriceException[]
   preReEnrollmentResponses PreReEnrollmentResponse[]
 
+  @@unique([tenantId, code])
   @@unique([leadChildId, academicYear])
+  @@index([tenantId])
   @@index([leadId])
   @@index([grade])
   @@index([academicYear])
@@ -2806,6 +2873,8 @@ model StudentHistory {
 // Migration: 20260331000000_add_import_history_and_enums (manual)
 model ImportHistory {
   id         String   @id @default(uuid())
+  // Tenancy: denormalized from User.
+  tenantId   String
   userId     String
   fileName   String
   fileSize   Int?
@@ -2820,8 +2889,10 @@ model ImportHistory {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
 
+  @@index([tenantId])
   @@index([userId])
   @@index([createdAt])
 }

@@ -206,6 +206,7 @@ export async function processImportInBackground(
 
           const newStudent = await tx.student.create({
             data: {
+              tenantId: lead.tenantId,
               code: studentCode,
               leadId: lead.id,
               leadChildId: leadChild.id,

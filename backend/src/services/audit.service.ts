@@ -1,9 +1,14 @@
 import { prisma } from '../config/database.js';
 import { AuditAction } from '@prisma/client';
 import { Request } from 'express';
+import { currentTenantId, DEFAULT_TENANT_ID_FALLBACK } from '../lib/audit-tenant.js';
 import logger from '../utils/logger.js';
 
 interface AuditLogData {
+  // Optional override — when set (e.g. from a login flow that already
+  // resolved the user), it wins over ALS context. Useful for events
+  // that fire before authenticate() establishes context.
+  tenantId?: string;
   actorId?: string;
   actorEmail: string;
   action: AuditAction;
@@ -14,8 +19,28 @@ interface AuditLogData {
 
 export async function createAuditLog(data: AuditLogData, req?: Request) {
   try {
+    // Resolution order:
+    //   1. explicit data.tenantId (caller knows)
+    //   2. ALS context (request has been auth'd)
+    //   3. derive from actorId user lookup
+    //   4. DEFAULT_TENANT_ID_FALLBACK — only safe in single-tenant
+    //      bootstrap; once multiple tenants exist, callers must pass
+    //      tenantId explicitly for pre-auth events.
+    let tenantId = data.tenantId ?? currentTenantId();
+    if (!tenantId && data.actorId) {
+      const u = await prisma.user.findUnique({
+        where: { id: data.actorId },
+        select: { tenantId: true },
+      });
+      tenantId = u?.tenantId ?? null;
+    }
+    if (!tenantId) {
+      tenantId = DEFAULT_TENANT_ID_FALLBACK;
+    }
+
     return await prisma.auditLog.create({
       data: {
+        tenantId,
         actorId: data.actorId,
         actorEmail: data.actorEmail,
         action: data.action,

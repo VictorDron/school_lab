@@ -18,6 +18,11 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 vi.mock('../config/database.js', () => ({
   prisma: {
+    lead: {
+      // Phase 2g: students-sync looks up Lead.tenantId before stamping
+      // Student.tenantId. Default to a test lead with tenantId set.
+      findUnique: vi.fn().mockResolvedValue({ tenantId: 'test-tenant-id' }),
+    },
     leadChild: {
       findMany: vi.fn(),
       update: vi.fn(),
@@ -35,6 +40,12 @@ vi.mock('../config/database.js', () => ({
       findFirst: vi.fn(),
     },
   },
+}));
+
+vi.mock('../lib/tenant-context.js', () => ({
+  requireTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  currentTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  runWithTenant: <T>(_id: string, fn: () => T) => fn(),
 }));
 
 vi.mock('../config/redis.js', () => ({

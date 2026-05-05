@@ -14,9 +14,19 @@ interface CreateNotificationParams {
 export async function createNotification(params: CreateNotificationParams) {
   const { userId, type, title, message, data, sendEmail = false } = params;
 
-  // Create notification in database
+  // Inherit tenantId from the recipient — every notification is for a
+  // specific user and must live in their tenant.
+  const recipient = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { tenantId: true },
+  });
+  if (!recipient) {
+    throw new Error('NOTIFICATION_USER_NOT_FOUND');
+  }
+
   const notification = await prisma.notification.create({
     data: {
+      tenantId: recipient.tenantId,
       userId,
       type,
       title,

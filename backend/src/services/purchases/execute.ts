@@ -1,5 +1,6 @@
 import QRCode from 'qrcode';
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import { uploadFile } from '../../config/supabase.js';
 import { generateCode } from '../../utils/helpers.js';
 import { createAuditLog } from '../audit.service.js';
@@ -67,6 +68,7 @@ export async function executePurchase(
 
         const asset = await prisma.asset.create({
           data: {
+            tenantId: requireTenantId(),
             code,
             name: purchaseItem.description,
             categoryId: item.assetCategoryId!,

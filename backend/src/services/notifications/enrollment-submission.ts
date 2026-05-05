@@ -33,18 +33,33 @@ export async function notifyAdminsOfEnrollmentSubmission(lead: Lead, studentName
       return;
     }
 
-    const notifications = crmUsers.map((access) => ({
-      userId: access.user.id,
-      type: 'ENROLLMENT_RECEIVED',
-      title: 'Nova matrícula recebida',
-      message: `A família ${lead.familyName} completou o formulário de matrícula de ${studentName}.`,
-      data: {
-        leadId: lead.id,
-        leadCode: lead.code,
-        familyName: lead.familyName,
-        studentName,
-      },
-    }));
+    // Stamp tenantId on each notification — same pattern as the
+    // admission-submission notifier (Phase 2g).
+    const recipients = await prisma.user.findMany({
+      where: { id: { in: crmUsers.map((u) => u.user.id) } },
+      select: { id: true, tenantId: true },
+    });
+    const tenantByUser = new Map(recipients.map((r) => [r.id, r.tenantId]));
+
+    const notifications = crmUsers
+      .map((access) => {
+        const tenantId = tenantByUser.get(access.user.id);
+        if (!tenantId) return null;
+        return {
+          tenantId,
+          userId: access.user.id,
+          type: 'ENROLLMENT_RECEIVED',
+          title: 'Nova matrícula recebida',
+          message: `A família ${lead.familyName} completou o formulário de matrícula de ${studentName}.`,
+          data: {
+            leadId: lead.id,
+            leadCode: lead.code,
+            familyName: lead.familyName,
+            studentName,
+          },
+        };
+      })
+      .filter((n): n is NonNullable<typeof n> => n !== null);
 
     await prisma.notification.createMany({
       data: notifications,

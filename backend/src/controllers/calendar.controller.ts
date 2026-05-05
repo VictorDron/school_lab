@@ -300,9 +300,13 @@ export async function createEvent(req: AuthenticatedRequest, res: Response) {
   try {
     const data = createEventSchema.parse(req.body);
     const userId = req.user!.id;
+    if (!req.tenantId) {
+      return res.status(401).json({ success: false, error: 'Tenant não resolvido' });
+    }
 
     const event = await prisma.calendarEvent.create({
       data: {
+        tenantId: req.tenantId,
         title: data.title,
         description: data.description,
         eventType: data.eventType,

@@ -1,4 +1,5 @@
 import { prisma } from '../config/database.js';
+import { requireTenantId } from '../lib/tenant-context.js';
 import { createAuditLog } from './audit.service.js';
 import logger from '../utils/logger.js';
 
@@ -102,6 +103,7 @@ export async function createSupplier(
 ) {
   const supplier = await prisma.supplier.create({
     data: {
+      tenantId: requireTenantId(),
       name: data.name,
       email: data.email,
       cnpj: data.cnpj,

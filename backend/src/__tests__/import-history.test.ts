@@ -15,6 +15,12 @@ vi.mock('../config/database.js', () => ({
   },
 }));
 
+vi.mock('../lib/tenant-context.js', () => ({
+  requireTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  currentTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  runWithTenant: <T>(_id: string, fn: () => T) => fn(),
+}));
+
 import {
   createImportHistory,
   updateImportHistory,

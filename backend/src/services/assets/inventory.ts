@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import { generateCode } from '../../utils/helpers.js';
 import { createAuditLog } from '../audit.service.js';
 import type { CheckInventoryItemData } from './types.js';
@@ -42,6 +43,7 @@ export async function createInventorySession(
 
   const session = await prisma.inventorySession.create({
     data: {
+      tenantId: requireTenantId(),
       code: generateCode('INV'),
       name: data.name,
       description: data.description,

@@ -1,5 +1,9 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
+// Tests don't load setup-env.ts before module imports kick in — set
+// the bare-minimum env vars here so config/index.ts doesn't throw.
+process.env.JWT_SECRET ??= 'test-jwt-secret';
+
 // Mock prisma
 vi.mock('../config/database.js', () => ({
   prisma: {
@@ -20,7 +24,11 @@ vi.mock('../config/database.js', () => ({
       findMany: vi.fn(),
     },
     lead: {
-      findUnique: vi.fn(),
+      // Phase 2g: createStudentsFromEnrollment now resolves Lead.tenantId
+      // before stamping each Student. Default to a present lead so the
+      // pre-2g test fixtures keep passing without needing to wire this
+      // up per-case.
+      findUnique: vi.fn().mockResolvedValue({ tenantId: 'test-tenant-id' }),
     },
     $transaction: vi.fn(),
   },
@@ -33,6 +41,12 @@ vi.mock('../utils/logger.js', () => ({
   default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
 
+vi.mock('../lib/tenant-context.js', () => ({
+  requireTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  currentTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  runWithTenant: <T>(_id: string, fn: () => T) => fn(),
+}));
+
 import { prisma } from '../config/database.js';
 import { createStudentsFromEnrollment } from '../services/students/index.js';
 
@@ -41,6 +55,10 @@ describe('createStudentsFromEnrollment (STU-01)', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // clearAllMocks wipes the default mockResolvedValue installed at
+    // mock-creation time; reinstall it so the Lead lookup keeps
+    // returning a tenantId for every test.
+    mockPrisma.lead.findUnique.mockResolvedValue({ tenantId: 'test-tenant-id' });
   });
 
   it('should create a Student record for each child where isApplicant is true', async () => {
@@ -187,8 +205,11 @@ describe('createStudentsFromEnrollment (STU-01)', () => {
 
     expect(capturedCreateCall).toHaveLength(1);
     const generatedCode: string = capturedCreateCall[0].data.code;
-    // generateCode('STU') produces STU-{timestamp36}{nanoid4} — nanoid can include A-Z0-9_ chars
-    expect(generatedCode).toMatch(/^STU-[A-Z0-9_]+$/);
+    // generateCode('STU') produces STU-{timestamp36}-{nanoid4} —
+    // hyphen-delimited segments. Pre-Phase-2g this code path was
+    // returning an empty array (Lead lookup wasn't there yet) so this
+    // assertion never actually fired; the regex was missing the hyphen.
+    expect(generatedCode).toMatch(/^STU-[A-Z0-9_-]+$/);
   });
 
   it('should set academicYear to the current year', async () => {

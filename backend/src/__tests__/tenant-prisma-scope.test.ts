@@ -32,6 +32,18 @@ function attachTenantScopeMiddleware(client: PrismaClient): void {
     'Ticket',
     'TaskBoard',
     'TaskCard',
+    'AuditLog',
+    'Notification',
+    'Document',
+    'ImportHistory',
+    'PurchaseRequest',
+    'Supplier',
+    'Asset',
+    'AssetCategory',
+    'AssetLocation',
+    'InventorySession',
+    'CalendarEvent',
+    'Student',
   ]);
   const SCOPED_READ_ACTIONS = new Set<Prisma.PrismaAction>([
     'findFirst',
@@ -332,6 +344,89 @@ describe('Prisma auto-scope middleware (Phase 2b)', () => {
       entityId: 'lead-1',
       tenantId: 'tenant-A',
     });
+  });
+
+  it('scopes AuditLog.findMany — compliance-critical (Phase 2g)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.auditLog.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes AuditLog.groupBy used by getAuditStats (Phase 2g)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() =>
+        client.auditLog.groupBy({ by: ['action'], _count: true }),
+      );
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes Notification.findMany (Phase 2g)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.notification.findMany({ where: { isRead: false } }));
+    });
+    expect(captured?.params.args.where).toMatchObject({
+      isRead: false,
+      tenantId: 'tenant-A',
+    });
+  });
+
+  it('scopes Asset / AssetCategory / AssetLocation findMany (Phase 2g)', async () => {
+    const captures: string[] = [];
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.asset.findMany());
+      captures.push((captured?.params.args.where as any).tenantId);
+      await runQuery(() => client.assetCategory.findMany());
+      captures.push((captured?.params.args.where as any).tenantId);
+      await runQuery(() => client.assetLocation.findMany());
+      captures.push((captured?.params.args.where as any).tenantId);
+    });
+    expect(captures).toEqual(['tenant-A', 'tenant-A', 'tenant-A']);
+  });
+
+  it('scopes Supplier.findMany (Phase 2g)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.supplier.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes PurchaseRequest.findMany (Phase 2g)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.purchaseRequest.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes Document.findMany (Phase 2g)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.document.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes Student.findMany — PII-critical (Phase 2g)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.student.findMany({ where: { status: 'ACTIVE' } }));
+    });
+    expect(captured?.params.args.where).toMatchObject({
+      status: 'ACTIVE',
+      tenantId: 'tenant-A',
+    });
+  });
+
+  it('scopes CalendarEvent / InventorySession / ImportHistory findMany (Phase 2g)', async () => {
+    const captures: string[] = [];
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.calendarEvent.findMany());
+      captures.push((captured?.params.args.where as any).tenantId);
+      await runQuery(() => client.inventorySession.findMany());
+      captures.push((captured?.params.args.where as any).tenantId);
+      await runQuery(() => client.importHistory.findMany());
+      captures.push((captured?.params.args.where as any).tenantId);
+    });
+    expect(captures).toEqual(['tenant-A', 'tenant-A', 'tenant-A']);
   });
 
   it('parallel runs scope correctly to their own tenant', async () => {

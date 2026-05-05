@@ -103,6 +103,17 @@ export async function createStudentsFromEnrollment(
   leadId: string,
   actorId?: string,
 ) {
+  // Look up the Lead's tenantId once so each Student inherits the right
+  // tenant. Auto-scope on Lead means a wrong-tenant leadId returns null.
+  const lead = await prisma.lead.findUnique({
+    where: { id: leadId },
+    select: { tenantId: true },
+  });
+  if (!lead) {
+    logger.warn('createStudentsFromEnrollment: lead not found', { leadId });
+    return [];
+  }
+
   const applicantChildren = await prisma.leadChild.findMany({
     where: { leadId, isApplicant: true },
   });
@@ -131,6 +142,7 @@ export async function createStudentsFromEnrollment(
 
       student = await prisma.student.create({
         data: {
+          tenantId: lead.tenantId,
           code: generateCode('STU'),
           leadId,
           leadChildId: child.id,
@@ -223,8 +235,19 @@ export async function createStudentFromReEnrollment(
     nextGrade && VALID_GRADES.has(nextGrade) ? nextGrade : currentStudent.grade;
   const previousGrade = currentStudent.grade;
 
+  // Look up the Lead's tenantId — auto-scope on Lead protects against
+  // cross-tenant leadId injection.
+  const lead = await prisma.lead.findUnique({
+    where: { id: currentStudent.leadId },
+    select: { tenantId: true },
+  });
+  if (!lead) {
+    throw new Error('LEAD_NOT_FOUND');
+  }
+
   const promoted = await prisma.student.create({
     data: {
+      tenantId: lead.tenantId,
       code: generateCode('STU'),
       leadId: currentStudent.leadId,
       leadChildId: currentStudent.leadChildId,

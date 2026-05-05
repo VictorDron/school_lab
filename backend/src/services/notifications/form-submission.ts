@@ -33,18 +33,35 @@ export async function notifyAdminsOfFormSubmission(lead: Lead, studentName: stri
       return;
     }
 
-    const notifications = crmUsers.map((access) => ({
-      userId: access.user.id,
-      type: 'FORM_RECEIVED',
-      title: 'Nova inscrição recebida',
-      message: `A família ${lead.familyName} enviou o formulário de inscrição para ${studentName}.`,
-      data: {
-        leadId: lead.id,
-        leadCode: lead.code,
-        familyName: lead.familyName,
-        studentName,
-      },
-    }));
+    // Each notification stamps the recipient's tenantId. crmUsers comes
+    // from a tenant-scoped moduleAccess query so they're already in the
+    // current tenant; carrying their tenantId explicitly makes the bulk
+    // insert valid under the new NOT NULL constraint.
+    const recipients = await prisma.user.findMany({
+      where: { id: { in: crmUsers.map((u) => u.user.id) } },
+      select: { id: true, tenantId: true },
+    });
+    const tenantByUser = new Map(recipients.map((r) => [r.id, r.tenantId]));
+
+    const notifications = crmUsers
+      .map((access) => {
+        const tenantId = tenantByUser.get(access.user.id);
+        if (!tenantId) return null;
+        return {
+          tenantId,
+          userId: access.user.id,
+          type: 'FORM_RECEIVED',
+          title: 'Nova inscrição recebida',
+          message: `A família ${lead.familyName} enviou o formulário de inscrição para ${studentName}.`,
+          data: {
+            leadId: lead.id,
+            leadCode: lead.code,
+            familyName: lead.familyName,
+            studentName,
+          },
+        };
+      })
+      .filter((n): n is NonNullable<typeof n> => n !== null);
 
     await prisma.notification.createMany({
       data: notifications,

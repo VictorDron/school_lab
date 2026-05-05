@@ -1,4 +1,5 @@
 import { prisma } from '../config/database.js';
+import { requireTenantId } from '../lib/tenant-context.js';
 import { uploadFile, deleteFile } from '../config/supabase.js';
 import { createAuditLog } from './audit.service.js';
 import { DocumentSecurityLevel, AppModule } from '@prisma/client';
@@ -175,6 +176,7 @@ export async function uploadDocument(
 
   const document = await prisma.document.create({
     data: {
+      tenantId: requireTenantId(),
       title: body.title || aiAnalysis?.title || file.originalname,
       description: body.description || aiAnalysis?.description,
       fileName: file.originalname,

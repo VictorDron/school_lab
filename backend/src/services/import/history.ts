@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import type { RowError } from '../../types/import.types.js';
 
 export async function createImportHistory(data: {
@@ -9,6 +10,7 @@ export async function createImportHistory(data: {
 }) {
   return prisma.importHistory.create({
     data: {
+      tenantId: requireTenantId(),
       userId: data.userId,
       fileName: data.fileName,
       fileSize: data.fileSize,

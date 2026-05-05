@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import { generateCode } from '../../utils/helpers.js';
 import { createAuditLog } from '../audit.service.js';
 import type {
@@ -69,6 +70,7 @@ export async function createPurchase(data: CreatePurchaseData, userId: string, u
 
   const purchase = await prisma.purchaseRequest.create({
     data: {
+      tenantId: requireTenantId(),
       code: generateCode('REQ'),
       title: data.title,
       department: data.department,

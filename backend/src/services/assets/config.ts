@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import { createAuditLog } from '../audit.service.js';
 
 interface CategoryUpsertData {
@@ -25,7 +26,7 @@ export async function createCategory(
   userEmail: string,
 ) {
   const category = await prisma.assetCategory.create({
-    data: { name: data.name, description: data.description, icon: data.icon },
+    data: { tenantId: requireTenantId(), name: data.name, description: data.description, icon: data.icon },
   });
 
   await createAuditLog({
@@ -106,7 +107,7 @@ export async function createLocation(
   userEmail: string,
 ) {
   const location = await prisma.assetLocation.create({
-    data: { name: data.name, description: data.description, parentId: data.parentId },
+    data: { tenantId: requireTenantId(), name: data.name, description: data.description, parentId: data.parentId },
     include: { parent: true },
   });
 
