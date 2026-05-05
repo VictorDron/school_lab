@@ -124,3 +124,40 @@ export const preReEnrollmentTokenResolver: TenantResolver = async (req) => {
   });
   return response?.tenantId ?? null;
 };
+
+/**
+ * Phase 3b: subdomain → Tenant.id. Looks at the leftmost label of
+ * req.hostname (e.g. "acme.school-lab.com.br" → "acme"). Returns null
+ * for hostnames that are obviously not subdomain-formatted (localhost,
+ * single-label hosts) or for reserved labels (www/api/app), so the
+ * next resolver in the chain gets a chance.
+ */
+const SUBDOMAIN_BYPASS = new Set(['localhost', 'www', 'api', 'app']);
+
+export const subdomainTenantResolver: TenantResolver = async (req) => {
+  const host = (req.hostname || '').toLowerCase();
+  if (!host || !host.includes('.')) return null;
+  const slug = host.split('.')[0];
+  if (!slug || SUBDOMAIN_BYPASS.has(slug)) return null;
+  if (!/^[a-z0-9](?:[a-z0-9-]{0,30}[a-z0-9])?$/.test(slug)) return null;
+  const tenant = await prisma.tenant.findUnique({
+    where: { slug },
+    select: { id: true },
+  });
+  return tenant?.id ?? null;
+};
+
+/**
+ * Compose resolvers — try each in order, first non-null wins. Useful
+ * for "token first, then subdomain" so an existing entity always wins,
+ * but a fresh POST /admissions resolves via subdomain.
+ */
+export function composeResolvers(...resolvers: TenantResolver[]): TenantResolver {
+  return async (req) => {
+    for (const r of resolvers) {
+      const id = await r(req);
+      if (id) return id;
+    }
+    return null;
+  };
+}

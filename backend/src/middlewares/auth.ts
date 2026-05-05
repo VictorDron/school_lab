@@ -112,6 +112,23 @@ export async function authenticate(
   }
 }
 
+/**
+ * Phase 3b: gate platform-admin endpoints. Must be used AFTER
+ * authenticate(). Only users with isPlatformAdmin = true can pass.
+ * Cross-tenant ops (creating tenants, listing all tenants, etc.) live
+ * behind this gate.
+ */
+export function requirePlatformAdmin(req: Request, res: Response, next: NextFunction) {
+  const u = (req as AuthenticatedRequest).user;
+  if (!u) {
+    return res.status(401).json({ success: false, error: 'Não autenticado' });
+  }
+  if (!u.isPlatformAdmin) {
+    return res.status(403).json({ success: false, error: 'Acesso restrito a platform admins' });
+  }
+  return next();
+}
+
 export function requireRole(...roles: UserRole[]) {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {

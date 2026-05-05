@@ -8,6 +8,8 @@ import {
   enrollmentTokenResolver,
   reEnrollmentInviteTokenResolver,
   preReEnrollmentTokenResolver,
+  subdomainTenantResolver,
+  composeResolvers,
 } from '../middlewares/public-tenant.js';
 
 // Re-export schemas for backward compatibility (barrel pattern)
@@ -21,9 +23,17 @@ export { validateMagicBytes } from '../middlewares/upload.js';
 // to land on the default tenant — Phase 3b will replace that with
 // subdomain-based routing.
 const requireApplicationTenant = withTenantFromToken(applicationTokenResolver, { onMissing: 'reject' });
-const fallbackApplicationTenant = withTenantFromToken(applicationTokenResolver, { onMissing: 'fallback' });
+// New /admissions POST: try the body token first (update path), then
+// subdomain (new submission via tenant subdomain), then default.
+const fallbackApplicationTenant = withTenantFromToken(
+  composeResolvers(applicationTokenResolver, subdomainTenantResolver),
+  { onMissing: 'fallback' },
+);
 const requireEnrollmentTenant = withTenantFromToken(enrollmentTokenResolver, { onMissing: 'reject' });
-const fallbackEnrollmentTenant = withTenantFromToken(enrollmentTokenResolver, { onMissing: 'fallback' });
+const fallbackEnrollmentTenant = withTenantFromToken(
+  composeResolvers(enrollmentTokenResolver, subdomainTenantResolver),
+  { onMissing: 'fallback' },
+);
 const requireReEnrollmentTenant = withTenantFromToken(reEnrollmentInviteTokenResolver, { onMissing: 'reject' });
 const requirePreReEnrollmentTenant = withTenantFromToken(preReEnrollmentTokenResolver, { onMissing: 'reject' });
 

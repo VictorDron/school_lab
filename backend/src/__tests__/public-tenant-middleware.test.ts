@@ -23,6 +23,8 @@ import {
   enrollmentTokenResolver,
   reEnrollmentInviteTokenResolver,
   preReEnrollmentTokenResolver,
+  subdomainTenantResolver,
+  composeResolvers,
 } from '../middlewares/public-tenant.js';
 
 function makeReq(overrides: any = {}): any {
@@ -162,5 +164,62 @@ describe('preReEnrollmentTokenResolver', () => {
     prismaMock.preReEnrollmentResponse.findUnique.mockResolvedValue({ tenantId: 'tenant-W' });
     const id = await preReEnrollmentTokenResolver(makeReq({ params: { token: 'pre-1' } }));
     expect(id).toBe('tenant-W');
+  });
+});
+
+describe('subdomainTenantResolver (Phase 3b)', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('resolves Tenant.id from the leftmost hostname label', async () => {
+    prismaMock.tenant.findUnique.mockResolvedValue({ id: 'tenant-acme' });
+    const id = await subdomainTenantResolver(makeReq({ hostname: 'acme.school-lab.com.br' }));
+    expect(id).toBe('tenant-acme');
+    expect(prismaMock.tenant.findUnique).toHaveBeenCalledWith({
+      where: { slug: 'acme' },
+      select: { id: true },
+    });
+  });
+
+  it('returns null for localhost / single-label hosts (dev case)', async () => {
+    expect(await subdomainTenantResolver(makeReq({ hostname: 'localhost' }))).toBeNull();
+    expect(await subdomainTenantResolver(makeReq({ hostname: 'api' }))).toBeNull();
+    expect(prismaMock.tenant.findUnique).not.toHaveBeenCalled();
+  });
+
+  it('returns null for reserved labels (www / api / app)', async () => {
+    expect(await subdomainTenantResolver(makeReq({ hostname: 'www.school-lab.com.br' }))).toBeNull();
+    expect(await subdomainTenantResolver(makeReq({ hostname: 'api.school-lab.com.br' }))).toBeNull();
+    expect(await subdomainTenantResolver(makeReq({ hostname: 'app.school-lab.com.br' }))).toBeNull();
+  });
+
+  it('returns null when the slug looks like a slug but no Tenant matches', async () => {
+    prismaMock.tenant.findUnique.mockResolvedValue(null);
+    const id = await subdomainTenantResolver(makeReq({ hostname: 'unknown.school-lab.com.br' }));
+    expect(id).toBeNull();
+  });
+});
+
+describe('composeResolvers (Phase 3b)', () => {
+  it('returns the first resolver value when it succeeds', async () => {
+    const a = vi.fn().mockResolvedValue('A');
+    const b = vi.fn().mockResolvedValue('B');
+    const composed = composeResolvers(a, b);
+    expect(await composed(makeReq())).toBe('A');
+    expect(b).not.toHaveBeenCalled();
+  });
+
+  it('falls back to the next resolver when the first returns null', async () => {
+    const a = vi.fn().mockResolvedValue(null);
+    const b = vi.fn().mockResolvedValue('B');
+    const composed = composeResolvers(a, b);
+    expect(await composed(makeReq())).toBe('B');
+  });
+
+  it('returns null when every resolver returns null', async () => {
+    const composed = composeResolvers(
+      vi.fn().mockResolvedValue(null),
+      vi.fn().mockResolvedValue(null),
+    );
+    expect(await composed(makeReq())).toBeNull();
   });
 });
