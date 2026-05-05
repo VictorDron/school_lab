@@ -4,6 +4,8 @@ import {
   ContractTemplateData,
   FEE_TABLE,
   FOOD_TABLE,
+  OperatorEntity,
+  buildContractContratadaParagraph,
 } from '../../../templates/contract-template.js';
 import { PdfRenderContext } from '../../../types/contract.types.js';
 import {
@@ -68,13 +70,15 @@ export async function renderContractPdf(args: RenderContractPdfArgs): Promise<Bu
     lineHeight: 15,
   };
 
+  const operator = templateData.operator;
+
   await renderHeader(ctx, templateData);
   renderParties(ctx, templateData);
-  renderClause1(ctx);
-  renderClause2(ctx);
+  renderClause1(ctx, operator);
+  renderClause2(ctx, operator);
   renderClause3(ctx, templateData, pdfFeeTable, pdfFoodTable, gradeLevels, negotiated);
   renderClause4(ctx);
-  renderClause5(ctx);
+  renderClause5(ctx, operator);
   renderSignaturesAndFooter(ctx, templateData, witnesses, contractCode);
 
   const pdfBytes = await pdfDoc.save();
@@ -184,11 +188,12 @@ function renderParties(ctx: PdfRenderContext, templateData: ContractTemplateData
   drawLine(ctx, 'DAS PARTES', 12, true);
   ctx.y -= 4;
 
-  drawLabeledParagraph(
-    ctx,
-    '1. ',
-    `International Christian School of Rio de Janeiro (ICS), inscrita no CNPJ sob o nº 03.555.214/0001-12, neste ato representada por seu Presidente, Sra. Camila Loureiro de Oliveira, com sede na cidade do Rio de Janeiro, na Av. Prefeito Dulcídio Cardoso, n° 4351, Barra da Tijuca, CEP 22793-011, que fornecerá os serviços educacionais, doravante denominada CONTRATADA;`,
-  );
+  // The HTML helper returns markup wrapped in <strong>; strip those tags
+  // because pdf-lib renders plain text. The structural CONTRATADA suffix
+  // is rebuilt as plain text here.
+  const contratada = buildContractContratadaParagraph(templateData.operator)
+    .replace(/<\/?strong>/g, '');
+  drawLabeledParagraph(ctx, '1. ', contratada);
   ctx.y -= 4;
 
   drawLine(ctx, '2. CONTRATANTE (RESPONSÁVEL FINANCEIRO)', 11, true);
@@ -245,34 +250,46 @@ function renderClauseList(ctx: PdfRenderContext, title: string, items: string[])
   }
 }
 
-const CLAUSE_1_ITEMS = [
-  '1.1 Nos termos dos artigos 5º, inciso II, 173, §4º, 206, incisos II e III, e 209, todos da Constituição Federal; do artigo 389, do Código Civil; do Código de Defesa do Consumidor; do Estatuto da Criança e do Adolescente; e da Lei nº 9.870/99; e do Regimento Interno da International Christian School of Rio de Janeiro: a CONTRATADA se compromete a prestar, durante o ANO LETIVO, serviços educacionais ao(à) ALUNO(A), correspondentes à série ou ao período do curso indicado como "Ano / Série" no Cabeçalho do presente instrumento.',
-  '1.2 É obrigação da CONTRATADA oferecer instalações adequadas, equipamentos e material de uso coletivo para o bom desempenho das atividades educacionais, conforme os termos do presente instrumento e do seu Regimento Interno que, assim como documento "Application for Admission", constitui parte integrante e indissolúvel deste contrato.',
-  '1.3 As aulas serão ministradas na sede da CONTRATADA ou em locais que a escola indicar, tendo em vista a natureza dos conteúdos disponibilizados e ministrados, assim como das técnicas pedagógicas que se fizerem necessárias.',
-  '1.4 É de exclusiva competência e responsabilidade da CONTRATATA a orientação e aplicação técnica e pedagógica inerente à prestação dos serviços educacionais, bem como a definição, implementação e exercício das atribuições, dos poderes e dos procedimentos educacionais, acadêmicos e disciplinares dentro das dependências da CONTRATADA ou no âmbito das atividades relacionadas aos serviços prestados.',
-  '1.5 A critério da CONTRATADA, poderá ocorrer a extinção ou o agrupamento de turmas, com a devida adequação dos horários de aula ou do calendário escolar para a melhor conveniência da comunidade escolar, bem como outras medidas que se tornem necessárias por razões de ordem pedagógica, administrativa ou econômico-financeira.',
-  '1.6 A CONTRATADA poderá disponibilizar ao(à) ALUNO(A) aulas extracurriculares, especiais e facultativas, podendo ser realizadas fora de sua sede ou via internet, que poderão ser cobradas adicionalmente aos valores do presente Contrato.',
-  '1.7 O(s) CONTRATANTE(S) compromete(m)-se a manter atualizada toda a documentação com informações sobre o(a) ALUNO(A) e sobre o(s) CONTRATANTE(S), incluindo, mas não limitando-se: os dados cadastrais do(a) ALUNO(A) e de seus responsáveis em plataformas e sistemas da CONTRATADA; aos formulários com informações acerca da saúde do(a) ALUNO(A); telefone e endereço eletrônico (e-mail) para contato do(s) CONTRATANTE(S), dos responsáveis acadêmicos e financeiros do aluno; e demais documentos que vierem a ser requeridos, confirmando e atestando a veracidade das informações repassadas;',
-  '1.8 As partes se comprometem a observar as disposições do Regimento Interno da International Christian School of Rio de Janeiro, desde o momento da matrícula - documento que é mantido à disposição do(s) CONTRATANTE(S) e cujas determinações são parte integrante do presente Contrato, incluindo no que se refere à sua aplicação subsidiária em casos omissos ao presente instrumento, sendo certo que o dito Regimento poderá ser modificado unilateralmente pela CONTRATADA a qualquer tempo.',
-  '1.9 O(s) CONTRATANTE(S) se comprometem a ressarcir a CONTRATADA dos danos e prejuízos que eventualmente vierem a ser causados pelo(a) ALUNO(A) ou ainda pelo(s) próprio(s) CONTRATATNTE(S) ou por pessoas sob sua responsabilidade, propositalmente ou não, ao patrimônio da escola;',
-  '1.10 O(s) CONTRATANTE(S) se comprometem a fazer com que o(a) ALUNO(A) frequente a International Christian School of Rio de Janeiro devidamente uniformizado e observando os horários de entrada e saída definidos pela CONTRATADA, em conformidade com os padrões e requerimentos determinados pela International Christian School of Rio de Janeiro e dos termos e requisitos do seu Regimento Interno, sob pena de cobrança de multas e valores adicionais em caso de permanência do aluno antes ou após o horário especificado, ou ainda do(a) ALUNO(A) não poder participar das atividades escolares, caso em que não haverá qualquer ressarcimento, nem poderá vir a configurar qualquer forma de descumprimento contratual por parte da CONTRATADA.',
-  '1.11 Excepcionalmente, por motivos alheios à vontade da International Christian School of Rio de Janeiro, que caracterizem eventos de força maior, as aulas poderão ser, integral ou parcialmente, ministradas sob a forma não presencial, ou seja, via internet (online). Nesses casos, caso ocorram, a CONTRATADA não estará obrigada a conceder quaisquer desconto ou abatimentos no valor das parcelas da anuidade escolar relativas ao período em que as aulas forem ministradas remotamente.',
-];
-
-function renderClause1(ctx: PdfRenderContext): void {
-  renderClauseList(ctx, 'CLÁUSULA 1ª - DO OBJETO E NATUREZA DO CONTRATO', CLAUSE_1_ITEMS);
+function clause1Items(operator: OperatorEntity): string[] {
+  const school = operator.schoolName;
+  return [
+    `1.1 Nos termos dos artigos 5º, inciso II, 173, §4º, 206, incisos II e III, e 209, todos da Constituição Federal; do artigo 389, do Código Civil; do Código de Defesa do Consumidor; do Estatuto da Criança e do Adolescente; e da Lei nº 9.870/99; e do Regimento Interno da ${school}: a CONTRATADA se compromete a prestar, durante o ANO LETIVO, serviços educacionais ao(à) ALUNO(A), correspondentes à série ou ao período do curso indicado como "Ano / Série" no Cabeçalho do presente instrumento.`,
+    '1.2 É obrigação da CONTRATADA oferecer instalações adequadas, equipamentos e material de uso coletivo para o bom desempenho das atividades educacionais, conforme os termos do presente instrumento e do seu Regimento Interno que, assim como documento "Application for Admission", constitui parte integrante e indissolúvel deste contrato.',
+    '1.3 As aulas serão ministradas na sede da CONTRATADA ou em locais que a escola indicar, tendo em vista a natureza dos conteúdos disponibilizados e ministrados, assim como das técnicas pedagógicas que se fizerem necessárias.',
+    '1.4 É de exclusiva competência e responsabilidade da CONTRATATA a orientação e aplicação técnica e pedagógica inerente à prestação dos serviços educacionais, bem como a definição, implementação e exercício das atribuições, dos poderes e dos procedimentos educacionais, acadêmicos e disciplinares dentro das dependências da CONTRATADA ou no âmbito das atividades relacionadas aos serviços prestados.',
+    '1.5 A critério da CONTRATADA, poderá ocorrer a extinção ou o agrupamento de turmas, com a devida adequação dos horários de aula ou do calendário escolar para a melhor conveniência da comunidade escolar, bem como outras medidas que se tornem necessárias por razões de ordem pedagógica, administrativa ou econômico-financeira.',
+    '1.6 A CONTRATADA poderá disponibilizar ao(à) ALUNO(A) aulas extracurriculares, especiais e facultativas, podendo ser realizadas fora de sua sede ou via internet, que poderão ser cobradas adicionalmente aos valores do presente Contrato.',
+    '1.7 O(s) CONTRATANTE(S) compromete(m)-se a manter atualizada toda a documentação com informações sobre o(a) ALUNO(A) e sobre o(s) CONTRATANTE(S), incluindo, mas não limitando-se: os dados cadastrais do(a) ALUNO(A) e de seus responsáveis em plataformas e sistemas da CONTRATADA; aos formulários com informações acerca da saúde do(a) ALUNO(A); telefone e endereço eletrônico (e-mail) para contato do(s) CONTRATANTE(S), dos responsáveis acadêmicos e financeiros do aluno; e demais documentos que vierem a ser requeridos, confirmando e atestando a veracidade das informações repassadas;',
+    `1.8 As partes se comprometem a observar as disposições do Regimento Interno da ${school}, desde o momento da matrícula - documento que é mantido à disposição do(s) CONTRATANTE(S) e cujas determinações são parte integrante do presente Contrato, incluindo no que se refere à sua aplicação subsidiária em casos omissos ao presente instrumento, sendo certo que o dito Regimento poderá ser modificado unilateralmente pela CONTRATADA a qualquer tempo.`,
+    '1.9 O(s) CONTRATANTE(S) se comprometem a ressarcir a CONTRATADA dos danos e prejuízos que eventualmente vierem a ser causados pelo(a) ALUNO(A) ou ainda pelo(s) próprio(s) CONTRATATNTE(S) ou por pessoas sob sua responsabilidade, propositalmente ou não, ao patrimônio da escola;',
+    `1.10 O(s) CONTRATANTE(S) se comprometem a fazer com que o(a) ALUNO(A) frequente a ${school} devidamente uniformizado e observando os horários de entrada e saída definidos pela CONTRATADA, em conformidade com os padrões e requerimentos determinados pela ${school} e dos termos e requisitos do seu Regimento Interno, sob pena de cobrança de multas e valores adicionais em caso de permanência do aluno antes ou após o horário especificado, ou ainda do(a) ALUNO(A) não poder participar das atividades escolares, caso em que não haverá qualquer ressarcimento, nem poderá vir a configurar qualquer forma de descumprimento contratual por parte da CONTRATADA.`,
+    `1.11 Excepcionalmente, por motivos alheios à vontade da ${school}, que caracterizem eventos de força maior, as aulas poderão ser, integral ou parcialmente, ministradas sob a forma não presencial, ou seja, via internet (online). Nesses casos, caso ocorram, a CONTRATADA não estará obrigada a conceder quaisquer desconto ou abatimentos no valor das parcelas da anuidade escolar relativas ao período em que as aulas forem ministradas remotamente.`,
+  ];
 }
 
-const CLAUSE_2_ITEMS = [
-  '2.1 O presente Contrato terá duração até o final do ANO LETIVO contratado e não será renovado automaticamente, devendo o(s) CONTRATANTE(S) solicitar(em) a renovação da matrícula do(a) ALUNO(A) para o ano letivo subsequente, pelos meios que vierem a ser estabelecidos pela CONTRATADA, até a data a ser informada pela International Christian School of Rio de Janeiro.',
-  'Parágrafo Único. Ambas as partes, a seu exclusivo critério, se reservam no direito de não renovar, unilateralmente, o presente contrato após o término do ANO LETIVO para o período letivo subsequente, fato de ciência e aceite tanto pelo(s) CONTRATANTE(S), quanto pela CONTRATADA. A CONTRATADA também poderá, a seu exclusivo critério, não renovar termos comerciais relacionados a descontos, bolsas de estudo, permutas ou outras condições excepcionais, caso existam no período letivo em curso, assim como poderá atualizar os preços conforme julgar necessário e entender ser suficiente ao equilíbrio econômico-financeiro na continuidade da prestação de serviços educacionais.',
-  '2.2 O valor correspondente à entrada, discorrido na cláusula 3.3, assim como o valor de reembolso de alimentação para cobertura de custos da nutrição do(a) ALUNO(A), prevista no parágrafo primeiro da cláusula 3.7, bem como os valores correspondentes aos encargos de capital ("Capital Fee") que houverem sido pagos anteriormente pelo(s) CONTRATANTE(S) até 31 de dezembro de 2021, como disposto nos parágrafos quarto e quinto da cláusula 3.8, e o montante pago a título de taxa de material pedagógico internacional anual, descrito no caput da cláusula 3.8, não são passíveis de devolução, restituição, ressarcimento ou reembolso, no todo ou em parte, sob qualquer alegação ou justificativa, no caso de não renovação do presente contrato ou em virtude de interrupção na prestação de serviços educacionais no período letivo em curso, por decisão unilateral do(s) CONTRATANTE(S).',
-  '2.3 O presente Contrato poderá ser rescindido antes do término do ANO LETIVO, nas hipóteses descritas a seguir: 1. por iniciativa da CONTRATADA: por motivo disciplinar previsto no Regimento Interno da International Christian School of Rio de Janeiro; ou ainda por incompatibilidade, promoção de desarmonia, ou recusa de conformidade pelo(a) ALUNO(A) e/ou pelos(s) CONTRATANTE(S) para com as normas, regimentos, decisões educacionais ou administrativas, linha de ensino ou filosofia pedagógica do estabelecimento de ensino. 2. por iniciativa do(s) CONTRATANTE(S): por decisão quanto à transferência unilateral do(a) ALUNO(A) para outra instituição de ensino, ou de cancelamento da matrícula, que devem ser requeridos por escrito com antecedência de 30 (trinta) dias, mediante preenchimento de documento próprio no formato que vier a ser especificado pela International Christian School of Rio de Janeiro.',
-  '2.4 Em qualquer caso de rescisão, o(s) CONTRATANTE(S) deverá(ão) estar em dia com suas obrigações financeiras até o mês da efetiva execução da rescisão, inclusive. Caso o(s) CONTRATANTE(S) já tenha(m) eventualmente efetuado o pagamento antecipado parcial ou integral da anuidade escolar, ou ainda de adiantamento de parcelas vincendas, ensejará(ão) direito à restituição do saldo porventura existente, com vencimento de até 60 (sessenta) dias corridos contados a partir da data da solicitação da rescisão e após descontados os valores das parcelas vencidas e demais valores eventualmente devidos até a efetivação da rescisão contratual.',
-];
+function renderClause1(ctx: PdfRenderContext, operator: OperatorEntity): void {
+  renderClauseList(ctx, 'CLÁUSULA 1ª - DO OBJETO E NATUREZA DO CONTRATO', clause1Items(operator));
+}
 
-function renderClause2(ctx: PdfRenderContext): void {
-  renderClauseList(ctx, 'CLÁUSULA 2ª - DA DURAÇÃO DO CONTRATO', CLAUSE_2_ITEMS);
+function clause2Items(operator: OperatorEntity): string[] {
+  const school = operator.schoolName;
+  // The cross-reference to clause 3.8 only makes sense when 3.8 is actually
+  // rendered; otherwise we drop the "taxa material pedagógico internacional"
+  // fragment so 2.2 doesn't dangle a reference into nothing.
+  const materialFeeRef = operator.internationalMaterialFee != null
+    ? ', e o montante pago a título de taxa de material pedagógico internacional anual, descrito no caput da cláusula 3.8'
+    : '';
+  return [
+    `2.1 O presente Contrato terá duração até o final do ANO LETIVO contratado e não será renovado automaticamente, devendo o(s) CONTRATANTE(S) solicitar(em) a renovação da matrícula do(a) ALUNO(A) para o ano letivo subsequente, pelos meios que vierem a ser estabelecidos pela CONTRATADA, até a data a ser informada pela ${school}.`,
+    'Parágrafo Único. Ambas as partes, a seu exclusivo critério, se reservam no direito de não renovar, unilateralmente, o presente contrato após o término do ANO LETIVO para o período letivo subsequente, fato de ciência e aceite tanto pelo(s) CONTRATANTE(S), quanto pela CONTRATADA. A CONTRATADA também poderá, a seu exclusivo critério, não renovar termos comerciais relacionados a descontos, bolsas de estudo, permutas ou outras condições excepcionais, caso existam no período letivo em curso, assim como poderá atualizar os preços conforme julgar necessário e entender ser suficiente ao equilíbrio econômico-financeiro na continuidade da prestação de serviços educacionais.',
+    `2.2 O valor correspondente à entrada, discorrido na cláusula 3.3, assim como o valor de reembolso de alimentação para cobertura de custos da nutrição do(a) ALUNO(A), prevista no parágrafo primeiro da cláusula 3.7, bem como os valores correspondentes aos encargos de capital ("Capital Fee") que houverem sido pagos anteriormente pelo(s) CONTRATANTE(S) até 31 de dezembro de 2021, como disposto nos parágrafos quarto e quinto da cláusula 3.8${materialFeeRef}, não são passíveis de devolução, restituição, ressarcimento ou reembolso, no todo ou em parte, sob qualquer alegação ou justificativa, no caso de não renovação do presente contrato ou em virtude de interrupção na prestação de serviços educacionais no período letivo em curso, por decisão unilateral do(s) CONTRATANTE(S).`,
+    `2.3 O presente Contrato poderá ser rescindido antes do término do ANO LETIVO, nas hipóteses descritas a seguir: 1. por iniciativa da CONTRATADA: por motivo disciplinar previsto no Regimento Interno da ${school}; ou ainda por incompatibilidade, promoção de desarmonia, ou recusa de conformidade pelo(a) ALUNO(A) e/ou pelos(s) CONTRATANTE(S) para com as normas, regimentos, decisões educacionais ou administrativas, linha de ensino ou filosofia pedagógica do estabelecimento de ensino. 2. por iniciativa do(s) CONTRATANTE(S): por decisão quanto à transferência unilateral do(a) ALUNO(A) para outra instituição de ensino, ou de cancelamento da matrícula, que devem ser requeridos por escrito com antecedência de 30 (trinta) dias, mediante preenchimento de documento próprio no formato que vier a ser especificado pela ${school}.`,
+    '2.4 Em qualquer caso de rescisão, o(s) CONTRATANTE(S) deverá(ão) estar em dia com suas obrigações financeiras até o mês da efetiva execução da rescisão, inclusive. Caso o(s) CONTRATANTE(S) já tenha(m) eventualmente efetuado o pagamento antecipado parcial ou integral da anuidade escolar, ou ainda de adiantamento de parcelas vincendas, ensejará(ão) direito à restituição do saldo porventura existente, com vencimento de até 60 (sessenta) dias corridos contados a partir da data da solicitação da rescisão e após descontados os valores das parcelas vencidas e demais valores eventualmente devidos até a efetivação da rescisão contratual.',
+  ];
+}
+
+function renderClause2(ctx: PdfRenderContext, operator: OperatorEntity): void {
+  renderClauseList(ctx, 'CLÁUSULA 2ª - DA DURAÇÃO DO CONTRATO', clause2Items(operator));
 }
 
 // ---------------------------------------------------------------------------
@@ -280,15 +297,32 @@ function renderClause2(ctx: PdfRenderContext): void {
 // optional negotiated discount block, food table, and the trailing items.
 // ---------------------------------------------------------------------------
 
-const CLAUSE_3_TRAILING_ITEMS = [
-  '3.3. A alimentação é um serviço obrigatório para todos os alunos da Educação Infantil (Nursery ao Pre-K4) e opcional para os demais segmentos. O valor será cobrado separadamente da anuidade escolar, nas mesmas condições de vencimento e penalidades por atraso.',
-  '3.4. Os valores previstos neste contrato poderão ser reajustados anualmente, com base no IPCA/IBGE acumulado nos últimos 12 (doze) meses, ou por outro índice que o substitua, acrescido de até 5% (cinco por cento) a título de recomposição de custos operacionais, mediante comunicação prévia de 45 (quarenta e cinco) dias.',
-  '3.5. Eventuais bolsas ou descontos concedidos pela ESCOLA terão caráter temporário e não se incorporam ao contrato, podendo ser revogados em caso de inadimplência ou descumprimento das condições estabelecidas.',
-  '3.6. A ESCOLA poderá cobrar taxas adicionais para serviços específicos, tais como: emissão de segunda via de documentos, provas de recuperação extraordinárias, certificados especiais e outros serviços administrativos, mediante tabela de preços previamente divulgada.',
-  '3.7. Em caso de transferência do(a) aluno(a) durante o ano letivo, os valores serão calculados pro rata temporis, considerando-se os meses letivos efetivamente cursados, sendo devida a restituição de eventuais valores pagos antecipadamente, descontadas as parcelas vencidas e eventuais multas contratuais.',
-  '3.8. Taxa de material pedagógico internacional: Além da anuidade escolar, será cobrada uma taxa anual de R$ 3.900,00 (três mil e novecentos reais) referente ao material pedagógico internacional utilizado no currículo bilíngue da ESCOLA. Esta taxa será cobrada em parcela única no ato da matrícula ou pode ser parcelada em até 3 (três) vezes, conforme acordo com a Secretaria.',
-  '3.9. O(A) RESPONSÁVEL FINANCEIRO declara estar ciente de que o não pagamento de qualquer parcela não exime a obrigação de pagamento das parcelas subsequentes, permanecendo a dívida integral até sua completa quitação.',
-];
+function clause3TrailingItems(operator: OperatorEntity): string[] {
+  const items = [
+    '3.3. A alimentação é um serviço obrigatório para todos os alunos da Educação Infantil (Nursery ao Pre-K4) e opcional para os demais segmentos. O valor será cobrado separadamente da anuidade escolar, nas mesmas condições de vencimento e penalidades por atraso.',
+    '3.4. Os valores previstos neste contrato poderão ser reajustados anualmente, com base no IPCA/IBGE acumulado nos últimos 12 (doze) meses, ou por outro índice que o substitua, acrescido de até 5% (cinco por cento) a título de recomposição de custos operacionais, mediante comunicação prévia de 45 (quarenta e cinco) dias.',
+    '3.5. Eventuais bolsas ou descontos concedidos pela ESCOLA terão caráter temporário e não se incorporam ao contrato, podendo ser revogados em caso de inadimplência ou descumprimento das condições estabelecidas.',
+    '3.6. A ESCOLA poderá cobrar taxas adicionais para serviços específicos, tais como: emissão de segunda via de documentos, provas de recuperação extraordinárias, certificados especiais e outros serviços administrativos, mediante tabela de preços previamente divulgada.',
+    '3.7. Em caso de transferência do(a) aluno(a) durante o ano letivo, os valores serão calculados pro rata temporis, considerando-se os meses letivos efetivamente cursados, sendo devida a restituição de eventuais valores pagos antecipadamente, descontadas as parcelas vencidas e eventuais multas contratuais.',
+  ];
+  // Optional clause 3.8 — only emitted when the tenant has configured an
+  // international/pedagogical material fee. Format the value at render time
+  // so the user-facing wording stays in pt-BR ("R$ 3.900,00").
+  if (operator.internationalMaterialFee != null) {
+    const formatted = operator.internationalMaterialFee.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2,
+    });
+    items.push(
+      `3.8. Taxa de material pedagógico internacional: Além da anuidade escolar, será cobrada uma taxa anual de ${formatted} referente ao material pedagógico internacional utilizado no currículo bilíngue da ESCOLA. Esta taxa será cobrada em parcela única no ato da matrícula ou pode ser parcelada em até 3 (três) vezes, conforme acordo com a Secretaria.`,
+    );
+  }
+  items.push(
+    '3.9. O(A) RESPONSÁVEL FINANCEIRO declara estar ciente de que o não pagamento de qualquer parcela não exime a obrigação de pagamento das parcelas subsequentes, permanecendo a dívida integral até sua completa quitação.',
+  );
+  return items;
+}
 
 function renderClause3(
   ctx: PdfRenderContext,
@@ -375,7 +409,7 @@ function renderClause3(
   );
   ctx.y -= 4;
 
-  for (const item of CLAUSE_3_TRAILING_ITEMS) {
+  for (const item of clause3TrailingItems(templateData.operator)) {
     drawParagraph(ctx, item);
     ctx.y -= 3;
   }
@@ -396,18 +430,22 @@ function renderClause4(ctx: PdfRenderContext): void {
   renderClauseList(ctx, 'CLÁUSULA 4ª - DA PROTEÇÃO E TRATAMENTO DE DADOS', CLAUSE_4_ITEMS);
 }
 
-const CLAUSE_5_ITEMS = [
-  '5.1. O presente contrato obriga as partes e seus sucessores a qualquer título.',
-  '5.2. A tolerância de qualquer das partes quanto ao descumprimento de cláusula ou condição deste contrato não implicará novação, renúncia ou alteração do pactuado, podendo a parte prejudicada exigir o cumprimento integral a qualquer tempo.',
-  '5.3. Qualquer alteração ou aditamento a este contrato somente será válido se formalizado por escrito e assinado por ambas as partes.',
-  '5.4. Caso qualquer cláusula ou disposição deste contrato venha a ser declarada nula ou inexequível, as demais cláusulas permanecerão em pleno vigor e efeito.',
-  '5.5. As comunicações entre as partes deverão ser realizadas por escrito, preferencialmente por e-mail, para os endereços eletrônicos indicados neste contrato, considerando-se válida a comunicação enviada ao último endereço informado.',
-  '5.6. As partes elegem o foro da Comarca do Rio de Janeiro - RJ para dirimir quaisquer controvérsias oriundas deste contrato, com renúncia expressa a qualquer outro, por mais privilegiado que seja.',
-  '5.7. E por estarem assim justas e contratadas, as partes firmam o presente instrumento em meio eletrônico, por meio de assinatura digital com validade jurídica, em conformidade com a Medida Provisória 2.200-2/2001 e demais normas aplicáveis.',
-];
+function clause5Items(operator: OperatorEntity): string[] {
+  const venue = operator.jurisdiction?.trim()
+    || (operator.legalCity ? `Comarca de ${operator.legalCity}` : 'sede da ESCOLA');
+  return [
+    '5.1. O presente contrato obriga as partes e seus sucessores a qualquer título.',
+    '5.2. A tolerância de qualquer das partes quanto ao descumprimento de cláusula ou condição deste contrato não implicará novação, renúncia ou alteração do pactuado, podendo a parte prejudicada exigir o cumprimento integral a qualquer tempo.',
+    '5.3. Qualquer alteração ou aditamento a este contrato somente será válido se formalizado por escrito e assinado por ambas as partes.',
+    '5.4. Caso qualquer cláusula ou disposição deste contrato venha a ser declarada nula ou inexequível, as demais cláusulas permanecerão em pleno vigor e efeito.',
+    '5.5. As comunicações entre as partes deverão ser realizadas por escrito, preferencialmente por e-mail, para os endereços eletrônicos indicados neste contrato, considerando-se válida a comunicação enviada ao último endereço informado.',
+    `5.6. As partes elegem o foro da ${venue} para dirimir quaisquer controvérsias oriundas deste contrato, com renúncia expressa a qualquer outro, por mais privilegiado que seja.`,
+    '5.7. E por estarem assim justas e contratadas, as partes firmam o presente instrumento em meio eletrônico, por meio de assinatura digital com validade jurídica, em conformidade com a Medida Provisória 2.200-2/2001 e demais normas aplicáveis.',
+  ];
+}
 
-function renderClause5(ctx: PdfRenderContext): void {
-  renderClauseList(ctx, 'CLÁUSULA 5ª - DAS DISPOSIÇÕES FINAIS', CLAUSE_5_ITEMS);
+function renderClause5(ctx: PdfRenderContext, operator: OperatorEntity): void {
+  renderClauseList(ctx, 'CLÁUSULA 5ª - DAS DISPOSIÇÕES FINAIS', clause5Items(operator));
 }
 
 // ---------------------------------------------------------------------------
@@ -425,7 +463,9 @@ function renderSignaturesAndFooter(
   ctx.y -= 10;
   ensureSpace(ctx, 250);
 
-  const dateLine = `Rio de Janeiro, ${templateData.contractDate}`;
+  const operator = templateData.operator;
+  const cityPrefix = operator.legalCity ? `${operator.legalCity}, ` : '';
+  const dateLine = `${cityPrefix}${templateData.contractDate}`;
   const dateWidth = ctx.font.widthOfTextAtSize(dateLine, 11);
   ctx.currentPage.drawText(dateLine, {
     x: (PAGE_W - dateWidth) / 2,
@@ -436,7 +476,7 @@ function renderSignaturesAndFooter(
   });
   ctx.y -= 20;
 
-  drawSignatureLine(ctx, 'International Christian School of Rio de Janeiro', 'CONTRATADA');
+  drawSignatureLine(ctx, operator.legalName?.trim() || operator.schoolName, 'CONTRATADA');
   drawSignatureLine(ctx, templateData.financialResponsible.fullName, 'RESPONSÁVEL FINANCEIRO - CONTRATANTE');
 
   const witness1 = witnesses[0] ?? null;

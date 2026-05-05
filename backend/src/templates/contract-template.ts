@@ -1,8 +1,55 @@
 // ==================== CONTRACT TEMPLATE ====================
-// Generates the full HTML for the ICS contract
-// "Contrato de Prestacao de Servicos Educacionais"
+// Generates the full HTML for a school contract
+// "Contrato de Prestação de Serviços Educacionais"
+//
+// The operator's legal identity (legalName / CNPJ / sede / representative
+// / jurisdiction / optional material fee) is sourced from SystemSettings
+// and threaded in as `operator`, so the same template renders correct
+// paperwork for any tenant.
+
+import type { OperatorEntity } from './addendum-template.js';
+export type { OperatorEntity } from './addendum-template.js';
+
+/**
+ * Build the rich CONTRATADA paragraph that opens "DAS PARTES". Falls
+ * back gracefully when fields are null:
+ *  - no legalName → uses schoolName
+ *  - no cnpj → CNPJ clause omitted
+ *  - no legalRepresentative → "neste ato representada na forma de seu Estatuto Social"
+ *  - no legalAddress AND no legalCity → seat clause omitted
+ */
+export function buildContractContratadaParagraph(operator: OperatorEntity): string {
+  const name = operator.legalName?.trim() || operator.schoolName;
+  const parts: string[] = [name, 'pessoa jurídica de direito privado'];
+  if (operator.cnpj?.trim()) {
+    parts.push(`inscrita no CNPJ sob o nº ${operator.cnpj.trim()}`);
+  }
+  const seat = operator.legalAddress?.trim() || operator.legalCity?.trim();
+  if (seat) {
+    parts.push(`com sede em ${seat}`);
+  }
+  if (operator.legalRepresentative?.trim()) {
+    parts.push(`neste ato representada por ${operator.legalRepresentative.trim()}`);
+  } else {
+    parts.push('neste ato representada na forma de seu Estatuto Social');
+  }
+  return parts.join(', ') + ', doravante denominada simplesmente <strong>ESCOLA</strong>.';
+}
+
+/**
+ * Format a numeric fee as a Brazilian currency string ("R$ 3.900,00").
+ */
+function formatBRLFee(value: number): string {
+  return value.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+  });
+}
 
 export interface ContractTemplateData {
+  operator: OperatorEntity;
+
   // Contract
   contractCode: string;
   contractDate: string; // formatted DD/MM/YYYY
@@ -311,7 +358,7 @@ export function generateContractHtml(data: ContractTemplateData): string {
   <div class="section-title">DAS PARTES</div>
 
   <div class="item">
-    <span class="item-number">1.</span> <strong>CONTRATADA:</strong> International Christian School of Rio de Janeiro, pessoa jurídica de direito privado, inscrita no CNPJ sob o nº 03.555.214/0001-12, com sede na Av. Prefeito Dulcídio Cardoso, nº 4351, Barra da Tijuca, Rio de Janeiro - RJ, CEP 22793-011, neste ato representada na forma de seu Estatuto Social, doravante denominada simplesmente <strong>ESCOLA</strong>.
+    <span class="item-number">1.</span> <strong>CONTRATADA:</strong> ${buildContractContratadaParagraph(data.operator)}
   </div>
 
   <div class="item">
@@ -495,7 +542,7 @@ export function generateContractHtml(data: ContractTemplateData): string {
   </div>
 
   <div class="item">
-    <span class="item-number">3.8.</span> <strong>Taxa de material pedagógico internacional:</strong> Além da anuidade escolar, será cobrada uma taxa anual de <strong>R$ 3.900,00</strong> (três mil e novecentos reais) referente ao material pedagógico internacional utilizado no currículo bilíngue da <strong>ESCOLA</strong>. Esta taxa será cobrada em parcela única no ato da matrícula ou pode ser parcelada em até 3 (três) vezes, conforme acordo com a Secretaria.
+    ${data.operator.internationalMaterialFee != null ? `<span class="item-number">3.8.</span> <strong>Taxa de material pedagógico internacional:</strong> Além da anuidade escolar, será cobrada uma taxa anual de <strong>${formatBRLFee(data.operator.internationalMaterialFee)}</strong> referente ao material pedagógico internacional utilizado no currículo bilíngue da <strong>ESCOLA</strong>. Esta taxa será cobrada em parcela única no ato da matrícula ou pode ser parcelada em até 3 (três) vezes, conforme acordo com a Secretaria.` : ''}
   </div>
 
   <div class="item">
@@ -562,7 +609,7 @@ export function generateContractHtml(data: ContractTemplateData): string {
   </div>
 
   <div class="item">
-    <span class="item-number">5.6.</span> As partes elegem o foro da Comarca do Rio de Janeiro - RJ para dirimir quaisquer controvérsias oriundas deste contrato, com renúncia expressa a qualquer outro, por mais privilegiado que seja.
+    <span class="item-number">5.6.</span> As partes elegem o foro da ${data.operator.jurisdiction?.trim() || (data.operator.legalCity ? `Comarca de ${data.operator.legalCity}` : 'sede da ESCOLA')} para dirimir quaisquer controvérsias oriundas deste contrato, com renúncia expressa a qualquer outro, por mais privilegiado que seja.
   </div>
 
   <div class="item">
@@ -572,12 +619,12 @@ export function generateContractHtml(data: ContractTemplateData): string {
   <!-- ==================== SIGNATURES ==================== -->
   <div class="signature-area">
     <div class="item" style="text-align: center; margin-top: 30px;">
-      Rio de Janeiro, ${data.contractDate}
+      ${data.operator.legalCity ? `${data.operator.legalCity}, ` : ''}${data.contractDate}
     </div>
 
     <div class="signature-line" style="margin-top: 60px;">
       <div class="line">
-        <strong>International Christian School of Rio de Janeiro</strong><br/>
+        <strong>${data.operator.legalName?.trim() || data.operator.schoolName}</strong><br/>
         CONTRATADA
       </div>
     </div>

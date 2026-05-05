@@ -711,6 +711,13 @@ model SystemSettings {
   cnpj            String? // CNPJ — already-formatted display string
   legalAddress    String? // Endereço da sede (used in "com sede em ...")
   legalCity       String? // Cidade da sede (used in document footer)
+  legalRepresentative String? // "Sra. Fulana, Presidente" — used in CONTRATADA clause
+  jurisdiction        String? // "Comarca do Rio de Janeiro - RJ" — used in foro clause
+  // International / pedagogical material fee, applied as the optional
+  // clause 3.8 in the school contract. Stored as Decimal for exact pt-BR
+  // currency math; null = clause is omitted entirely (for tenants that
+  // don't charge a separate material fee).
+  internationalMaterialFee Decimal? @db.Decimal(12, 2)
   logoUrl         String?
   defaultLanguage String   @default("pt")
   dateFormat      String   @default("DD/MM/YYYY")

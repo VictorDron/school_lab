@@ -35,6 +35,9 @@ const { prismaMock, clicksignMock, supabaseMock, settingsMock } = vi.hoisted(() 
       cnpj: '00.000.000/0000-00',
       legalAddress: 'Rua Teste, 100',
       legalCity: 'São Paulo',
+      legalRepresentative: null,
+      jurisdiction: null,
+      internationalMaterialFee: null,
     }),
   };
   return { prismaMock, clicksignMock, supabaseMock, settingsMock };
@@ -297,6 +300,9 @@ describe('Addendum template — operator legal-entity rendering', () => {
     cnpj: '12.345.678/0001-99',
     legalAddress: 'Av. Paulista, 1000',
     legalCity: 'São Paulo',
+    legalRepresentative: null,
+    jurisdiction: null,
+    internationalMaterialFee: null,
   };
 
   describe('buildContratadaSentence', () => {

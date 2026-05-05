@@ -12,6 +12,11 @@ export interface OperatorEntity {
   cnpj: string | null; // Already-formatted (e.g. "00.000.000/0000-00")
   legalAddress: string | null;
   legalCity: string | null;
+  legalRepresentative: string | null; // "Sra. Fulana, Presidente"
+  jurisdiction: string | null; // "Comarca do Rio de Janeiro - RJ"
+  // Optional anually-charged international/pedagogical material fee.
+  // null means the corresponding clause is omitted from the contract.
+  internationalMaterialFee: number | null;
 }
 
 export interface AddendumTemplateData {

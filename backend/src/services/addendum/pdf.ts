@@ -85,6 +85,11 @@ export async function generateAddendumPdf(addendumId: string) {
     cnpj: settings.cnpj,
     legalAddress: settings.legalAddress,
     legalCity: settings.legalCity,
+    legalRepresentative: settings.legalRepresentative,
+    jurisdiction: settings.jurisdiction,
+    internationalMaterialFee: settings.internationalMaterialFee
+      ? Number(settings.internationalMaterialFee)
+      : null,
   };
 
   const templateData: AddendumTemplateData = {

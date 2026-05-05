@@ -4,7 +4,9 @@ import {
   ContractTemplateData,
   FEE_TABLE,
   FOOD_TABLE,
+  OperatorEntity,
 } from '../../../templates/contract-template.js';
+import { getOrCreateSettings } from '../../settings.service.js';
 import {
   formatAddress,
   formatLeadAddress,
@@ -194,9 +196,9 @@ export async function buildContractData(
   }
   const lead = contract.lead;
 
-  const settings = await prisma.systemSettings.findFirst();
-  const pdfFeeTable = buildPdfFeeTable((settings?.feeTable as any[]) ?? null);
-  const pdfFoodTable = buildPdfFoodTable((settings?.foodTable as any[]) ?? null);
+  const settings = await getOrCreateSettings();
+  const pdfFeeTable = buildPdfFeeTable((settings.feeTable as any[]) ?? null);
+  const pdfFoodTable = buildPdfFoodTable((settings.foodTable as any[]) ?? null);
 
   // Determine which children matter for this contract.
   const applicantChildren = lead.children.filter((c) => c.isApplicant);
@@ -252,7 +254,21 @@ export async function buildContractData(
     .filter((s) => s.role === 'WITNESS')
     .map((s) => ({ name: s.name, cpf: s.cpf ?? undefined }));
 
+  const operator: OperatorEntity = {
+    schoolName: settings.schoolName,
+    legalName: settings.legalName,
+    cnpj: settings.cnpj,
+    legalAddress: settings.legalAddress,
+    legalCity: settings.legalCity,
+    legalRepresentative: settings.legalRepresentative,
+    jurisdiction: settings.jurisdiction,
+    internationalMaterialFee: settings.internationalMaterialFee
+      ? Number(settings.internationalMaterialFee)
+      : null,
+  };
+
   const templateData: ContractTemplateData = {
+    operator,
     contractCode: contract.code,
     contractDate,
     schoolYear: schoolYr,
