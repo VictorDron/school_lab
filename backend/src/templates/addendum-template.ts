@@ -1,8 +1,21 @@
 // ==================== ADDENDUM TEMPLATE ====================
-// Generates the full HTML for the ICS contract addendum
+// Generates the full HTML for a contract addendum
 // "Aditivo Contratual ao Contrato de Prestação de Serviços Educacionais"
+//
+// The operator's legal identity (legalName / CNPJ / address / city) is
+// passed in as `operator`, sourced from SystemSettings, so the same
+// template renders correct paperwork for any tenant.
+
+export interface OperatorEntity {
+  schoolName: string; // Display name (used in signature blocks)
+  legalName: string | null; // Razão social (used in CONTRATADA clause)
+  cnpj: string | null; // Already-formatted (e.g. "00.000.000/0000-00")
+  legalAddress: string | null;
+  legalCity: string | null;
+}
 
 export interface AddendumTemplateData {
+  operator: OperatorEntity;
   addendumCode: string;
   addendumDate: string; // DD/MM/YYYY
   addendumType: string; // pt-BR label
@@ -27,6 +40,27 @@ export const ADDENDUM_TYPE_LABELS: Record<string, string> = {
   GRADE_CHANGE: 'Alteração de série',
   OTHER: 'Outro',
 };
+
+/**
+ * Build the "CONTRATADA: ..." sentence for a contract / addendum from the
+ * operator's legal-entity fields. Skips clauses for fields that are null
+ * so an under-configured tenant doesn't end up with "CNPJ sob o nº ."
+ * dangling in the document.
+ *
+ * Falls back to schoolName when legalName isn't filled in yet.
+ */
+export function buildContratadaSentence(operator: OperatorEntity): string {
+  const name = operator.legalName?.trim() || operator.schoolName;
+  const parts: string[] = [name, 'pessoa jurídica de direito privado'];
+  if (operator.cnpj?.trim()) {
+    parts.push(`inscrita no CNPJ sob o nº ${operator.cnpj.trim()}`);
+  }
+  const seat = operator.legalAddress?.trim() || operator.legalCity?.trim();
+  if (seat) {
+    parts.push(`com sede em ${seat}`);
+  }
+  return parts.join(', ') + '.';
+}
 
 export function generateAddendumHtml(data: AddendumTemplateData): string {
   const changedValuesHtml =
@@ -96,7 +130,7 @@ export function generateAddendumHtml(data: AddendumTemplateData): string {
   <div class="section">
     <h3>DAS PARTES</h3>
     <div class="parties">
-      <p><strong>CONTRATADA:</strong> Rio International School — ICS Escola Internacional do Rio Ltda., pessoa jurídica de direito privado, inscrita no CNPJ sob o nº XX.XXX.XXX/XXXX-XX, com sede na cidade do Rio de Janeiro/RJ.</p>
+      <p><strong>CONTRATADA:</strong> ${buildContratadaSentence(data.operator)}</p>
     </div>
     <div class="parties">
       <p><strong>CONTRATANTE:</strong> ${data.financialResponsible.fullName}, inscrito(a) no CPF sob o nº ${data.financialResponsible.cpf}, residente em ${data.financialResponsible.address}, e-mail: ${data.financialResponsible.email}.</p>
@@ -123,7 +157,7 @@ export function generateAddendumHtml(data: AddendumTemplateData): string {
 
   <div class="signature-block">
     <div class="signature-line">
-      <p style="font-size: 11px; margin: 0;">Rio International School</p>
+      <p style="font-size: 11px; margin: 0;">${data.operator.schoolName}</p>
       <p style="font-size: 10px; margin: 0; color: #666;">CONTRATADA</p>
     </div>
 
@@ -135,7 +169,7 @@ export function generateAddendumHtml(data: AddendumTemplateData): string {
     ${witnessesHtml}
   </div>
 
-  <p class="footer">Rio de Janeiro, ${data.addendumDate}</p>
+  <p class="footer">${data.operator.legalCity ? `${data.operator.legalCity}, ` : ''}${data.addendumDate}</p>
 </body>
 </html>`;
 }

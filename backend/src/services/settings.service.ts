@@ -31,6 +31,10 @@ const DEFAULT_SETTINGS = {
 
 export interface UpdateSettingsData {
   schoolName?: string;
+  legalName?: string | null;
+  cnpj?: string | null;
+  legalAddress?: string | null;
+  legalCity?: string | null;
   defaultLanguage?: string;
   dateFormat?: string;
   currency?: string;

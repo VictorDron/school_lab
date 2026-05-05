@@ -704,6 +704,13 @@ model Invite {
 model SystemSettings {
   id              String   @id @default(uuid())
   schoolName      String   @default("School Lab")
+  // Legal-entity identity used by contract / addendum / re-enrollment
+  // documents. All optional so a fresh tenant can fill them in over time;
+  // templates degrade gracefully when fields are missing.
+  legalName       String? // Razão social (e.g. "ICS Escola Internacional do Rio Ltda.")
+  cnpj            String? // CNPJ — already-formatted display string
+  legalAddress    String? // Endereço da sede (used in "com sede em ...")
+  legalCity       String? // Cidade da sede (used in document footer)
   logoUrl         String?
   defaultLanguage String   @default("pt")
   dateFormat      String   @default("DD/MM/YYYY")

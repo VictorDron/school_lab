@@ -2,7 +2,14 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { prisma } from '../../config/database.js';
 import { uploadFile } from '../../config/supabase.js';
 import logger from '../../utils/logger.js';
-import { generateAddendumHtml, AddendumTemplateData, ADDENDUM_TYPE_LABELS } from '../../templates/addendum-template.js';
+import {
+  generateAddendumHtml,
+  buildContratadaSentence,
+  AddendumTemplateData,
+  ADDENDUM_TYPE_LABELS,
+  OperatorEntity,
+} from '../../templates/addendum-template.js';
+import { getOrCreateSettings } from '../settings.service.js';
 
 function formatDateBR(date: Date | string | null): string {
   if (!date) return 'Não informado';
@@ -71,7 +78,17 @@ export async function generateAddendumPdf(addendumId: string) {
 
   const changedValues = (addendum.changedValues as any[]) ?? [];
 
+  const settings = await getOrCreateSettings();
+  const operator: OperatorEntity = {
+    schoolName: settings.schoolName,
+    legalName: settings.legalName,
+    cnpj: settings.cnpj,
+    legalAddress: settings.legalAddress,
+    legalCity: settings.legalCity,
+  };
+
   const templateData: AddendumTemplateData = {
+    operator,
     addendumCode: addendum.code,
     addendumDate: formatDateBR(addendum.createdAt),
     addendumType: ADDENDUM_TYPE_LABELS[addendum.type] ?? addendum.type,
@@ -159,7 +176,7 @@ export async function generateAddendumPdf(addendumId: string) {
   // Parties
   drawText('DAS PARTES', { size: 12, bold: true });
   drawSpacer(6);
-  drawText('CONTRATADA: Rio International School — ICS Escola Internacional do Rio Ltda., pessoa jurídica de direito privado, com sede na cidade do Rio de Janeiro/RJ.');
+  drawText(`CONTRATADA: ${buildContratadaSentence(operator)}`);
   drawSpacer(8);
   drawText(`CONTRATANTE: ${financialResp.fullName}, CPF: ${financialResp.cpf}, residente em ${financialResp.address}, e-mail: ${financialResp.email}.`);
   drawSpacer(8);
@@ -219,7 +236,7 @@ export async function generateAddendumPdf(addendumId: string) {
   const sigLineX = LEFT_MARGIN + (CONTENT_WIDTH - sigLineWidth) / 2;
   page.drawLine({ start: { x: sigLineX, y }, end: { x: sigLineX + sigLineWidth, y }, thickness: 0.5, color: rgb(0.2, 0.2, 0.2) });
   y -= 12;
-  drawText('Rio International School', { size: 9, centered: true });
+  drawText(operator.schoolName, { size: 9, centered: true });
   drawText('CONTRATADA', { size: 8, centered: true });
   drawSpacer(20);
 
@@ -242,7 +259,8 @@ export async function generateAddendumPdf(addendumId: string) {
 
   // Footer
   drawSpacer(20);
-  drawText(`Rio de Janeiro, ${templateData.addendumDate}`, { size: 9, centered: true });
+  const footerLocation = operator.legalCity ? `${operator.legalCity}, ` : '';
+  drawText(`${footerLocation}${templateData.addendumDate}`, { size: 9, centered: true });
 
   // Save PDF
   const pdfBytes = await pdfDoc.save();

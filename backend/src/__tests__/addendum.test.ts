@@ -1,6 +1,6 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-const { prismaMock, clicksignMock, supabaseMock } = vi.hoisted(() => {
+const { prismaMock, clicksignMock, supabaseMock, settingsMock } = vi.hoisted(() => {
   const prismaMock = {
     contract: {
       findUnique: vi.fn(),
@@ -28,7 +28,16 @@ const { prismaMock, clicksignMock, supabaseMock } = vi.hoisted(() => {
     uploadFile: vi.fn(),
     getSignedUrl: vi.fn(),
   };
-  return { prismaMock, clicksignMock, supabaseMock };
+  const settingsMock = {
+    getOrCreateSettings: vi.fn().mockResolvedValue({
+      schoolName: 'Test School',
+      legalName: 'Test School Ltda.',
+      cnpj: '00.000.000/0000-00',
+      legalAddress: 'Rua Teste, 100',
+      legalCity: 'São Paulo',
+    }),
+  };
+  return { prismaMock, clicksignMock, supabaseMock, settingsMock };
 });
 
 vi.mock('../config/database.js', () => ({
@@ -37,6 +46,7 @@ vi.mock('../config/database.js', () => ({
 
 vi.mock('../services/clicksign.service.js', () => clicksignMock);
 vi.mock('../config/supabase.js', () => supabaseMock);
+vi.mock('../services/settings.service.js', () => settingsMock);
 vi.mock('../utils/logger.js', () => ({
   default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
@@ -48,6 +58,12 @@ import {
   sendAddendumForSignature,
   handleAddendumWebhook,
 } from '../services/addendum.service.js';
+import {
+  buildContratadaSentence,
+  generateAddendumHtml,
+  type AddendumTemplateData,
+  type OperatorEntity,
+} from '../templates/addendum-template.js';
 
 const baseContract = {
   id: 'contract-1',
@@ -270,6 +286,100 @@ describe('Addendum Service', () => {
           }),
         }),
       );
+    });
+  });
+});
+
+describe('Addendum template — operator legal-entity rendering', () => {
+  const fullOperator: OperatorEntity = {
+    schoolName: 'Acme Academy',
+    legalName: 'Acme Educacional Ltda.',
+    cnpj: '12.345.678/0001-99',
+    legalAddress: 'Av. Paulista, 1000',
+    legalCity: 'São Paulo',
+  };
+
+  describe('buildContratadaSentence', () => {
+    it('uses every legal-entity field when all are provided', () => {
+      const sentence = buildContratadaSentence(fullOperator);
+      expect(sentence).toContain('Acme Educacional Ltda.');
+      expect(sentence).toContain('CNPJ sob o nº 12.345.678/0001-99');
+      expect(sentence).toContain('com sede em Av. Paulista, 1000');
+    });
+
+    it('falls back to schoolName when legalName is null', () => {
+      const sentence = buildContratadaSentence({ ...fullOperator, legalName: null });
+      expect(sentence).toContain('Acme Academy');
+    });
+
+    it('omits the CNPJ clause entirely when cnpj is missing', () => {
+      const sentence = buildContratadaSentence({ ...fullOperator, cnpj: null });
+      expect(sentence).not.toContain('CNPJ');
+      expect(sentence).not.toMatch(/\.\s*\./); // no dangling empty clause
+    });
+
+    it('uses legalCity for the seat clause when legalAddress is missing', () => {
+      const sentence = buildContratadaSentence({
+        ...fullOperator,
+        legalAddress: null,
+      });
+      expect(sentence).toContain('com sede em São Paulo');
+    });
+
+    it('omits the seat clause when both address and city are missing', () => {
+      const sentence = buildContratadaSentence({
+        ...fullOperator,
+        legalAddress: null,
+        legalCity: null,
+      });
+      expect(sentence).not.toContain('com sede');
+    });
+
+    it('does NOT leak the original tenant brand for an arbitrary operator', () => {
+      const sentence = buildContratadaSentence(fullOperator);
+      expect(sentence).not.toContain('Rio International School');
+      expect(sentence).not.toContain('ICS Escola');
+    });
+  });
+
+  describe('generateAddendumHtml', () => {
+    const baseTemplateData: AddendumTemplateData = {
+      operator: fullOperator,
+      addendumCode: 'ADT-1',
+      addendumDate: '03/04/2026',
+      addendumType: 'Desconto',
+      contractCode: 'CTR-1',
+      contractDate: '01/01/2026',
+      studentName: 'João Silva',
+      studentGrade: '5th Grade',
+      financialResponsible: {
+        fullName: 'Maria Silva',
+        cpf: '123.456.789-00',
+        address: 'Rua A, 100',
+        email: 'maria@example.com',
+      },
+      description: 'Aplicação de desconto.',
+      changedValues: [],
+      witnesses: [],
+    };
+
+    it('renders the operator name in the signature block, not the old brand', () => {
+      const html = generateAddendumHtml(baseTemplateData);
+      expect(html).toContain('Acme Academy');
+      expect(html).not.toContain('Rio International School');
+    });
+
+    it('uses legalCity in the footer location', () => {
+      const html = generateAddendumHtml(baseTemplateData);
+      expect(html).toContain('São Paulo, 03/04/2026');
+    });
+
+    it('omits the footer location when legalCity is null', () => {
+      const html = generateAddendumHtml({
+        ...baseTemplateData,
+        operator: { ...fullOperator, legalCity: null },
+      });
+      expect(html).toContain('>03/04/2026<');
     });
   });
 });
