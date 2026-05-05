@@ -4,7 +4,7 @@ import type { PublicAdmissionData } from './index.js';
 import { assertSubmissionAllowed, normalizeStudentList } from './validators.js';
 import { applyLeadUpdate } from './lead-update.js';
 import { getOrCreateSettings } from '../settings.service.js';
-import { requireTenantId } from '../../lib/tenant-context.js';
+import { requireTenantId, withTenantTx } from '../../lib/tenant-context.js';
 import {
   cleanupFormSubmittedEntities,
   createAddress,
@@ -98,8 +98,13 @@ export async function runSubmissionTransaction(
   const tenantId = requireTenantId();
   const { schoolName } = await getOrCreateSettings(tenantId);
 
-  return prisma.$transaction(
+  // Phase 6: withTenantTx scopes Postgres' app.current_tenant_id GUC for
+  // the duration of the tx. RLS rejects any row that doesn't match —
+  // backstop against a malicious payload smuggling an attacker tenantId
+  // through the public form.
+  return withTenantTx<SubmissionTransactionResult, Tx>(
+    prisma,
     (tx) => runSubmissionWrites(tx, data, metadata, schoolName),
-    TX_OPTIONS,
+    { txOptions: TX_OPTIONS },
   );
 }

@@ -58,12 +58,21 @@ export function requireTenantId(): string {
  */
 export const PLATFORM_ADMIN_TENANT_GUC = '__platform_admin__';
 
+// Loose structural type — keeps the helper independent of the @prisma/client
+// version. The runtime contract is just: a `$transaction(callback, options?)`
+// that hands back a tx with `$executeRawUnsafe`.
 type TxClient = {
   $executeRawUnsafe: (sql: string, ...args: unknown[]) => Promise<unknown>;
+} & Record<string, any>;
+type TxOptions = {
+  maxWait?: number;
+  timeout?: number;
+  isolationLevel?: unknown;
 };
-type PrismaLike = {
-  $transaction: <T>(fn: (tx: TxClient) => Promise<T>) => Promise<T>;
-};
+// PrismaClient's `$transaction` is overloaded (callback or array form),
+// which makes a precise structural type painful. We accept anything and
+// validate the contract at runtime instead.
+type PrismaLike = { $transaction: (...args: any[]) => any };
 
 /**
  * Phase 5: run `fn` inside a Postgres transaction with the
@@ -75,19 +84,23 @@ type PrismaLike = {
  * (audit log writes, cross-table operations where a malicious or buggy
  * findUnique could leak). Most reads are already covered by the
  * application-level auto-scope middleware in config/database.ts.
+ *
+ * `txOptions` are forwarded to Prisma's `$transaction` (maxWait, timeout,
+ * isolationLevel). `platformAdmin` swaps the GUC value to the sentinel
+ * that bypasses RLS for cross-tenant operations.
  */
-export async function withTenantTx<T>(
+export async function withTenantTx<T, Tx = TxClient>(
   prisma: PrismaLike,
-  fn: (tx: TxClient) => Promise<T>,
-  options?: { platformAdmin?: boolean },
+  fn: (tx: Tx) => Promise<T>,
+  options?: { platformAdmin?: boolean; txOptions?: TxOptions },
 ): Promise<T> {
   const guc = options?.platformAdmin
     ? PLATFORM_ADMIN_TENANT_GUC
     : currentTenantId() ?? '';
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx: any) => {
     // SET LOCAL is transaction-scoped — auto-resets on commit/rollback,
     // so the connection is safe to return to the pool.
     await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${guc.replace(/'/g, "''")}'`);
-    return fn(tx);
-  });
+    return fn(tx as Tx);
+  }, options?.txOptions);
 }

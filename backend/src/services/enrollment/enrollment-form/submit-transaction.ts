@@ -1,5 +1,6 @@
 import { Prisma, type Lead } from '@prisma/client';
 import { prisma } from '../../../config/database.js';
+import { withTenantTx } from '../../../lib/tenant-context.js';
 import type {
   PublicEnrollmentData,
   RequestMetadata,
@@ -95,8 +96,12 @@ export async function runSubmissionTransaction(
   data: PublicEnrollmentData,
   metadata: RequestMetadata | undefined,
 ): Promise<SubmissionTransactionResult> {
-  return prisma.$transaction(
+  // Phase 6: withTenantTx scopes app.current_tenant_id for RLS
+  // enforcement. ALS is established by withTenantFromToken on the
+  // public route — the GUC inherits that tenantId.
+  return withTenantTx<SubmissionTransactionResult, Tx>(
+    prisma,
     (tx) => runSubmissionWrites(tx, data, metadata),
-    TX_OPTIONS,
+    { txOptions: TX_OPTIONS },
   );
 }

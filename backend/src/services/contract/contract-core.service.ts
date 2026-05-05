@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { prisma } from '../../config/database.js';
-import { requireTenantId } from '../../lib/tenant-context.js';
+import { requireTenantId, withTenantTx } from '../../lib/tenant-context.js';
 import {
   ContractSignerRole,
   Prisma,
@@ -119,10 +119,11 @@ export async function createContract(
     });
   }
 
-  // Use transaction to prevent race condition on duplicate check + create
+  // Use transaction to prevent race condition on duplicate check + create.
+  // Phase 6: withTenantTx scopes app.current_tenant_id GUC for RLS.
   let contract;
   try {
-    contract = await prisma.$transaction(async (tx) => {
+    contract = await withTenantTx(prisma, async (tx) => {
     // Check for existing active contract inside transaction
     const existingContract = await tx.contract.findFirst({
       where: {
@@ -244,7 +245,7 @@ export async function createRenewalContract(
 
   let contract;
   try {
-    contract = await prisma.$transaction(async (tx) => {
+    contract = await withTenantTx(prisma, async (tx) => {
       // Check for existing non-cancelled RENEWAL contract (scoped by enrollmentType)
       const existing = await tx.contract.findFirst({
         where: { leadId, enrollmentType: 'RENEWAL', status: { notIn: ['CANCELLED'] } },
