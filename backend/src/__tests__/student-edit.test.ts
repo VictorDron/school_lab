@@ -18,6 +18,14 @@ vi.mock('../socket/io.js', () => ({
   getIO: vi.fn(() => ({ to: vi.fn(() => ({ emit: vi.fn() })) })),
 }));
 vi.mock('../services/audit.service.js', () => ({ createAuditLog: vi.fn() }));
+// Phase 6: bypass GUC plumbing — invoke the callback with the mocked
+// prisma so test assertions on student.update / studentHistory.create
+// stay valid.
+vi.mock('../lib/tenant-context.js', () => ({
+  requireTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  currentTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  withTenantTx: <T>(p: any, fn: (tx: any) => Promise<T>) => fn(p),
+}));
 vi.mock('../utils/logger.js', () => ({
   default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
@@ -54,12 +62,12 @@ describe('updateStudent (EDIT-01)', () => {
     const updatedStudent = { ...existingStudent, fullName: 'Ana Maria' };
 
     mockPrisma.student.findUnique.mockResolvedValue(existingStudent);
-    mockPrisma.$transaction.mockResolvedValue([updatedStudent, { id: 'hist-001' }]);
+    mockPrisma.student.update.mockResolvedValue(updatedStudent);
 
     const result = await updateStudent('std-001', { fullName: 'Ana Maria' }, 'actor-001');
 
     expect(result.fullName).toBe('Ana Maria');
-    expect(mockPrisma.$transaction).toHaveBeenCalledTimes(1);
+    expect(mockPrisma.student.update).toHaveBeenCalledTimes(1);
 
     // Verify history records field-level diff
     expect(mockPrisma.studentHistory.create).toHaveBeenCalledWith({
@@ -93,7 +101,7 @@ describe('updateStudent (EDIT-01)', () => {
     const updatedStudent = { ...existingStudent, grade: '6th Grade', academicYear: 2026 };
 
     mockPrisma.student.findUnique.mockResolvedValue(existingStudent);
-    mockPrisma.$transaction.mockResolvedValue([updatedStudent, { id: 'hist-002' }]);
+    mockPrisma.student.update.mockResolvedValue(updatedStudent);
 
     const result = await updateStudent(
       'std-002',
@@ -140,7 +148,7 @@ describe('updateStudent (EDIT-01)', () => {
     );
 
     expect(result.fullName).toBe('Ana');
-    expect(mockPrisma.$transaction).not.toHaveBeenCalled();
+    expect(mockPrisma.student.update).not.toHaveBeenCalled();
     expect(mockPrisma.studentHistory.create).not.toHaveBeenCalled();
   });
 
@@ -178,7 +186,7 @@ describe('updateStudent (EDIT-01)', () => {
     const updatedStudent = { ...existingStudent, fullName: 'Clara Mendes' };
 
     mockPrisma.student.findUnique.mockResolvedValue(existingStudent);
-    mockPrisma.$transaction.mockResolvedValue([updatedStudent, { id: 'hist-004' }]);
+    mockPrisma.student.update.mockResolvedValue(updatedStudent);
 
     await updateStudent('std-004', { fullName: 'Clara Mendes' }, 'actor-004');
 
@@ -214,7 +222,7 @@ describe('updateStudent (EDIT-01)', () => {
     const updatedStudent = { ...existingStudent, fullName: 'Diego Santos' };
 
     mockPrisma.student.findUnique.mockResolvedValue(existingStudent);
-    mockPrisma.$transaction.mockResolvedValue([updatedStudent, { id: 'hist-005' }]);
+    mockPrisma.student.update.mockResolvedValue(updatedStudent);
 
     const mockEmit = vi.fn();
     const mockTo = vi.fn(() => ({ emit: mockEmit }));

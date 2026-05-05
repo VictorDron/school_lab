@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { withTenantTx } from '../../lib/tenant-context.js';
 import { AdmissionGateStatus } from '@prisma/client';
 import { createAppError } from '../../lib/error-messages.js';
 import { gateToColumnSlug, canTransition } from './state-machine.js';
@@ -36,15 +37,15 @@ export async function transition(
     if (col) columnId = col.id;
   }
 
-  await prisma.$transaction([
-    prisma.lead.update({
+  await withTenantTx(prisma, async (tx) => {
+    await tx.lead.update({
       where: { id: leadId },
       data: {
         admissionGateStatus: newStatus,
         ...(columnId ? { columnId } : {}),
       },
-    }),
-    prisma.leadHistory.create({
+    });
+    await tx.leadHistory.create({
       data: {
         leadId,
         action: 'ADMISSION_GATE_CHANGED',
@@ -55,8 +56,8 @@ export async function transition(
           ...(notes ? { notes } : {}),
         },
       },
-    }),
-  ]);
+    });
+  });
 
   await runGateNotifications(newStatus, leadId, userId, notes);
   await runAutoAdvance(newStatus, leadId, userId);

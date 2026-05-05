@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { withTenantTx } from '../../lib/tenant-context.js';
 import { AdmissionGateStatus } from '@prisma/client';
 import logger from '../../utils/logger.js';
 import { getNotificationRecipients } from '../../utils/notification-contacts.js';
@@ -27,15 +28,15 @@ async function applyAutoAdvance(
     if (col) colId = col.id;
   }
 
-  await prisma.$transaction([
-    prisma.lead.update({
+  await withTenantTx(prisma, async (tx) => {
+    await tx.lead.update({
       where: { id: leadId },
       data: {
         admissionGateStatus: toStatus,
         ...(colId ? { columnId: colId } : {}),
       },
-    }),
-    prisma.leadHistory.create({
+    });
+    await tx.leadHistory.create({
       data: {
         leadId,
         action: 'ADMISSION_GATE_CHANGED',
@@ -46,8 +47,8 @@ async function applyAutoAdvance(
           notes,
         },
       },
-    }),
-  ]);
+    });
+  });
 }
 
 /**

@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { withTenantTx } from '../../lib/tenant-context.js';
 import { VALID_GRADES } from '../grade-progression.js';
 
 export interface IntegrityIssue {
@@ -282,17 +283,17 @@ export async function repairIntegrity(actorId: string): Promise<{
     }
 
     if (Object.keys(updateData).length > 0) {
-      await prisma.$transaction([
-        prisma.student.update({ where: { id: studentId }, data: updateData }),
-        prisma.studentHistory.create({
+      await withTenantTx(prisma, async (tx) => {
+        await tx.student.update({ where: { id: studentId }, data: updateData });
+        await tx.studentHistory.create({
           data: {
             studentId,
             action: 'INTEGRITY_REPAIR',
             details: { fixes, repairedFields: Object.keys(updateData) },
             actorId,
           },
-        }),
-      ]);
+        });
+      });
       details.push({ studentId, code: student.code, fixes });
     }
   }

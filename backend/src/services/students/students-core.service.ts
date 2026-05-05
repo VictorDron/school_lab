@@ -319,20 +319,21 @@ export async function updateStatus(
 
   const previousStatus = student.status;
 
-  const [updatedStudent] = await prisma.$transaction([
-    prisma.student.update({
+  const updatedStudent = await withTenantTx(prisma, async (tx) => {
+    const updated = await tx.student.update({
       where: { id },
       data: { status: newStatus },
-    }),
-    prisma.studentHistory.create({
+    });
+    await tx.studentHistory.create({
       data: {
         studentId: id,
         action: 'STATUS_CHANGED',
         details: { previousStatus, newStatus, reason: reason ?? null },
         actorId,
       },
-    }),
-  ]);
+    });
+    return updated;
+  });
 
   try {
     await createAuditLog({
@@ -415,17 +416,18 @@ export async function updateStudent(
     updateData[key] = changes[key].to;
   }
 
-  const [updatedStudent] = await prisma.$transaction([
-    prisma.student.update({ where: { id }, data: updateData }),
-    prisma.studentHistory.create({
+  const updatedStudent = await withTenantTx(prisma, async (tx) => {
+    const updated = await tx.student.update({ where: { id }, data: updateData });
+    await tx.studentHistory.create({
       data: {
         studentId: id,
         action: 'DATA_UPDATED',
         details: { changes, fieldCount: Object.keys(changes).length },
         actorId,
       },
-    }),
-  ]);
+    });
+    return updated;
+  });
 
   await syncStudentToLeadChild(id, updateData);
 

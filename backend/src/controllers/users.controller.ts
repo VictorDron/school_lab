@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { z } from "zod";
 import { prisma } from "../config/database.js";
+import { withTenantTx } from "../lib/tenant-context.js";
 import { uploadFile } from "../config/supabase.js";
 import {
   sanitizeUser,
@@ -594,16 +595,17 @@ export async function deleteUser(req: AuthenticatedRequest, res: Response) {
       req,
     );
 
-    // Delete related records that can be safely removed
-    await prisma.$transaction([
-      prisma.moduleAccess.deleteMany({ where: { userId: id } }),
-      prisma.notification.deleteMany({ where: { userId: id } }),
-      prisma.messageRead.deleteMany({ where: { userId: id } }),
-      prisma.channelMember.deleteMany({ where: { userId: id } }),
-      prisma.invite.deleteMany({ where: { invitedBy: id } }),
-      // Delete the user
-      prisma.user.delete({ where: { id } }),
-    ]);
+    // Delete related records that can be safely removed.
+    // Phase 6: GUC-scoped so RLS rejects any cross-tenant user.delete
+    // and the tenanted Notification/Invite/User cleanup.
+    await withTenantTx(prisma, async (tx) => {
+      await tx.moduleAccess.deleteMany({ where: { userId: id } });
+      await tx.notification.deleteMany({ where: { userId: id } });
+      await tx.messageRead.deleteMany({ where: { userId: id } });
+      await tx.channelMember.deleteMany({ where: { userId: id } });
+      await tx.invite.deleteMany({ where: { invitedBy: id } });
+      await tx.user.delete({ where: { id } });
+    });
 
     res.json({
       success: true,

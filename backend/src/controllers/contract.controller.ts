@@ -7,6 +7,7 @@ import { createAuditLog } from '../services/audit.service.js';
 import * as ContractService from '../services/contract.service.js';
 import logger from '../utils/logger.js';
 import { prisma } from '../config/database.js';
+import { withTenantTx } from '../lib/tenant-context.js';
 import { getSignedUrl, extractStoragePath } from '../config/supabase.js';
 
 const createContractSchema = z.object({
@@ -333,12 +334,13 @@ export async function deleteContract(req: AuthenticatedRequest, res: Response) {
       return res.status(400).json({ success: false, error: 'Apenas contratos pendentes podem ser excluídos' });
     }
 
-    // Delete associated records (cascade) and the contract
-    await prisma.$transaction([
-      prisma.contractPayment.deleteMany({ where: { contractId: contract.id } }),
-      prisma.contractSigner.deleteMany({ where: { contractId: contract.id } }),
-      prisma.contract.delete({ where: { id: contract.id } }),
-    ]);
+    // Delete associated records (cascade) and the contract.
+    // Phase 6: GUC-scoped so RLS rejects any cross-tenant contract.delete.
+    await withTenantTx(prisma, async (tx) => {
+      await tx.contractPayment.deleteMany({ where: { contractId: contract.id } });
+      await tx.contractSigner.deleteMany({ where: { contractId: contract.id } });
+      await tx.contract.delete({ where: { id: contract.id } });
+    });
 
     await createAuditLog({
       actorId: req.user!.id,

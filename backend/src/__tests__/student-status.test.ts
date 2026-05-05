@@ -26,6 +26,15 @@ vi.mock('../config/database.js', () => ({
 vi.mock('../config/redis.js', () => ({ redis: { publish: vi.fn() } }));
 vi.mock('../socket/io.js', () => ({ getIO: vi.fn(() => ({ to: vi.fn(() => ({ emit: vi.fn() })) })) }));
 vi.mock('../services/audit.service.js', () => ({ createAuditLog: vi.fn() }));
+// Phase 6: bypass GUC plumbing — delegate to mocked $transaction so the
+// existing test setup keeps intercepting tx calls.
+vi.mock('../lib/tenant-context.js', () => ({
+  requireTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  currentTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  // Treat the mocked prisma as the tx — the callback's tx.X.method calls
+  // land on the same fn() the test asserts against.
+  withTenantTx: <T>(p: any, fn: (tx: any) => Promise<T>) => fn(p),
+}));
 vi.mock('../utils/logger.js', () => ({
   default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
@@ -53,12 +62,12 @@ describe('updateStatus (STU-03)', () => {
     const updatedStudent = { ...existingStudent, status: 'INACTIVE' };
 
     mockPrisma.student.findUnique.mockResolvedValue(existingStudent);
-    mockPrisma.$transaction.mockResolvedValue([updatedStudent, { id: 'hist-001' }]);
+    mockPrisma.student.update.mockResolvedValue(updatedStudent);
 
     const result = await updateStatus('std-001', 'INACTIVE' as any, 'actor-001', 'Mudança administrativa');
 
     expect(result.status).toBe('INACTIVE');
-    expect(mockPrisma.$transaction).toHaveBeenCalledTimes(1);
+    expect(mockPrisma.student.update).toHaveBeenCalledTimes(1);
   });
 
   it('should create StudentHistory entry with previousStatus, newStatus, and reason', async () => {
@@ -73,7 +82,7 @@ describe('updateStatus (STU-03)', () => {
     const updatedStudent = { ...existingStudent, status: 'TRANSFERRED' };
 
     mockPrisma.student.findUnique.mockResolvedValue(existingStudent);
-    mockPrisma.$transaction.mockResolvedValue([updatedStudent, { id: 'hist-002' }]);
+    mockPrisma.student.update.mockResolvedValue(updatedStudent);
 
     await updateStatus('std-002', 'TRANSFERRED' as any, 'actor-002', 'Transferência para outra escola');
 
@@ -124,18 +133,12 @@ describe('updateStatus (STU-03)', () => {
 
     const updatedStudent = { ...existingStudent, status: 'GRADUATED' };
     mockPrisma.student.findUnique.mockResolvedValue(existingStudent);
-
-    let historyCreateArg: any = null;
-    mockPrisma.$transaction.mockImplementation((ops: any[]) => {
-      // ops[1] is the studentHistory.create call — we capture the data passed
-      // by checking the mock for studentHistory.create after the transaction
-      return Promise.resolve([updatedStudent, { id: 'hist-003' }]);
-    });
+    mockPrisma.student.update.mockResolvedValue(updatedStudent);
 
     await updateStatus('std-003', 'GRADUATED' as any, 'actor-xyz', 'Formatura');
 
-    // Verify the transaction was called with the student update and history create operations
-    expect(mockPrisma.$transaction).toHaveBeenCalledTimes(1);
+    // Verify the student update + history create both ran inside withTenantTx
+    expect(mockPrisma.student.update).toHaveBeenCalledTimes(1);
 
     // Verify student.update was called with new status
     expect(mockPrisma.student.update).toHaveBeenCalledWith({
