@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import { redis } from '../../config/redis.js';
 import { AppError } from '../../middlewares/errorHandler.js';
 import { createNotification } from '../notification.service.js';
@@ -104,6 +105,7 @@ export async function getDirectMessagesForUser(userId: string) {
 export async function createChannel(data: CreateChannelData, creatorId: string) {
   const channel = await prisma.channel.create({
     data: {
+      tenantId: requireTenantId(),
       name: data.name,
       description: data.description,
       type: data.type || 'PUBLIC',
@@ -170,6 +172,7 @@ export async function createOrGetDirectMessage(userId: string, targetUserId: str
 
   const dm = await prisma.channel.create({
     data: {
+      tenantId: requireTenantId(),
       name: 'Direct Message',
       type: 'DIRECT',
       createdBy: userId,

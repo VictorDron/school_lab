@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import logger from '../../utils/logger.js';
 import { generateTaskCode } from '../task-boards.service.js';
 import { createBulkNotifications } from '../notification.service.js';
@@ -74,6 +75,7 @@ export async function createApprovalTask(
     // Create the task card
     const card = await prisma.taskCard.create({
       data: {
+        tenantId: requireTenantId(),
         code: generateTaskCode(),
         columnId: pendingColumn.id,
         title: `Aprovação: ${departmentLabel} - ${lead.familyName}`,

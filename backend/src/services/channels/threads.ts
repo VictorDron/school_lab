@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import { AppError } from '../../middlewares/errorHandler.js';
 import { notifyMentionedUsers, parseMentions, resolveUserMentions } from '../mention.service.js';
 import { createNotification } from '../notification.service.js';
@@ -83,6 +84,7 @@ export async function sendThreadReply(
 
   const reply = await prisma.message.create({
     data: {
+      tenantId: requireTenantId(),
       channelId,
       senderId: userId,
       content: data.content,

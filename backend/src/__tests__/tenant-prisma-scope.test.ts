@@ -26,6 +26,12 @@ function attachTenantScopeMiddleware(client: PrismaClient): void {
     'FamilyPriceException',
     'PreReEnrollmentResponse',
     'ReEnrollmentInvite',
+    'Channel',
+    'ModuleChannel',
+    'Message',
+    'Ticket',
+    'TaskBoard',
+    'TaskCard',
   ]);
   const SCOPED_READ_ACTIONS = new Set<Prisma.PrismaAction>([
     'findFirst',
@@ -269,6 +275,63 @@ describe('Prisma auto-scope middleware (Phase 2b)', () => {
       await runQuery(() => client.familyPriceException.findMany());
     });
     expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes Channel.findMany (Phase 2f)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.channel.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes Message.count — closes the search service leak (Phase 2f)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.message.count({ where: { isDeleted: false } }));
+    });
+    expect(captured?.params.args.where).toMatchObject({
+      isDeleted: false,
+      tenantId: 'tenant-A',
+    });
+  });
+
+  it('scopes Ticket.findMany (Phase 2f)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.ticket.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes TaskBoard.findMany (Phase 2f)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.taskBoard.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes TaskCard.count — used by board column views (Phase 2f)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.taskCard.count({ where: { columnId: 'col-1' } }));
+    });
+    expect(captured?.params.args.where).toMatchObject({
+      columnId: 'col-1',
+      tenantId: 'tenant-A',
+    });
+  });
+
+  it('scopes ModuleChannel.findFirst (Phase 2f — replaces old findUnique by triple key)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() =>
+        client.moduleChannel.findFirst({
+          where: { module: 'CRM', entityType: 'Lead', entityId: 'lead-1' },
+        }),
+      );
+    });
+    expect(captured?.params.args.where).toMatchObject({
+      module: 'CRM',
+      entityType: 'Lead',
+      entityId: 'lead-1',
+      tenantId: 'tenant-A',
+    });
   });
 
   it('parallel runs scope correctly to their own tenant', async () => {

@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import { AppError } from '../../middlewares/errorHandler.js';
 import { createDefaultColumns } from './helpers.js';
 
@@ -107,6 +108,7 @@ export async function createBoard(
 
   const board = await prisma.taskBoard.create({
     data: {
+      tenantId: requireTenantId(),
       name: data.name,
       description: data.description,
       channelId: data.visibility === 'CHANNEL' ? data.channelId : undefined,

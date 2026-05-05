@@ -1,5 +1,6 @@
 import { TaskPriority } from '@prisma/client';
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import { AppError } from '../../middlewares/errorHandler.js';
 import { generateTaskCode, postTaskUpdateToChannel } from '../task-boards.service.js';
 import { CARD_LIST_INCLUDE } from './shared.js';
@@ -141,6 +142,7 @@ export async function createCard(
 
   const card = await prisma.taskCard.create({
     data: {
+      tenantId: requireTenantId(),
       code: generateTaskCode(),
       columnId: data.columnId,
       title: data.title,

@@ -57,7 +57,7 @@ export async function postTaskUpdateToChannel(
   try {
     const board = await prisma.taskBoard.findUnique({
       where: { id: boardId },
-      select: { channelId: true },
+      select: { tenantId: true, channelId: true },
     });
 
     if (!board?.channelId) return;
@@ -77,6 +77,7 @@ export async function postTaskUpdateToChannel(
 
     await prisma.message.create({
       data: {
+        tenantId: board.tenantId,
         channelId: board.channelId,
         senderId: systemUser.id,
         content: messageContent,

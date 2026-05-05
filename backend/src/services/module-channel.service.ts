@@ -1,4 +1,5 @@
 import { prisma } from '../config/database.js';
+import { requireTenantId } from '../lib/tenant-context.js';
 import { redis } from '../config/redis.js';
 import { AppModule } from '@prisma/client';
 import logger from '../utils/logger.js';
@@ -24,11 +25,13 @@ export async function createModuleChannel(params: {
     }
 
     const ownerId = memberUserIds[0];
+    const tenantId = requireTenantId();
 
     return await prisma.$transaction(async (tx) => {
       // 1. Create private channel
       const channel = await tx.channel.create({
         data: {
+          tenantId,
           name: channelName,
           type: 'PRIVATE',
           createdBy: ownerId,
@@ -48,6 +51,7 @@ export async function createModuleChannel(params: {
       // 3. Register module-channel link
       await tx.moduleChannel.create({
         data: {
+          tenantId,
           channelId: channel.id,
           module,
           entityType,
@@ -59,6 +63,7 @@ export async function createModuleChannel(params: {
       if (initialMessage) {
         await tx.message.create({
           data: {
+            tenantId,
             channelId: channel.id,
             senderId: ownerId,
             content: initialMessage,
@@ -79,8 +84,13 @@ export async function createModuleChannel(params: {
  */
 export async function getModuleChannel(module: AppModule, entityType: string, entityId: string) {
   try {
-    return await prisma.moduleChannel.findUnique({
-      where: { module_entityType_entityId: { module, entityType, entityId } },
+    // findFirst (not findUnique) so the auto-scope middleware injects
+    // tenantId — the unique constraint is now (tenantId, module,
+    // entityType, entityId), which findUnique can't accept without
+    // tenantId in the where, and we want the lookup to be tenant-aware
+    // automatically.
+    return await prisma.moduleChannel.findFirst({
+      where: { module, entityType, entityId },
       include: { channel: true },
     });
   } catch (error) {
@@ -131,6 +141,7 @@ export async function postToModuleChannel(
 
     const msg = await prisma.message.create({
       data: {
+        tenantId: moduleChannel.tenantId,
         channelId: moduleChannel.channelId,
         senderId,
         content: message,

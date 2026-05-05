@@ -30,6 +30,7 @@ function isRetryableError(error: unknown): boolean {
 //   Phase 2d: Contract, ContractAddendum, ContractDefaultSigner, GateStepConfig
 //   Phase 2e: ReEnrollmentPeriod, PeriodPriceTable, FamilyPriceException,
 //             PreReEnrollmentResponse, ReEnrollmentInvite
+//   Phase 2f: Channel, ModuleChannel, Message, Ticket, TaskBoard, TaskCard
 const TENANT_SCOPED_MODELS = new Set<Prisma.ModelName>([
   'Lead',
   'KanbanColumn',
@@ -44,6 +45,12 @@ const TENANT_SCOPED_MODELS = new Set<Prisma.ModelName>([
   'FamilyPriceException',
   'PreReEnrollmentResponse',
   'ReEnrollmentInvite',
+  'Channel',
+  'ModuleChannel',
+  'Message',
+  'Ticket',
+  'TaskBoard',
+  'TaskCard',
 ]);
 
 // Read-style actions where merging tenantId into args.where is safe.

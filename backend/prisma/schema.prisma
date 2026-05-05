@@ -593,7 +593,7 @@ model Tenant {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  // Relations — Phase 0/2a/2b/2c/2d/2e wires these; later phases extend.
+  // Relations — Phase 0/2a/2b/2c/2d/2e/2f wires these; later phases extend.
   settings                 SystemSettings?
   users                    User[]
   invites                  Invite[]
@@ -610,6 +610,12 @@ model Tenant {
   familyPriceExceptions    FamilyPriceException[]
   preReEnrollmentResponses PreReEnrollmentResponse[]
   reEnrollmentInvites      ReEnrollmentInvite[]
+  channels                 Channel[]
+  moduleChannels           ModuleChannel[]
+  messages                 Message[]
+  tickets                  Ticket[]
+  taskBoards               TaskBoard[]
+  taskCards                TaskCard[]
 
   @@index([slug])
 }
@@ -799,6 +805,11 @@ model SystemSettings {
 
 model Channel {
   id          String      @id @default(uuid())
+  // Tenancy: per-tenant channel. Children (members, messages, tickets,
+  // boards) derive tenant scope through this FK; Message + Ticket +
+  // TaskBoard + ModuleChannel are also denormalized for direct
+  // middleware scoping.
+  tenantId    String
   name        String
   description String?
   type        ChannelType @default(PUBLIC)
@@ -807,6 +818,7 @@ model Channel {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   members        ChannelMember[]
   messages       Message[]
   taskBoards     TaskBoard[]
@@ -814,6 +826,7 @@ model Channel {
   tickets        Ticket[]
   moduleChannel  ModuleChannel?
 
+  @@index([tenantId])
   @@index([type])
   @@index([createdBy])
 }
@@ -837,6 +850,10 @@ model ChannelMember {
 
 model Message {
   id          String      @id @default(uuid())
+  // Tenancy: denormalized from Channel. Avoids leaking aggregates from
+  // Message.count calls that don't always carry channelId in the where
+  // (search service); the auto-scope middleware filters by tenantId.
+  tenantId    String
   channelId   String
   senderId    String
   content     String
@@ -855,6 +872,7 @@ model Message {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant    Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   channel   Channel           @relation(fields: [channelId], references: [id], onDelete: Cascade)
   sender    User              @relation(fields: [senderId], references: [id], onDelete: Restrict)
   pinnedBy  User?             @relation("MessagePinner", fields: [pinnedById], references: [id], onDelete: SetNull)
@@ -864,6 +882,7 @@ model Message {
   reactions MessageReaction[]
   mentions  MessageMention[]
 
+  @@index([tenantId])
   @@index([channelId])
   @@index([senderId])
   @@index([createdAt])
@@ -887,7 +906,11 @@ model MessageRead {
 
 model Ticket {
   id              String           @id @default(uuid())
-  code            String           @unique
+  // Tenancy: per-tenant tickets. The `code` (e.g. TK-20260101-0001)
+  // becomes per-tenant unique so two tenants can each have a TK-* with
+  // the same number.
+  tenantId        String
+  code            String
   title           String
   description     String
   department      TicketDepartment
@@ -903,12 +926,15 @@ model Ticket {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
+  tenant   Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   creator  User             @relation("TicketCreator", fields: [createdById], references: [id], onDelete: Restrict)
   assignee User?            @relation("TicketAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
   channel  Channel?         @relation(fields: [channelId], references: [id], onDelete: SetNull)
   comments TicketComment[]
   activity TicketActivity[]
 
+  @@unique([tenantId, code])
+  @@index([tenantId])
   @@index([code])
   @@index([status])
   @@index([department])
@@ -1220,15 +1246,21 @@ model InventoryItem {
 
 model ModuleChannel {
   id         String    @id @default(uuid())
+  // Tenancy: denormalized from Channel. Unique constraint widens to
+  // (tenantId, module, entityType, entityId) so different tenants can
+  // each own their own (module, entity) → channel mappings.
+  tenantId   String
   channelId  String    @unique
   module     AppModule
   entityType String
   entityId   String
   createdAt  DateTime  @default(now())
 
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
 
-  @@unique([module, entityType, entityId])
+  @@unique([tenantId, module, entityType, entityId])
+  @@index([tenantId])
   @@index([module])
   @@index([entityType, entityId])
 }
@@ -2131,6 +2163,10 @@ model MessageMention {
 
 model TaskBoard {
   id          String              @id @default(uuid())
+  // Tenancy: per-tenant board. Children (columns, members, labels)
+  // and grand-children (cards via column, assignments via card)
+  // derive scope through this FK.
+  tenantId    String
   name        String
   description String?
   channelId   String?
@@ -2140,12 +2176,14 @@ model TaskBoard {
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
 
+  tenant  Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   channel Channel?          @relation(fields: [channelId], references: [id], onDelete: SetNull)
   creator User              @relation("BoardCreator", fields: [createdById], references: [id], onDelete: Restrict)
   columns TaskColumn[]
   members TaskBoardMember[]
   labels  TaskLabel[]
 
+  @@index([tenantId])
   @@index([channelId])
   @@index([createdById])
 }
@@ -2185,7 +2223,10 @@ model TaskColumn {
 
 model TaskCard {
   id          String         @id @default(uuid())
-  code        String         @unique
+  // Tenancy: denormalized from TaskBoard via TaskColumn. The `code`
+  // (TC-*) becomes per-tenant unique.
+  tenantId    String
+  code        String
   columnId    String
   title       String
   description String?
@@ -2206,6 +2247,7 @@ model TaskCard {
   sourceType   String?
   gateApproval AdmissionGateApproval?
 
+  tenant         Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   column         TaskColumn       @relation(fields: [columnId], references: [id], onDelete: Cascade)
   assignees      TaskAssignment[]
   labels         TaskCardLabel[]
@@ -2214,6 +2256,8 @@ model TaskCard {
   activity       TaskActivity[]
   calendarEvents CalendarEvent[]  @relation("TaskCalEvents")
 
+  @@unique([tenantId, code])
+  @@index([tenantId])
   @@index([columnId])
   @@index([code])
   @@index([dueDate])

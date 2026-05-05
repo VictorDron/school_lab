@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import { redis } from '../../config/redis.js';
 import { AppError } from '../../middlewares/errorHandler.js';
 import logger from '../../utils/logger.js';
@@ -93,6 +94,7 @@ export async function sendMessage(
 
   const message = await prisma.message.create({
     data: {
+      tenantId: requireTenantId(),
       channelId,
       senderId: userId,
       content: data.content,

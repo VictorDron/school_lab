@@ -148,8 +148,12 @@ export async function createTicket(req: AuthenticatedRequest, res: Response) {
   try {
     const data = createTicketSchema.parse(req.body);
 
+    if (!req.tenantId) {
+      return res.status(401).json({ success: false, error: 'Tenant não resolvido' });
+    }
     const ticket = await prisma.ticket.create({
       data: {
+        tenantId: req.tenantId,
         code: generateCode('TK'),
         title: data.title,
         description: data.description,
