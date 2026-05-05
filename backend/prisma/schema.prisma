@@ -1,0 +1,2820 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== ENUMS ====================
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  STAFF
+  COORDINATOR
+  TEACHER
+  SECRETARY
+  IT
+  MAINTENANCE
+  CLEANING
+  PURCHASING
+  FINANCE
+  ADMISSIONS
+  PSYCHOLOGY
+  HEALTH
+  LEGAL
+  DIRECTOR
+}
+
+enum UserStatus {
+  ACTIVE
+  PENDING
+  ARCHIVED
+}
+
+enum AccessLevel {
+  NONE
+  VIEW
+  EDIT
+  ADMIN
+}
+
+enum AppModule {
+  COMMUNICATION
+  PROCUREMENT
+  ASSETS
+  CRM
+  GED
+  ADMIN
+  STUDENT_MANAGEMENT
+}
+
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  TRANSFERRED
+  GRADUATED
+  CANCELLED
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketDepartment {
+  IT
+  MAINTENANCE
+  CLEANING
+  SECRETARIAT
+  GENERAL
+}
+
+enum ChannelType {
+  PUBLIC
+  PRIVATE
+  DIRECT
+}
+
+enum PurchaseStatus {
+  DRAFT
+  PENDING_MANAGER
+  PENDING_FINANCE
+  APPROVED
+  REJECTED
+  PURCHASED
+  CANCELLED
+}
+
+enum PurchasePriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum AssetStatus {
+  AVAILABLE
+  IN_USE
+  MAINTENANCE
+  DECOMMISSIONED
+}
+
+enum InventorySessionStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum InventoryItemStatus {
+  PENDING
+  FOUND
+  NOT_FOUND
+  DISCREPANCY
+}
+
+enum LeadSource {
+  WEBSITE
+  REFERRAL
+  SOCIAL_MEDIA
+  EVENT
+  ADVERTISEMENT
+  WALK_IN
+  PHONE
+  EMAIL
+  OTHER
+  IMPORT
+}
+
+enum CommentType {
+  GENERAL
+  POSITIVE
+  CONCERN
+  INTERNAL
+}
+
+enum LeadOriginType {
+  ADMIN_CREATED // Admin criou manualmente no CRM
+  IMPORTED // Importado de planilha/sistema externo (futuro)
+}
+
+enum ApplicationStatus {
+  PENDING // Lead criado, link ainda não enviado
+  LINK_SENT // Link enviado, aguardando família preencher
+  FORM_RECEIVED // Família preencheu o formulário
+  NOT_REQUIRED // Admin decidiu não enviar link (dados já completos)
+}
+
+enum EnrollmentFormStatus {
+  NOT_STARTED // Formulário de matrícula ainda não iniciado
+  LINK_SENT // Link enviado, aguardando família preencher
+  FORM_RECEIVED // Família preencheu o formulário de matrícula
+}
+
+enum NotificationPreference {
+  PRIMARY // Usa primaryContactEmail (backward compat)
+  MOTHER // Emails vão para a mãe
+  FATHER // Emails vão para o pai
+  BOTH // Emails vão para ambos
+}
+
+enum DocumentRequestStatus {
+  PENDING
+  RECEIVED
+  REJECTED
+  WAIVED
+}
+
+enum DocumentSecurityLevel {
+  PUBLIC
+  INTERNAL
+  SENSITIVE
+  RESTRICTED
+  CONFIDENTIAL
+}
+
+enum VisitStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum VivenciaStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum EvaluationDecision {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum CrmEventType {
+  VISIT
+  VIVENCIA
+}
+
+enum AdmissionGateStatus {
+  NOT_STARTED
+  FORM_RECEIVED
+  FORM_APPROVED
+  VISIT_SCHEDULED
+  VISIT_COMPLETED
+  INTERVIEW_COMPLETED
+  VISIT_APPROVED
+  DOCS_REQUESTED
+  DOCS_RECEIVED
+  VIVENCIA_SCHEDULED
+  VIVENCIA_COMPLETED
+  EVALUATION_PENDING
+  EVALUATION_COMPLETED
+  APPROVED
+  ENROLLMENT_PENDING
+  ENROLLMENT_COMPLETED
+  CONTRACT_PENDING
+  CONTRACT_SIGNED
+  FINANCIAL_APPROVED
+  ENROLLED
+  REJECTED
+}
+
+enum AdmissionDepartment {
+  ADMISSIONS
+  PSYCHOLOGY
+  HEALTH
+  SECRETARIAT
+  COORDINATION
+  FINANCE
+  LEGAL
+  DIRECTOR
+}
+
+enum GateApprovalDecision {
+  PENDING
+  APPROVED
+  REJECTED
+  CONDITIONAL
+  ESCALATED
+}
+
+enum ContractStatus {
+  DRAFT
+  PENDING_LEGAL
+  PENDING_FINANCIAL
+  SENT
+  SIGNED
+  ACTIVE
+  CANCELLED
+}
+
+enum ContractSignerRole {
+  PARENT
+  GUARDIAN
+  SCHOOL_REPRESENTATIVE
+  WITNESS
+}
+
+enum ClickSignEnvelopeStatus {
+  CREATED
+  RUNNING
+  COMPLETED
+  CANCELLED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum FinancialAnalysisStatus {
+  PENDING
+  IN_ANALYSIS
+  APPROVED
+  REJECTED
+}
+
+enum EscalationSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// Communication Module - Enhanced
+enum MessageType {
+  TEXT
+  SYSTEM
+  TASK_REF
+}
+
+// Task Management
+enum TaskBoardVisibility {
+  CHANNEL
+  PRIVATE
+  PUBLIC
+}
+
+enum TaskPriority {
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskCardStatus {
+  OPEN
+  COMPLETED
+  ARCHIVED
+}
+
+// Calendar
+enum CalendarEventType {
+  MEETING
+  DEADLINE
+  REMINDER
+  CUSTOM
+}
+
+enum RSVPStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  TENTATIVE
+}
+
+enum RecurrenceFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum MaintenanceType {
+  PREVENTIVE
+  CORRECTIVE
+  INSPECTION
+  CALIBRATION
+  CLEANING
+}
+
+enum MaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  OVERDUE
+}
+
+enum AuditAction {
+  // Auth
+  LOGIN_SUCCESS
+  LOGIN_FAILURE
+  LOGOUT
+  PASSWORD_RESET
+  PASSWORD_CHANGED
+  PASSWORD_CHANGE_FAILURE
+  PROFILE_UPDATED
+
+  // Users
+  USER_CREATED
+  USER_UPDATED
+  USER_ARCHIVED
+  USER_ACTIVATED
+  USER_DELETED
+  INVITE_SENT
+  INVITE_ACCEPTED
+
+  // Communication
+  CHANNEL_CREATED
+  CHANNEL_UPDATED
+  CHANNEL_DELETED
+  DM_CREATED
+  MESSAGE_SENT
+  MESSAGE_EDITED
+  MESSAGE_DELETED
+  MESSAGE_PINNED
+  REACTION_ADDED
+  TICKET_CREATED
+  TICKET_UPDATED
+  TICKET_ASSIGNED
+  TICKET_COMMENTED
+  TICKET_CLOSED
+
+  // CRM — Leads
+  LEAD_CREATED
+  LEAD_UPDATED
+  LEAD_STATUS_CHANGED
+  LEAD_DELETED
+  APPLICATION_STATUS_CHANGED
+  APPLICATION_LINK_GENERATED
+  APPLICATION_LINK_EMAILED
+  APPLICATION_LINK_REVOKED
+
+  // CRM — Enrollment
+  ENROLLMENT_LINK_GENERATED
+  ENROLLMENT_LINK_EMAILED
+  ENROLLMENT_LINK_REVOKED
+  ENROLLMENT_TOKEN_REVOKED
+  ENROLLMENT_ACCESSED
+  ENROLLMENT_EXPIRED
+  ENROLLMENT_FORM_SUBMITTED
+  ENROLLMENT_SUBMITTED
+  ENROLLMENT_GENERATED
+  ENROLLMENT_REVOKED
+  ENROLLMENT_DOCUMENTS_UPLOADED
+  DOCUMENTS_UPLOADED_VIA_PUBLIC_FORM
+  DOCUMENT_DELETED_VIA_PUBLIC_FORM
+
+  // CRM — Admission Gates
+  ADMISSION_GATE_CHANGED
+  VISIT_SCHEDULED
+  VISIT_COMPLETED
+  VISIT_CANCELLED
+  VIVENCIA_SCHEDULED
+  VIVENCIA_COMPLETED
+  VIVENCIA_CANCELLED
+  EVALUATION_CREATED
+  EVALUATION_UPDATED
+
+  // CRM — Contracts
+  CONTRACT_CREATED
+  CONTRACT_SENT_FOR_SIGNATURE
+  CONTRACT_LEGAL_APPROVAL
+  CONTRACT_FINANCIAL_APPROVAL
+  CONTRACT_DOCUMENT_GENERATED
+  CONTRACT_CANCELLED
+
+  // CRM — Escalations
+  ESCALATION_CREATED
+  ESCALATION_RESOLVED
+
+  // CRM — Financial
+  FINANCIAL_ANALYSIS_CREATED
+  FINANCIAL_ANALYSIS_UPDATED
+  FINANCIAL_ANALYSIS_APPROVED
+  PAYMENT_RECORDED
+
+  // Kanban
+  KANBAN_COLUMN_CREATED
+  KANBAN_COLUMN_UPDATED
+  KANBAN_COLUMN_DELETED
+  KANBAN_COLUMN_REORDERED
+
+  // Documents
+  DOCUMENT_UPLOADED
+  DOCUMENT_UPDATED
+  DOCUMENT_VIEWED
+  DOCUMENT_DELETED
+
+  // Procurement
+  PURCHASE_CREATED
+  PURCHASE_UPDATED
+  PURCHASE_SUBMITTED
+  PURCHASE_APPROVED
+  PURCHASE_REJECTED
+  PURCHASE_EXECUTED
+  PURCHASE_ORDER_CREATED
+  PURCHASE_CANCELLED
+  SUPPLIER_CREATED
+  SUPPLIER_UPDATED
+  SUPPLIER_ARCHIVED
+
+  // Assets
+  ASSET_CREATED
+  ASSET_UPDATED
+  ASSET_MOVED
+  ASSET_ASSIGNED
+  ASSET_UNASSIGNED
+  ASSET_DECOMMISSIONED
+  ASSET_RESPONSIBLE_REVOKED
+  INVENTORY_STARTED
+  INVENTORY_COMPLETED
+  INVENTORY_ITEM_CHECKED
+  MAINTENANCE_CREATED
+  MAINTENANCE_UPDATED
+  MAINTENANCE_COMPLETED
+  CATEGORY_CREATED
+  CATEGORY_UPDATED
+  CATEGORY_DELETED
+  LOCATION_CREATED
+  LOCATION_UPDATED
+  LOCATION_DELETED
+
+  // Tasks
+  TASK_BOARD_CREATED
+  TASK_BOARD_UPDATED
+  TASK_CARD_CREATED
+  TASK_CARD_UPDATED
+  TASK_CARD_MOVED
+  TASK_CARD_COMPLETED
+
+  // Calendar
+  CALENDAR_EVENT_CREATED
+  CALENDAR_EVENT_UPDATED
+  CALENDAR_EVENT_DELETED
+
+  // Settings
+  SETTINGS_UPDATED
+
+  // LGPD / Consentimento Parental
+  PARENTAL_CONSENT_RECORDED
+
+  // Students
+  STUDENT_CREATED
+  STUDENT_STATUS_CHANGED
+  STUDENT_UPDATED
+
+  // Bulk Import
+  BULK_IMPORT
+
+  // Re-enrollment
+  // Migration: 20260402000000_add_reenrollment_audit_actions (manual)
+  RE_ENROLLMENT_INVITE_SENT
+  RE_ENROLLMENT_FORM_SUBMITTED
+  RE_ENROLLMENT_DATA_UPDATED
+  RE_ENROLLMENT_PERIOD_DELETED
+}
+
+// ==================== RE-ENROLLMENT ENUMS ====================
+
+enum ReEnrollmentPeriodStatus {
+  DRAFT
+  OPEN
+  CLOSED
+  FINALIZED
+}
+
+enum PreReEnrollmentResponseStatus {
+  PENDING
+  AGREED
+  DISAGREED
+  NEGOTIATING
+  NEGOTIATED
+}
+
+enum ReEnrollmentInviteStatus {
+  PENDING
+  SENT
+  OPENED
+  CONFIRMED
+  DECLINED
+  EXPIRED
+}
+
+enum ReEnrollmentGateStatus {
+  CONVITE_ENVIADO
+  FORMULARIO_CONFIRMADO
+  DOCS_APROVADOS
+  CONTRATO_PENDENTE
+  CONTRATO_ASSINADO
+  TAXA_PAGA
+  REMATRICULADO
+  RECUSADO
+}
+
+enum EnrollmentType {
+  FIRST
+  RENEWAL
+}
+
+// ==================== CORE MODELS ====================
+
+model User {
+  id                    String     @id @default(uuid())
+  email                 String     @unique
+  passwordHash          String?
+  displayName           String
+  fullName              String
+  avatarUrl             String?
+  dateOfBirth           DateTime?
+  role                  UserRole   @default(STAFF)
+  area                  String?
+  status                UserStatus @default(PENDING)
+  lastLoginAt           DateTime?
+  emailVerified              Boolean    @default(false)
+  emailNotificationsEnabled  Boolean    @default(false)
+  requirePasswordChange      Boolean    @default(false)
+  passwordResetToken    String?    @unique
+  passwordResetExpires  DateTime?
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+
+  // Relations
+  moduleAccess         ModuleAccess[]
+  createdTickets       Ticket[]               @relation("TicketCreator")
+  assignedTickets      Ticket[]               @relation("TicketAssignee")
+  ticketComments       TicketComment[]
+  channelMemberships   ChannelMember[]
+  sentMessages         Message[]
+  messageReads         MessageRead[]
+  createdPurchases     PurchaseRequest[]      @relation("PurchaseCreator")
+  approvalActions      ApprovalAction[]
+  createdAssets        Asset[]                @relation("AssetCreator")
+  responsibleAssets    Asset[]                @relation("AssetResponsible")
+  assetMovements       AssetMovement[]
+  inventorySessions    InventorySession[]
+  inventoryItems       InventoryItem[]
+  createdLeads         Lead[]                 @relation("LeadCreator")
+  leadComments         LeadComment[]
+  uploadedDocuments    Document[]
+  notifications        Notification[]
+  auditLogs            AuditLog[]
+  invitesSent          Invite[]
+  leadViews            LeadView[]
+  createdEvents        CrmEvent[]             @relation("EventCreator")
+  assignedEvents       CrmEvent[]             @relation("EventTeacher")
+  evaluationsCreated   ExperienceEvaluation[] @relation("EvaluationCreator")
+  evaluationDecisions  ExperienceEvaluation[] @relation("EvaluationDecider")
+  evaluationsEdited    ExperienceEvaluation[] @relation("EvaluationEditor")
+  executedPurchases    PurchaseOrder[]        @relation("ExecutedPurchases")
+  maintenanceCreated   AssetMaintenance[]     @relation("MaintenanceCreatedBy")
+  maintenanceCompleted AssetMaintenance[]     @relation("MaintenanceCompletedBy")
+  completedInventories InventorySession[]     @relation("InventoryCompletedBy")
+
+  // Communication - Enhanced
+  messageReactions MessageReaction[]
+  messageMentions  MessageMention[]
+  pinnedMessages   Message[]         @relation("MessagePinner")
+
+  // Task Management
+  taskAssignments   TaskAssignment[]
+  taskComments      TaskComment[]
+  createdTaskBoards TaskBoard[]       @relation("BoardCreator")
+  taskBoardMembers  TaskBoardMember[]
+
+  // Calendar
+  createdCalendarEvents CalendarEvent[]            @relation("CalEventCreator")
+  eventParticipations   CalendarEventParticipant[]
+
+  // Gate approvals & contracts
+  gateApprovalDecisions      AdmissionGateApproval[]   @relation("GateApprovalDecider")
+  contractLegalApprovals     Contract[]                @relation("ContractLegalApprover")
+  contractFinancialApprovals Contract[]                @relation("ContractFinancialApprover")
+  escalationsRaised          CriticalIssueEscalation[] @relation("EscalationRaiser")
+  escalationsResolved        CriticalIssueEscalation[] @relation("EscalationResolver")
+
+  // Import
+  importHistories ImportHistory[]
+
+  // Re-enrollment
+  reEnrollmentPeriods    ReEnrollmentPeriod[]   @relation("PeriodCreator")
+  familyPriceExceptions  FamilyPriceException[] @relation("ExceptionCreator")
+  exceptionApprovals     FamilyPriceException[] @relation("ExceptionApprover")
+  negotiationApprovals           PreReEnrollmentResponse[] @relation("NegotiationApprover")
+  contractNegotiationApprovals   Contract[]                @relation("ContractNegotiationApprover")
+  feePaymentsRegistered          EnrollmentFeePayment[]    @relation("FeePaymentRegistrar")
+
+  @@index([email])
+  @@index([status])
+  @@index([role])
+}
+
+model ModuleAccess {
+  id          String      @id @default(uuid())
+  userId      String
+  module      AppModule
+  accessLevel AccessLevel @default(VIEW)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, module])
+  @@index([userId])
+}
+
+model Invite {
+  id        String    @id @default(uuid())
+  email     String
+  name      String?
+  role      UserRole  @default(STAFF)
+  token     String    @unique
+  invitedBy String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  inviter User @relation(fields: [invitedBy], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([email])
+}
+
+model SystemSettings {
+  id              String   @id @default(uuid())
+  schoolName      String   @default("RISYS School")
+  logoUrl         String?
+  defaultLanguage String   @default("pt")
+  dateFormat      String   @default("DD/MM/YYYY")
+  currency        String   @default("BRL")
+  timezone        String   @default("America/Sao_Paulo")
+  feeTable        Json?
+  foodTable       Json?
+  discountOptions Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ==================== COMMUNICATION MODULE ====================
+
+model Channel {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  type        ChannelType @default(PUBLIC)
+  createdBy   String
+  isArchived  Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  members        ChannelMember[]
+  messages       Message[]
+  taskBoards     TaskBoard[]
+  calendarEvents CalendarEvent[] @relation("ChannelCalEvents")
+  tickets        Ticket[]
+  moduleChannel  ModuleChannel?
+
+  @@index([type])
+  @@index([createdBy])
+}
+
+model ChannelMember {
+  id        String   @id @default(uuid())
+  channelId String
+  userId    String
+  isOwner   Boolean  @default(false)
+  isAdmin   Boolean  @default(false)
+  isMuted   Boolean  @default(false)
+  joinedAt  DateTime @default(now())
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([channelId, userId])
+  @@index([channelId])
+  @@index([userId])
+}
+
+model Message {
+  id          String      @id @default(uuid())
+  channelId   String
+  senderId    String
+  content     String
+  attachments Json?
+  isEdited    Boolean     @default(false)
+  isDeleted   Boolean     @default(false)
+  isPinned    Boolean     @default(false)
+  pinnedById  String?
+  pinnedAt    DateTime?
+  messageType MessageType @default(TEXT)
+  metadata    Json?
+
+  // Threading
+  parentId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  channel   Channel           @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  sender    User              @relation(fields: [senderId], references: [id], onDelete: Restrict)
+  pinnedBy  User?             @relation("MessagePinner", fields: [pinnedById], references: [id], onDelete: SetNull)
+  parent    Message?          @relation("ThreadReplies", fields: [parentId], references: [id], onDelete: SetNull)
+  replies   Message[]         @relation("ThreadReplies")
+  reads     MessageRead[]
+  reactions MessageReaction[]
+  mentions  MessageMention[]
+
+  @@index([channelId])
+  @@index([senderId])
+  @@index([createdAt])
+  @@index([parentId])
+  @@index([isPinned])
+}
+
+model MessageRead {
+  id        String   @id @default(uuid())
+  messageId String
+  userId    String
+  readAt    DateTime @default(now())
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
+  @@index([messageId])
+  @@index([userId])
+}
+
+model Ticket {
+  id              String           @id @default(uuid())
+  code            String           @unique
+  title           String
+  description     String
+  department      TicketDepartment
+  priority        TicketPriority   @default(MEDIUM)
+  status          TicketStatus     @default(OPEN)
+  createdById     String
+  assigneeId      String?
+  channelId       String?
+  sourceMessageId String?
+  attachments     Json?
+  resolvedAt      DateTime?
+  closedAt        DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  creator  User             @relation("TicketCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  assignee User?            @relation("TicketAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  channel  Channel?         @relation(fields: [channelId], references: [id], onDelete: SetNull)
+  comments TicketComment[]
+  activity TicketActivity[]
+
+  @@index([code])
+  @@index([status])
+  @@index([department])
+  @@index([createdById])
+  @@index([assigneeId])
+  @@index([channelId])
+}
+
+model TicketComment {
+  id          String   @id @default(uuid())
+  ticketId    String
+  userId      String
+  content     String
+  attachments Json?
+  isInternal  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([ticketId])
+  @@index([userId])
+}
+
+model TicketActivity {
+  id        String   @id @default(uuid())
+  ticketId  String
+  action    String
+  details   Json?
+  actorId   String?
+  createdAt DateTime @default(now())
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+}
+
+// ==================== PROCUREMENT MODULE ====================
+
+model PurchaseRequest {
+  id            String           @id @default(uuid())
+  code          String           @unique
+  title         String
+  department    String
+  priority      PurchasePriority @default(NORMAL)
+  status        PurchaseStatus   @default(DRAFT)
+  justification String
+  totalAmount   Decimal          @db.Decimal(12, 2)
+  createdById   String
+  attachments   Json?
+  notes         String?
+  submittedAt   DateTime?
+  approvedAt    DateTime?
+  rejectedAt    DateTime?
+  purchasedAt   DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  creator         User             @relation("PurchaseCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  items           PurchaseItem[]
+  approvalActions ApprovalAction[]
+  purchaseOrder   PurchaseOrder?
+
+  @@index([code])
+  @@index([status])
+  @@index([department])
+  @@index([createdById])
+}
+
+model PurchaseItem {
+  id                 String  @id @default(uuid())
+  purchaseRequestId  String
+  description        String
+  quantity           Int
+  unit               String  @default("UN")
+  estimatedUnitPrice Decimal @db.Decimal(12, 2)
+  totalPrice         Decimal @db.Decimal(12, 2)
+  notes              String?
+
+  purchaseRequest PurchaseRequest @relation(fields: [purchaseRequestId], references: [id], onDelete: Cascade)
+
+  @@index([purchaseRequestId])
+}
+
+model ApprovalAction {
+  id                String   @id @default(uuid())
+  purchaseRequestId String
+  userId            String
+  action            String
+  comments          String?
+  previousStatus    String
+  newStatus         String
+  createdAt         DateTime @default(now())
+
+  purchaseRequest PurchaseRequest @relation(fields: [purchaseRequestId], references: [id], onDelete: Cascade)
+  user            User            @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([purchaseRequestId])
+  @@index([userId])
+}
+
+model PurchaseOrder {
+  id                String   @id @default(uuid())
+  purchaseRequestId String   @unique
+  supplierId        String?
+  executedById      String?
+  invoiceNumber     String?
+  invoiceUrl        String?
+  totalAmount       Decimal  @db.Decimal(12, 2)
+  autoCreateAssets  Boolean  @default(false)
+  notes             String?
+  executedAt        DateTime @default(now())
+
+  purchaseRequest PurchaseRequest @relation(fields: [purchaseRequestId], references: [id], onDelete: Cascade)
+  supplier        Supplier?       @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  executedBy      User?           @relation("ExecutedPurchases", fields: [executedById], references: [id], onDelete: SetNull)
+  assets          Asset[]         @relation("PurchaseOrderAssets")
+
+  @@index([purchaseRequestId])
+  @@index([executedById])
+}
+
+model Supplier {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?
+  phone     String?
+  cnpj      String?
+  address   String?
+  notes     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchaseOrders PurchaseOrder[]
+
+  @@index([name])
+}
+
+// ==================== ASSETS MODULE ====================
+
+model AssetCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  icon        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assets            Asset[]
+  inventorySessions InventorySession[] @relation("InventoryCategory")
+}
+
+model AssetLocation {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  parentId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  parent            AssetLocation?     @relation("LocationHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children          AssetLocation[]    @relation("LocationHierarchy")
+  assets            Asset[]
+  movementsFrom     AssetMovement[]    @relation("FromLocation")
+  movementsTo       AssetMovement[]    @relation("ToLocation")
+  inventorySessions InventorySession[] @relation("InventoryLocation")
+
+  @@index([parentId])
+}
+
+model Asset {
+  id               String      @id @default(uuid())
+  code             String      @unique
+  name             String
+  description      String?
+  categoryId       String
+  locationId       String
+  status           AssetStatus @default(AVAILABLE)
+  brand            String?
+  model            String?
+  serialNumber     String?
+  acquisitionDate  DateTime?
+  acquisitionValue Decimal?    @db.Decimal(12, 2)
+  currentValue     Decimal?    @db.Decimal(12, 2)
+  warranty         DateTime?
+  photoUrl         String?
+  qrCodeUrl        String?
+  responsibleId    String?
+  createdById      String
+  purchaseOrderId  String?
+  depreciationRate Float?
+  metadata         Json?
+  notes            String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  category       AssetCategory      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  location       AssetLocation      @relation(fields: [locationId], references: [id], onDelete: Restrict)
+  responsible    User?              @relation("AssetResponsible", fields: [responsibleId], references: [id], onDelete: SetNull)
+  createdBy      User               @relation("AssetCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  purchaseOrder  PurchaseOrder?     @relation("PurchaseOrderAssets", fields: [purchaseOrderId], references: [id], onDelete: SetNull)
+  movements      AssetMovement[]
+  maintenance    AssetMaintenance[]
+  inventoryItems InventoryItem[]
+
+  @@index([code])
+  @@index([status])
+  @@index([categoryId])
+  @@index([locationId])
+  @@index([responsibleId])
+  @@index([purchaseOrderId])
+}
+
+model AssetMovement {
+  id             String   @id @default(uuid())
+  assetId        String
+  fromLocationId String
+  toLocationId   String
+  reason         String?
+  movedById      String
+  movedAt        DateTime @default(now())
+
+  asset        Asset         @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  fromLocation AssetLocation @relation("FromLocation", fields: [fromLocationId], references: [id], onDelete: Restrict)
+  toLocation   AssetLocation @relation("ToLocation", fields: [toLocationId], references: [id], onDelete: Restrict)
+  movedBy      User          @relation(fields: [movedById], references: [id], onDelete: Restrict)
+
+  @@index([assetId])
+}
+
+model AssetMaintenance {
+  id            String            @id @default(uuid())
+  assetId       String
+  type          MaintenanceType   @default(CORRECTIVE)
+  description   String
+  cost          Decimal?          @db.Decimal(12, 2)
+  scheduledDate DateTime?
+  startDate     DateTime?
+  endDate       DateTime?
+  status        MaintenanceStatus @default(SCHEDULED)
+  priority      PurchasePriority  @default(NORMAL)
+  vendor        String?
+  notes         String?
+  createdById   String?
+  completedById String?
+  attachments   Json?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  asset       Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  createdBy   User? @relation("MaintenanceCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  completedBy User? @relation("MaintenanceCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+
+  @@index([assetId])
+  @@index([status])
+  @@index([scheduledDate])
+}
+
+model InventorySession {
+  id            String                 @id @default(uuid())
+  code          String                 @unique
+  name          String
+  description   String?
+  status        InventorySessionStatus @default(DRAFT)
+  startedById   String
+  locationId    String?
+  categoryId    String?
+  completedById String?
+  totalAssets   Int                    @default(0)
+  foundCount    Int                    @default(0)
+  missingCount  Int                    @default(0)
+  notes         String?
+  startedAt     DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+
+  startedBy   User            @relation(fields: [startedById], references: [id], onDelete: Restrict)
+  completedBy User?           @relation("InventoryCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+  location    AssetLocation?  @relation("InventoryLocation", fields: [locationId], references: [id], onDelete: SetNull)
+  category    AssetCategory?  @relation("InventoryCategory", fields: [categoryId], references: [id], onDelete: SetNull)
+  items       InventoryItem[]
+
+  @@index([code])
+  @@index([status])
+  @@index([locationId])
+  @@index([categoryId])
+}
+
+model InventoryItem {
+  id          String              @id @default(uuid())
+  sessionId   String
+  assetId     String
+  status      InventoryItemStatus @default(PENDING)
+  checkedById String?
+  checkedAt   DateTime?
+  notes       String?
+
+  session   InventorySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  asset     Asset            @relation(fields: [assetId], references: [id], onDelete: Restrict)
+  checkedBy User?            @relation(fields: [checkedById], references: [id], onDelete: SetNull)
+
+  @@unique([sessionId, assetId])
+  @@index([sessionId])
+  @@index([assetId])
+}
+
+model ModuleChannel {
+  id         String    @id @default(uuid())
+  channelId  String    @unique
+  module     AppModule
+  entityType String
+  entityId   String
+  createdAt  DateTime  @default(now())
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@unique([module, entityType, entityId])
+  @@index([module])
+  @@index([entityType, entityId])
+}
+
+// ==================== CRM MODULE ====================
+
+model KanbanColumn {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  color     String   @default("#3B82F6")
+  order     Int
+  isFinal   Boolean  @default(false)
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  leads Lead[]
+
+  @@index([order])
+}
+
+model Lead {
+  id                      String     @id @default(uuid())
+  code                    String     @unique
+  familyName              String
+  primaryContactName      String
+  primaryContactEmail     String
+  primaryContactPhone     String?
+  secondaryContactName    String?
+  secondaryContactEmail   String?
+  secondaryContactPhone   String?
+  columnId                String
+  source                  LeadSource @default(WEBSITE)
+  numberOfChildren        Int        @default(1)
+  desiredGrades           String[]
+  hasSiblingsAtSchool     Boolean    @default(false)
+  notes                   String?
+  isFlagged               Boolean    @default(false)
+  createdById             String?
+  applicationToken        String?    @unique
+  applicationTokenExpires DateTime?
+  applicationDate         DateTime?
+  createdAt               DateTime   @default(now())
+  updatedAt               DateTime   @updatedAt
+
+  // Hybrid workflow fields
+  originType          LeadOriginType    @default(ADMIN_CREATED)
+  applicationStatus   ApplicationStatus @default(PENDING)
+  applicationSentAt   DateTime? // Quando admin enviou o link
+  lastFormSubmittedAt DateTime? // Última submissão do form
+  formSubmissionCount Int               @default(0) // Quantas vezes form foi preenchido
+
+  // Admission gate workflow
+  admissionGateStatus AdmissionGateStatus @default(NOT_STARTED)
+
+  // Living situation
+  livesWith    String? // BOTH_PARENTS, FATHER_ONLY, MOTHER_ONLY, GUARDIAN
+  guardianInfo String? // Info adicional se mora com guardião
+
+  // Notification preference
+  notificationPreference NotificationPreference @default(PRIMARY)
+
+  // Enrollment form fields (Matrícula - Etapa 2)
+  enrollmentToken           String?              @unique
+  enrollmentTokenExpires    DateTime?
+  enrollmentStatus          EnrollmentFormStatus @default(NOT_STARTED)
+  enrollmentSentAt          DateTime? // Quando admin enviou o link de matrícula
+  enrollmentSubmittedAt     DateTime? // Quando família preencheu o formulário
+  enrollmentSubmissionCount Int                  @default(0) // Quantas vezes form foi preenchido
+
+  column           KanbanColumn           @relation(fields: [columnId], references: [id], onDelete: Restrict)
+  creator          User?                  @relation("LeadCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  children         LeadChild[]
+  documents        LeadDocument[]
+  comments         LeadComment[]
+  history          LeadHistory[]
+  tokenLogs        ApplicationTokenLog[]
+  documentRequests LeadDocumentRequest[]
+  views            LeadView[]
+  address          LeadAddress?
+  parents          LeadParent[]
+  educationHistory LeadEducationHistory[]
+  additionalInfo   LeadAdditionalInfo[]
+
+  // Enrollment (Matrícula) relations
+  childrenHealth       LeadChildHealth[]
+  childrenTransport    LeadChildTransport[]
+  emergencyContacts    LeadEmergencyContact[]
+  healthPlan           LeadHealthPlan?
+  transport            LeadTransport?
+  enrollmentInfo       LeadEnrollmentInfo[]
+  financialResponsible LeadFinancialResponsible?
+  enrollmentDocuments  LeadEnrollmentDocument[]
+  events               CrmEvent[]
+  evaluations          ExperienceEvaluation[]
+
+  // Gate approvals & contracts
+  gateApprovals     AdmissionGateApproval[]
+  contracts         Contract[]
+  financialAnalysis FinancialAnalysis?
+  escalations       CriticalIssueEscalation[]
+  parentalConsents  ParentalConsent[]
+  students          Student[]
+
+  @@index([code])
+  @@index([columnId])
+  @@index([source])
+  @@index([applicationToken])
+  @@index([applicationStatus])
+  @@index([enrollmentToken])
+  @@index([enrollmentStatus])
+  @@index([admissionGateStatus])
+  @@index([createdAt])
+  @@index([primaryContactEmail])
+}
+
+model LeadChild {
+  id              String    @id @default(uuid())
+  leadId          String
+  fullName        String
+  cpf             String?
+  dateOfBirth     DateTime?
+  gender          String?
+  nationality     String?
+  desiredGrade    String?
+  currentGrade    String? // Série atual do aluno
+  currentSchool   String?
+  specialNeeds    String?
+  primaryLanguage String?
+  otherLanguages  String[] // Outros idiomas que o aluno fala
+  relationship    String    @default("STUDENT") // STUDENT, SIBLING
+  isApplicant     Boolean   @default(true)
+  studentType     String? // NEW, RETURNING, CURRENT
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  lead                Lead                     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  documentRequests    LeadDocumentRequest[]
+  documents           LeadDocument[]
+  educationHistory    LeadEducationHistory[]
+  health              LeadChildHealth?
+  transport           LeadChildTransport?
+  additionalInfo      LeadAdditionalInfo[]
+  enrollmentInfo      LeadEnrollmentInfo?
+  enrollmentDocuments LeadEnrollmentDocument[]
+  evaluations         ExperienceEvaluation[]
+  students            Student[]
+
+  @@index([leadId])
+  @@index([cpf])
+}
+
+// Endereço da família
+model LeadAddress {
+  id           String   @id @default(uuid())
+  leadId       String   @unique
+  country      String
+  state        String?
+  city         String
+  neighborhood String?
+  street       String?
+  number       String?
+  complement   String?
+  zipCode      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+}
+
+// Dados completos dos pais/responsáveis
+model LeadParent {
+  id             String  @id @default(uuid())
+  leadId         String
+  parentType     String // FATHER, MOTHER, GUARDIAN
+  fullName       String
+  email          String?
+  phone          String?
+  cpf            String?
+  occupation     String?
+  nativeLanguage String?
+
+  // Document information
+  idNumber    String? // RG ou Passaporte
+  idIssueDate String? // Data de emissão do documento
+  idIssuer    String? // Órgão emissor (SSP-XX, Passport, etc)
+
+  // Personal information
+  dateOfBirth   DateTime? // Data de nascimento
+  nationality   String? // Nacionalidade (ex: BRASILEIRA, AMERICANA)
+  maritalStatus String? // Estado civil (SOLTEIRO, CASADO, DIVORCIADO, VIUVO, SEPARADO, UNIAO_ESTAVEL)
+  education     String? // Escolaridade
+  religion      String? // Religião
+
+  // Address information
+  zipCode      String? // CEP
+  country      String? // País
+  state        String? // Estado/UF
+  city         String? // Cidade
+  neighborhood String? // Bairro
+  street       String? // Rua
+  number       String? // Número
+  complement   String? // Complemento (apt, bloco, etc)
+
+  // Same address flag
+  sameAddressAsOtherParent Boolean? @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([parentType])
+}
+
+// Histórico educacional completo
+model LeadEducationHistory {
+  id             String   @id @default(uuid())
+  leadId         String
+  childId        String? // Qual criança (opcional se for do lead principal)
+  schoolName     String
+  country        String?
+  city           String?
+  gradesAttended String? // Ex: "1st Grade - 3rd Grade"
+  yearStart      Int?
+  yearEnd        Int?
+  notes          String?
+  orderIndex     Int      @default(0) // Ordem de exibição (mais recente primeiro)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  lead  Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  child LeadChild? @relation(fields: [childId], references: [id], onDelete: SetNull)
+
+  @@index([leadId])
+  @@index([childId])
+}
+
+// Informações adicionais/avaliações (one per child)
+model LeadAdditionalInfo {
+  id      String  @id @default(uuid())
+  leadId  String
+  childId String? // Qual criança
+
+  // Avaliação psicoeducacional
+  hasPsychoEvaluation     Boolean @default(false)
+  psychoEvaluationDetails String?
+
+  // Suporte acadêmico
+  hasAcademicSupport     Boolean @default(false)
+  academicSupportDetails String?
+
+  // Problemas de saúde
+  hasHealthIssues     Boolean @default(false)
+  healthIssuesDetails String?
+
+  // Dificuldade de adaptação
+  hasAdaptationDifficulty     Boolean @default(false)
+  adaptationDifficultyDetails String?
+
+  // Outras informações
+  otherRelevantInfo String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lead  Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  child LeadChild? @relation(fields: [childId], references: [id], onDelete: SetNull)
+
+  @@unique([leadId, childId])
+  @@index([leadId])
+  @@index([childId])
+}
+
+// ==================== ENROLLMENT (MATRÍCULA) MODELS ====================
+
+// Saúde detalhada da criança
+model LeadChildHealth {
+  id      String @id @default(uuid())
+  leadId  String
+  childId String @unique
+
+  // Dados físicos
+  weight    String? // Peso
+  height    String? // Altura
+  bloodType String? // Tipo sanguíneo + RH
+
+  // Condições médicas (checkboxes no form)
+  medicalConditions      String[] // NEUROLOGICAL, CARDIAC, RESPIRATORY, etc
+  medicalConditionsNotes String?
+
+  // Hospitalizações
+  hasHospitalizations   Boolean @default(false)
+  hospitalizationsNotes String?
+
+  // Convulsões/desmaios
+  hasSeizures   Boolean @default(false)
+  seizuresNotes String?
+
+  // Alergias (checkboxes)
+  allergies      String[] // MOLD, DUST, ANIMAL_HAIR, INSECTS, FOOD, MEDICINE, CHEMICALS, OTHER
+  allergiesNotes String?
+
+  // Medicamentos autorizados
+  feverMedications     String[] // PARACETAMOL, DIPIRONA, IBUPROFEN, OTHER
+  feverMedicationOther String?
+  painMedications      String[] // PARACETAMOL, DIPIRONA, IBUPROFEN, SIMETHICONE, OTHER
+  painMedicationOther  String?
+
+  // Restrições e uso regular
+  medicationRestrictions String?
+  regularMedications     String?
+
+  // Transtorno alimentar
+  hasEatingDisorder   Boolean @default(false)
+  eatingDisorderNotes String?
+
+  // Info adicional
+  additionalHealthInfo String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lead  Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  child LeadChild @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+}
+
+// Transporte per-child (matrícula)
+model LeadChildTransport {
+  id      String @id @default(uuid())
+  leadId  String
+  childId String @unique
+
+  dropoffPickupPersons   Json?
+  dropoffPickupOther     String?
+  transportMethod        String  @default("")
+  transportMethodOther   String?
+  familyVehicles         Json?
+  canLeaveAlone          Boolean @default(false)
+  isAthlete              Boolean @default(false)
+  athleteSchedule        Json?
+  athleteNotes           String?
+  schoolBusCompany       String?
+  schoolBusContactName   String?
+  schoolBusContactPhone  String?
+  schoolBusContactEmail  String?
+  hasLegalRestrictions   Boolean @default(false)
+  legalRestrictionsNotes String?
+  allowThirdPartyPickup  Boolean @default(false)
+  authorizedPersons      Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lead  Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  child LeadChild @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+}
+
+// Contatos de emergência (além dos pais)
+model LeadEmergencyContact {
+  id     String @id @default(uuid())
+  leadId String
+
+  name         String
+  phone        String
+  email        String?
+  relationship String? // Parentesco
+  isPrimary    Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+}
+
+// Plano de saúde
+model LeadHealthPlan {
+  id     String @id @default(uuid())
+  leadId String @unique
+
+  operator          String // Operadora
+  beneficiaryCode   String // Código do beneficiário
+  planType          String // Tipo do plano
+  preferredHospital String // Hospital preferido na Barra
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+// Informações de transporte
+model LeadTransport {
+  id     String @id @default(uuid())
+  leadId String @unique
+
+  // Quem faz drop-off/pick-up
+  dropoffPickupPersons Json? // Array: [PARENTS, DRIVER, GRANDPARENTS, OTHER, etc]
+  dropoffPickupOther   String?
+
+  // Meio de transporte
+  transportMethod      String // CAR, SCHOOL_BUS, WALK, PUBLIC, OTHER
+  transportMethodOther String?
+
+  // Veículos da família
+  familyVehicles Json? // [{model, color, plate}]
+
+  // Autorizações
+  canLeaveAlone Boolean @default(false)
+
+  // Atleta (entrada tarde/saída cedo)
+  isAthlete       Boolean @default(false)
+  athleteSchedule Json? // {mon, tue, wed, thu, fri}
+  athleteNotes    String?
+
+  // Transporte escolar
+  schoolBusCompany      String?
+  schoolBusContactName  String?
+  schoolBusContactPhone String?
+  schoolBusContactEmail String?
+
+  // Restrições legais
+  hasLegalRestrictions   Boolean @default(false)
+  legalRestrictionsNotes String?
+
+  // Terceiros autorizados
+  allowThirdPartyPickup Boolean @default(false)
+  authorizedPersons     Json? // [{name, dateOfBirth, cpf, email, relationship, vehicle: {model, color, plate}}]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+// Responsável Financeiro (quando diferente de pai/mãe)
+model LeadFinancialResponsible {
+  id     String @id @default(uuid())
+  leadId String @unique
+
+  // Quem é o responsável
+  responsibleType String // FATHER, MOTHER, OTHER
+  relationship    String? // Parentesco (GRANDPARENT, UNCLE_AUNT, etc.) - apenas se OTHER
+  personType      String? @default("INDIVIDUAL") // INDIVIDUAL ou COMPANY
+
+  // Dados Pessoa Física (apenas se OTHER + INDIVIDUAL)
+  fullName String?
+  cpf      String?
+  email    String?
+  phone    String?
+
+  // Dados Pessoa Jurídica (apenas se OTHER + COMPANY)
+  companyName   String? // Razão Social
+  cnpj          String? // CNPJ
+  tradeName     String? // Nome Fantasia
+  contactPerson String? // Responsável na empresa
+  contactEmail  String? // Email de contato
+  contactPhone  String? // Telefone de contato
+
+  // Endereço (apenas se OTHER)
+  country      String?
+  state        String?
+  city         String?
+  neighborhood String?
+  street       String?
+  number       String?
+  complement   String?
+  zipCode      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+// Documentos da matrícula com metadados inteligentes
+model LeadEnrollmentDocument {
+  id     String @id @default(uuid())
+  leadId String
+
+  // Per-child support (for STUDENT category documents)
+  childId String?
+
+  // Tipo e categoria
+  documentType String // STUDENT_ID, STUDENT_CPF, BIRTH_CERTIFICATE, etc
+  category     String // STUDENT, MOTHER, FATHER, FINANCIAL_RESPONSIBLE, SCHOOL
+
+  // Arquivo
+  fileName String
+  fileUrl  String
+  fileSize Int
+  mimeType String
+
+  // Metadados inteligentes
+  includesOtherDocs String[] // Ex: ["STUDENT_CPF"] se RG inclui CPF
+  status            String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  rejectionReason   String?
+
+  // Rastreamento
+  uploadedAt DateTime  @default(now())
+  reviewedAt DateTime?
+  reviewedBy String?
+  expiryDate DateTime? // Validity expiry — filled by school when approving
+
+  lead  Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  child LeadChild? @relation(fields: [childId], references: [id], onDelete: SetNull)
+
+  @@index([leadId])
+  @@index([childId])
+  @@index([documentType])
+}
+
+// Informações de matrícula (one per child)
+model LeadEnrollmentInfo {
+  id      String  @id @default(uuid())
+  leadId  String
+  childId String? @unique // Um enrollment info por criança
+
+  // Calendário e turma
+  academicCalendar String?
+  campus           String? // Polo
+  course           String? // Curso
+  module           String? // Módulo
+  classGroup       String? // Turma
+
+  // Dados adicionais do aluno
+  personType         String? // INDIVIDUAL, INDIVIDUAL_ABROAD
+  studentCpf         String?
+  studentIdNumber    String? // RG/Passaporte
+  studentIdIssueDate String?
+  studentIdIssuer    String? // Órgão emissor
+
+  // Termos
+  termsAccepted   Boolean   @default(false)
+  termsAcceptedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lead  Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  child LeadChild? @relation(fields: [childId], references: [id], onDelete: SetNull)
+
+  @@unique([leadId, childId])
+  @@index([leadId])
+}
+
+model LeadDocument {
+  id         String   @id @default(uuid())
+  leadId     String
+  name       String
+  type       String
+  url        String
+  size       Int
+  uploadedAt DateTime @default(now())
+
+  // New fields for hybrid workflow
+  uploadedBy  String? // 'ADMIN' | 'FAMILY' | userId
+  uploadedVia String? // 'CRM' | 'PUBLIC_FORM'
+  childId     String? // Documento específico de qual criança
+  childIndex  Int? // Índice temporário (0-based) para associar doc à criança antes da criação do LeadChild
+
+  lead  Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  child LeadChild? @relation(fields: [childId], references: [id], onDelete: SetNull)
+
+  @@index([leadId])
+  @@index([childId])
+}
+
+model LeadComment {
+  id        String      @id @default(uuid())
+  leadId    String
+  userId    String
+  content   String
+  type      CommentType @default(GENERAL)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([leadId])
+  @@index([userId])
+}
+
+model LeadHistory {
+  id        String   @id @default(uuid())
+  leadId    String
+  action    String
+  details   Json?
+  actorId   String?
+  createdAt DateTime @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([leadId, createdAt])
+}
+
+model ApplicationTokenLog {
+  id        String   @id @default(uuid())
+  leadId    String
+  token     String
+  action    String // GENERATED, ACCESSED, SUBMITTED, EXPIRED
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([leadId])
+  @@index([createdAt])
+}
+
+model LeadDocumentRequest {
+  id           String                @id @default(uuid())
+  leadId       String
+  documentType String // BIRTH_CERTIFICATE, ID_DOCUMENT, etc.
+  isRequired   Boolean               @default(true)
+  childId      String? // Se é documento específico de uma criança
+  status       DocumentRequestStatus @default(PENDING)
+  requestedAt  DateTime              @default(now())
+  receivedAt   DateTime?
+
+  lead  Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  child LeadChild? @relation(fields: [childId], references: [id], onDelete: SetNull)
+
+  @@unique([leadId, documentType, childId])
+  @@index([leadId])
+}
+
+model LeadView {
+  id       String   @id @default(uuid())
+  leadId   String
+  userId   String
+  viewedAt DateTime @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([leadId, userId])
+  @@index([userId])
+}
+
+// ==================== CRM EVENTS & EVALUATIONS ====================
+
+model CrmEvent {
+  id          String       @id @default(uuid())
+  leadId      String
+  eventType   CrmEventType
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  location    String?
+  color       String?
+
+  // Visit fields
+  visitStatus      VisitStatus?
+  visitNotes       String?
+  visitCompletedAt DateTime?
+
+  // Vivência fields
+  vivenciaStatus      VivenciaStatus?
+  vivenciaNotes       String?
+  vivenciaCompletedAt DateTime?
+  assignedTeacherId   String?
+
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lead            Lead                   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  createdBy       User                   @relation("EventCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  assignedTeacher User?                  @relation("EventTeacher", fields: [assignedTeacherId], references: [id], onDelete: SetNull)
+  evaluations     ExperienceEvaluation[]
+
+  @@index([leadId])
+  @@index([eventType])
+  @@index([startDate])
+  @@index([assignedTeacherId])
+}
+
+model ExperienceEvaluation {
+  id             String   @id @default(uuid())
+  eventId        String
+  childId        String
+  leadId         String
+  teacherName    String
+  evaluatedById  String
+  evaluationDate DateTime
+
+  // 5 qualitative sections
+  behavior            String? // Comportamento
+  english             String? // Inglês
+  interactionWithKids String? // Interação com crianças
+  mathPlacement       String? // Teste de Nivelamento - Matemática
+  englishPlacement    String? // Teste de Nivelamento - Inglês
+
+  additionalNotes String?
+
+  // Decision
+  decision      EvaluationDecision @default(PENDING)
+  decisionById  String?
+  decisionAt    DateTime?
+  decisionNotes String?
+
+  // Edit tracking
+  lastEditedById String?
+  lastEditedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event        CrmEvent  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  child        LeadChild @relation(fields: [childId], references: [id], onDelete: Cascade)
+  lead         Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  evaluatedBy  User      @relation("EvaluationCreator", fields: [evaluatedById], references: [id], onDelete: Restrict)
+  decisionBy   User?     @relation("EvaluationDecider", fields: [decisionById], references: [id], onDelete: SetNull)
+  lastEditedBy User?     @relation("EvaluationEditor", fields: [lastEditedById], references: [id], onDelete: SetNull)
+
+  @@unique([eventId, childId])
+  @@index([eventId])
+  @@index([childId])
+  @@index([leadId])
+}
+
+// ==================== FORM DRAFTS ====================
+
+enum FormDraftType {
+  ADMISSION
+  ENROLLMENT
+}
+
+model FormDraft {
+  id        String        @id @default(uuid())
+  token     String
+  formType  FormDraftType
+  data      Json
+  step      Int           @default(1)
+  expiresAt DateTime
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@unique([token, formType])
+  @@index([token])
+  @@index([expiresAt])
+}
+
+// ==================== GED MODULE ====================
+
+model Document {
+  id            String                @id @default(uuid())
+  title         String
+  description   String?
+  fileName      String
+  fileUrl       String
+  fileSize      Int
+  mimeType      String
+  module        AppModule?
+  securityLevel DocumentSecurityLevel @default(INTERNAL)
+  tags          String[]
+  allowedRoles  UserRole[]
+  aiAnalysis    Json?
+  uploadedById  String
+  isArchived    Boolean               @default(false)
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  uploadedBy User @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([module])
+  @@index([securityLevel])
+  @@index([uploadedById])
+}
+
+// ==================== NOTIFICATIONS ====================
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  type      String
+  title     String
+  message   String
+  data      Json?
+  isRead    Boolean   @default(false)
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+// ==================== AUDIT LOG ====================
+
+model AuditLog {
+  id         String      @id @default(uuid())
+  actorId    String?
+  actorEmail String
+  action     AuditAction
+  entityType String?
+  entityId   String?
+  ipAddress  String?
+  userAgent  String?
+  metadata   Json?
+  createdAt  DateTime    @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId])
+  @@index([action])
+  @@index([entityType])
+  @@index([createdAt])
+}
+
+// ==================== LGPD / PARENTAL CONSENT ====================
+
+model ParentalConsent {
+  id                 String   @id @default(uuid())
+  leadId             String
+  ipAddress          String?
+  userAgent          String?
+  consentTextVersion String
+  consentedAt        DateTime @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([consentedAt])
+}
+
+// ==================== COMMUNICATION - ENHANCED ====================
+
+model MessageReaction {
+  id        String   @id @default(uuid())
+  messageId String
+  userId    String
+  emoji     String
+  createdAt DateTime @default(now())
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId, emoji])
+  @@index([messageId])
+}
+
+model MessageMention {
+  id        String   @id @default(uuid())
+  messageId String
+  userId    String?
+  type      String // "user", "here", "channel"
+  createdAt DateTime @default(now())
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@index([userId])
+}
+
+// ==================== TASK MANAGEMENT ====================
+
+model TaskBoard {
+  id          String              @id @default(uuid())
+  name        String
+  description String?
+  channelId   String?
+  visibility  TaskBoardVisibility @default(PUBLIC)
+  createdById String
+  isArchived  Boolean             @default(false)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  channel Channel?          @relation(fields: [channelId], references: [id], onDelete: SetNull)
+  creator User              @relation("BoardCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  columns TaskColumn[]
+  members TaskBoardMember[]
+  labels  TaskLabel[]
+
+  @@index([channelId])
+  @@index([createdById])
+}
+
+model TaskBoardMember {
+  id       String   @id @default(uuid())
+  boardId  String
+  userId   String
+  isAdmin  Boolean  @default(false)
+  joinedAt DateTime @default(now())
+
+  board TaskBoard @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([boardId, userId])
+  @@index([boardId])
+  @@index([userId])
+}
+
+model TaskColumn {
+  id      String @id @default(uuid())
+  boardId String
+  name    String
+  color   String @default("#6B7280")
+  order   Int
+  limit   Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  board TaskBoard  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards TaskCard[]
+
+  @@index([boardId])
+  @@index([order])
+}
+
+model TaskCard {
+  id          String         @id @default(uuid())
+  code        String         @unique
+  columnId    String
+  title       String
+  description String?
+  priority    TaskPriority   @default(NONE)
+  status      TaskCardStatus @default(OPEN)
+  order       Int
+  dueDate     DateTime?
+  completedAt DateTime?
+  attachments Json?
+  coverImage  String?
+  createdById String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // CRM Integration
+  sourceModule String?
+  sourceLeadId String?
+  sourceType   String?
+  gateApproval AdmissionGateApproval?
+
+  column         TaskColumn       @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  assignees      TaskAssignment[]
+  labels         TaskCardLabel[]
+  checklists     TaskChecklist[]
+  comments       TaskComment[]
+  activity       TaskActivity[]
+  calendarEvents CalendarEvent[]  @relation("TaskCalEvents")
+
+  @@index([columnId])
+  @@index([code])
+  @@index([dueDate])
+  @@index([order])
+  @@index([createdById])
+  @@index([sourceModule])
+  @@index([sourceLeadId])
+}
+
+model TaskAssignment {
+  id         String   @id @default(uuid())
+  cardId     String
+  userId     String
+  assignedAt DateTime @default(now())
+
+  card TaskCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([cardId, userId])
+  @@index([cardId])
+  @@index([userId])
+}
+
+model TaskLabel {
+  id      String @id @default(uuid())
+  boardId String
+  name    String
+  color   String
+
+  board TaskBoard       @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards TaskCardLabel[]
+
+  @@index([boardId])
+}
+
+model TaskCardLabel {
+  id      String @id @default(uuid())
+  cardId  String
+  labelId String
+
+  card  TaskCard  @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  label TaskLabel @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@unique([cardId, labelId])
+}
+
+model TaskChecklist {
+  id     String @id @default(uuid())
+  cardId String
+  title  String
+  order  Int
+
+  card  TaskCard            @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  items TaskChecklistItem[]
+
+  @@index([cardId])
+}
+
+model TaskChecklistItem {
+  id          String    @id @default(uuid())
+  checklistId String
+  text        String
+  isComplete  Boolean   @default(false)
+  order       Int
+  completedAt DateTime?
+
+  checklist TaskChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+
+  @@index([checklistId])
+}
+
+model TaskComment {
+  id          String   @id @default(uuid())
+  cardId      String
+  userId      String
+  content     String
+  attachments Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  card TaskCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  user User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([cardId])
+  @@index([userId])
+}
+
+model TaskActivity {
+  id        String   @id @default(uuid())
+  cardId    String
+  action    String
+  actorId   String?
+  details   Json?
+  createdAt DateTime @default(now())
+
+  card TaskCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@index([cardId])
+}
+
+// ==================== CALENDAR ====================
+
+model CalendarEvent {
+  id          String            @id @default(uuid())
+  title       String
+  description String?
+  eventType   CalendarEventType @default(CUSTOM)
+  startTime   DateTime
+  endTime     DateTime
+  isAllDay    Boolean           @default(false)
+  location    String?
+  color       String?
+  channelId   String?
+  taskCardId  String?
+  createdById String
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  // Recurrence
+  isRecurring         Boolean              @default(false)
+  recurrenceFrequency RecurrenceFrequency?
+  recurrenceInterval  Int?                 @default(1)
+  recurrenceEndDate   DateTime?
+  recurrenceParentId  String?
+
+  channel      Channel?                   @relation("ChannelCalEvents", fields: [channelId], references: [id], onDelete: SetNull)
+  taskCard     TaskCard?                  @relation("TaskCalEvents", fields: [taskCardId], references: [id], onDelete: SetNull)
+  creator      User                       @relation("CalEventCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  participants CalendarEventParticipant[]
+  reminders    CalendarEventReminder[]
+
+  @@index([startTime])
+  @@index([endTime])
+  @@index([channelId])
+  @@index([taskCardId])
+  @@index([createdById])
+  @@index([recurrenceParentId])
+}
+
+model CalendarEventParticipant {
+  id          String     @id @default(uuid())
+  eventId     String
+  userId      String
+  status      RSVPStatus @default(PENDING)
+  respondedAt DateTime?
+
+  event CalendarEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+}
+
+model CalendarEventReminder {
+  id            String  @id @default(uuid())
+  eventId       String
+  minutesBefore Int
+  type          String // "in_app", "email"
+  isSent        Boolean @default(false)
+
+  event CalendarEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+  @@index([isSent])
+}
+
+// ==================== ADMISSION GATE APPROVALS ====================
+
+model AdmissionGateApproval {
+  id          String               @id @default(uuid())
+  leadId      String
+  gateStep    AdmissionGateStatus
+  department  AdmissionDepartment
+  decision    GateApprovalDecision @default(PENDING)
+  decidedById String?
+  notes       String?
+  isRequired  Boolean              @default(true)
+  decidedAt   DateTime?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  taskCardId String?   @unique
+  taskCard   TaskCard? @relation(fields: [taskCardId], references: [id], onDelete: SetNull)
+
+  lead      Lead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  decidedBy User? @relation("GateApprovalDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+
+  @@unique([leadId, gateStep, department])
+  @@index([leadId])
+  @@index([gateStep])
+  @@index([department])
+  @@index([decision])
+}
+
+model GateStepConfig {
+  id            String              @id @default(uuid())
+  gateStep      AdmissionGateStatus
+  department    AdmissionDepartment
+  isRequired    Boolean             @default(true)
+  approvalOrder Int                 @default(0)
+  allowedRoles  UserRole[]
+  description   String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@unique([gateStep, department])
+  @@index([gateStep])
+}
+
+// ==================== ESCALATIONS ====================
+
+model CriticalIssueEscalation {
+  id              String              @id @default(uuid())
+  leadId          String
+  childId         String?
+  raisedById      String
+  department      AdmissionDepartment
+  gateStep        AdmissionGateStatus
+  description     String
+  severity        EscalationSeverity  @default(MEDIUM)
+  isResolved      Boolean             @default(false)
+  resolvedById    String?
+  resolvedAt      DateTime?
+  resolutionNotes String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  lead       Lead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  raisedBy   User  @relation("EscalationRaiser", fields: [raisedById], references: [id], onDelete: Restrict)
+  resolvedBy User? @relation("EscalationResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+
+  @@index([leadId])
+  @@index([isResolved])
+  @@index([severity])
+}
+
+// ==================== CONTRACTS ====================
+
+model Contract {
+  id              String         @id @default(uuid())
+  leadId          String
+  code            String         @unique
+  status          ContractStatus @default(DRAFT)
+  templateVersion String?
+
+  // Financial
+  totalAnnualValue Decimal? @db.Decimal(12, 2)
+  installments     Int?
+  discountPercent  Decimal? @db.Decimal(5, 2)
+  enrollmentFee    Decimal? @db.Decimal(12, 2)
+
+  // Document
+  documentUrl       String?
+  signedDocumentUrl String?
+
+  // ClickSign
+  clicksignEnvelopeId  String?                  @unique
+  clicksignStatus      ClickSignEnvelopeStatus?
+  clicksignEnvelopeUrl String?
+
+  // Legal approval
+  legalApprovalStatus GateApprovalDecision?
+  legalApprovedById   String?
+  legalApprovedAt     DateTime?
+  legalNotes          String?
+
+  // Financial approval
+  financialApprovalStatus GateApprovalDecision?
+  financialApprovedById   String?
+  financialApprovedAt     DateTime?
+  financialNotes          String?
+
+  // Re-enrollment
+  enrollmentType EnrollmentType @default(FIRST)
+  studentId      String?
+  studentGrade   String?
+
+  // Negotiated discount (re-enrollment)
+  negotiatedDiscountPercent   Decimal?  @db.Decimal(5, 2)
+  negotiatedFinalValue        Decimal?  @db.Decimal(12, 2)
+  negotiationJustification    String?
+  negotiationApprovedById     String?
+
+  // Timestamps
+  sentAt             DateTime?
+  signedAt           DateTime?
+  activatedAt        DateTime?
+  cancelledAt        DateTime?
+  cancellationReason String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  lead                Lead              @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  student             Student?          @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  legalApprovedBy     User?             @relation("ContractLegalApprover", fields: [legalApprovedById], references: [id], onDelete: SetNull)
+  financialApprovedBy    User?             @relation("ContractFinancialApprover", fields: [financialApprovedById], references: [id], onDelete: SetNull)
+  negotiationApprovedBy  User?             @relation("ContractNegotiationApprover", fields: [negotiationApprovedById], references: [id], onDelete: SetNull)
+  signers             ContractSigner[]
+  payments            ContractPayment[]
+  addendums           ContractAddendum[]
+
+  @@index([leadId])
+  @@index([studentId])
+  @@index([status])
+  // BUG-01 + Phase 9: Partial unique index Contract_leadId_enrollmentType_active_unique
+  // on (leadId, enrollmentType) WHERE status != 'CANCELLED'
+  // Original migration: 20260330200000 (leadId only). Updated: 20260402100000 (+ enrollmentType).
+  // Allows one FIRST + one RENEWAL contract per lead simultaneously.
+}
+
+model ContractSigner {
+  id         String             @id @default(uuid())
+  contractId String
+  role       ContractSignerRole
+  name       String
+  email      String
+  cpf        String?
+  phone      String?
+
+  // ClickSign
+  clicksignSignerId   String?
+  clicksignAuthMethod String?
+  hasSigned           Boolean   @default(false)
+  signedAt            DateTime?
+  refusedAt           DateTime?
+  refusalReason       String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([contractId])
+}
+
+model ContractDefaultSigner {
+  id        String             @id @default(uuid())
+  role      ContractSignerRole
+  name      String
+  email     String
+  cpf       String?
+  phone     String?
+  isActive  Boolean            @default(true)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+}
+
+model ContractPayment {
+  id                String        @id @default(uuid())
+  contractId        String
+  installmentNumber Int
+  dueDate           DateTime
+  amount            Decimal       @db.Decimal(12, 2)
+  status            PaymentStatus @default(PENDING)
+  boletoUrl         String?
+  paidAt            DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([contractId])
+  @@index([status])
+}
+
+// ==================== ADDENDUM ====================
+
+enum AddendumType {
+  DISCOUNT          // Desconto
+  SPECIAL_CONDITION // Condição especial
+  GRADE_CHANGE      // Alteração de série
+  OTHER             // Outro
+}
+
+enum AddendumStatus {
+  DRAFT
+  PENDING_SIGNATURE
+  SIGNED
+  CANCELLED
+}
+
+model ContractAddendum {
+  id          String         @id @default(uuid())
+  contractId  String
+  code        String         @unique
+  type        AddendumType
+  status      AddendumStatus @default(DRAFT)
+  description String         @db.Text
+
+  // Changed values
+  changedValues Json? // Flexible JSON: { field: string, oldValue: any, newValue: any }[]
+
+  // Document
+  documentUrl       String?
+  signedDocumentUrl String?
+
+  // ClickSign
+  clicksignEnvelopeId  String?                  @unique
+  clicksignStatus      ClickSignEnvelopeStatus?
+  clicksignEnvelopeUrl String?
+
+  // Timestamps
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  signedAt  DateTime?
+
+  contract Contract         @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  signers  AddendumSigner[]
+
+  @@index([contractId])
+  @@index([status])
+}
+
+model AddendumSigner {
+  id         String             @id @default(uuid())
+  addendumId String
+  role       ContractSignerRole
+  name       String
+  email      String
+  cpf        String?
+  phone      String?
+
+  // ClickSign
+  clicksignSignerId   String?
+  clicksignAuthMethod String?
+  hasSigned           Boolean   @default(false)
+  signedAt            DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  addendum ContractAddendum @relation(fields: [addendumId], references: [id], onDelete: Cascade)
+
+  @@index([addendumId])
+}
+
+model FinancialAnalysis {
+  id               String                  @id @default(uuid())
+  leadId           String                  @unique
+  cpfAnalyzed      String?
+  cpfStatus        String?
+  analysisNotes    String?
+  negotiationNotes String?
+  status           FinancialAnalysisStatus @default(PENDING)
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model ClickSignWebhookLog {
+  id         String   @id @default(uuid())
+  envelopeId String
+  eventType  String
+  payload    Json
+  processed  Boolean  @default(false)
+  error      String?
+  createdAt  DateTime @default(now())
+
+  @@index([envelopeId])
+  @@index([processed])
+}
+
+// Manual migration: manual_add_student_models (AppModule enum + Student tables)
+model Student {
+  id           String        @id @default(uuid())
+  code         String        @unique
+  leadId       String
+  // Manual migration: modify_contract_unique_and_student_child_for_renewal (leadChildId unique -> composite with academicYear)
+  leadChildId  String
+  fullName     String
+  dateOfBirth  DateTime?
+  cpf          String?
+  gender       String?
+  nationality  String?
+  avatarUrl    String?
+  grade        String?
+  academicYear Int
+  status       StudentStatus @default(ACTIVE)
+  enrolledAt   DateTime      @default(now())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Re-enrollment: self-relation for year-to-year progression
+  previousStudentId String?
+  previousStudent   Student?  @relation("StudentProgression", fields: [previousStudentId], references: [id], onDelete: SetNull)
+  nextStudents      Student[] @relation("StudentProgression")
+
+  lead    Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  child   LeadChild @relation(fields: [leadChildId], references: [id], onDelete: Cascade)
+  history StudentHistory[]
+  contracts Contract[]
+  reEnrollmentInvites ReEnrollmentInvite[]
+  familyPriceExceptions FamilyPriceException[]
+  preReEnrollmentResponses PreReEnrollmentResponse[]
+
+  @@unique([leadChildId, academicYear])
+  @@index([leadId])
+  @@index([grade])
+  @@index([academicYear])
+  @@index([status])
+}
+
+model StudentHistory {
+  id        String   @id @default(uuid())
+  studentId String
+  action    String
+  details   Json?
+  actorId   String?
+  createdAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([studentId, createdAt])
+}
+
+// Histórico de importações em massa (D-13)
+// Migration: 20260331000000_add_import_history_and_enums (manual)
+model ImportHistory {
+  id         String   @id @default(uuid())
+  userId     String
+  fileName   String
+  fileSize   Int?
+  totalRows  Int
+  created    Int      @default(0)
+  updated    Int      @default(0)
+  failed     Int      @default(0)
+  skipped    Int      @default(0)
+  errors             Json?
+  createdStudentIds  Json?
+  status             String   @default("PROCESSING")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// ==================== RE-ENROLLMENT MODELS ====================
+// Migration: 20260401000000_add_reenrollment_infrastructure (manual)
+
+model ReEnrollmentPeriod {
+  id              String                     @id @default(uuid())
+  name            String
+  targetYear      Int
+  startDate       DateTime
+  endDate         DateTime
+  eligibleGrades  String[]
+  status          ReEnrollmentPeriodStatus   @default(DRAFT)
+  createdById     String
+  openedAt        DateTime?
+  closedAt        DateTime?
+  finalizedAt     DateTime?
+  createdAt       DateTime                   @default(now())
+  updatedAt       DateTime                   @updatedAt
+
+  adjustmentPercent Decimal?                 @db.Decimal(5, 2)
+  requiresFeePayment  Boolean                @default(true)
+
+  preReEnrollmentEmailTemplate  String?
+  preReEnrollmentDeadline       DateTime?
+  earlyBirdDeadline             DateTime?
+  earlyBirdDiscountPercent      Decimal?  @db.Decimal(5, 2) // e.g., 50 for 50% early bird discount
+  discountOptions               Json?    @default("[]")
+
+  createdBy                User                       @relation("PeriodCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  invites                  ReEnrollmentInvite[]
+  priceTable               PeriodPriceTable[]
+  familyExceptions         FamilyPriceException[]
+  preReEnrollmentResponses PreReEnrollmentResponse[]
+
+  @@index([status])
+  @@index([targetYear])
+  // Partial unique index: only one OPEN period at a time (enforced via manual migration)
+}
+
+model PeriodPriceTable {
+  id              String   @id @default(uuid())
+  periodId        String
+  grade           String
+  baseAnnualValue Decimal  @db.Decimal(12, 2)
+  enrollmentFee   Decimal  @default(0) @db.Decimal(12, 2)
+  discountPercent Decimal? @db.Decimal(5, 2)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  period ReEnrollmentPeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
+
+  @@unique([periodId, grade])
+  @@index([periodId])
+}
+
+model FamilyPriceException {
+  id                     String   @id @default(uuid())
+  periodId               String
+  studentId              String
+  overrideAnnualValue    Decimal? @db.Decimal(12, 2)
+  overrideDiscountPercent Decimal? @db.Decimal(5, 2)
+  previousDiscountPercent Decimal? @db.Decimal(5, 2) // Previous value before change (for approval tracking)
+  justification          String
+  approvalStatus         String   @default("APPROVED") // PENDING, APPROVED, REJECTED
+  approvedById           String?
+  approvalNotes          String?
+  approvalDecidedAt      DateTime?
+  createdById            String
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  period     ReEnrollmentPeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  student    Student            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  createdBy  User               @relation("ExceptionCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  approvedBy User?              @relation("ExceptionApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+
+  @@unique([periodId, studentId])
+  @@index([periodId])
+  @@index([studentId])
+  @@index([approvalStatus])
+}
+
+// Migration: 20260403200000_add_pre_reenrollment_response (manual)
+model PreReEnrollmentResponse {
+  id                           String                          @id @default(uuid())
+  periodId                     String
+  studentId                    String
+  token                        String                          @unique
+  status                       PreReEnrollmentResponseStatus   @default(PENDING)
+  emailSentAt                  DateTime?
+  emailTo                      String?
+  respondedAt                  DateTime?
+  disagreementReason           String?
+  negotiatedDiscountPercent    Decimal?                         @db.Decimal(5, 2)
+  negotiatedFinalValue         Decimal?                         @db.Decimal(12, 2)
+  negotiationJustification     String?
+  negotiationApprovedById      String?
+  negotiationCompletedAt       DateTime?
+  communicatedAnnualValue      Decimal?                         @db.Decimal(12, 2)
+  communicatedAdjustmentPercent Decimal?                        @db.Decimal(5, 2)
+  createdAt                    DateTime                         @default(now())
+  updatedAt                    DateTime                         @updatedAt
+
+  period                ReEnrollmentPeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  student               Student            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  negotiationApprovedBy User?              @relation("NegotiationApprover", fields: [negotiationApprovedById], references: [id], onDelete: SetNull)
+
+  @@unique([periodId, studentId])
+  @@index([periodId])
+  @@index([studentId])
+  @@index([token])
+  @@index([status])
+}
+
+model ReEnrollmentInvite {
+  id              String                     @id @default(uuid())
+  periodId        String
+  studentId       String
+  token           String                     @unique
+  status          ReEnrollmentInviteStatus   @default(PENDING)
+  gateStatus      ReEnrollmentGateStatus     @default(CONVITE_ENVIADO)
+  sentAt          DateTime?
+  openedAt        DateTime?
+  confirmedAt     DateTime?
+  declinedAt      DateTime?
+  expiredAt       DateTime?
+  declineReason   String?
+  notes           String?
+  emailStatus     String?
+  emailError      String?
+  emailSentAt     DateTime?
+  optOutReminders Boolean                    @default(false)
+  extendedDeadline DateTime?
+  rematriculadoAt DateTime?
+  createdAt       DateTime                   @default(now())
+  updatedAt       DateTime                   @updatedAt
+
+  period          ReEnrollmentPeriod         @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  student         Student                    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  feePayment      EnrollmentFeePayment?
+
+  @@unique([periodId, studentId])
+  @@index([token])
+  @@index([periodId])
+  @@index([studentId])
+  @@index([status])
+  @@index([gateStatus])
+  @@index([periodId, gateStatus])
+}
+
+model EnrollmentFeePayment {
+  id              String   @id @default(uuid())
+  inviteId        String   @unique
+  amountPaid      Decimal  @db.Decimal(12, 2)
+  paymentDate     DateTime
+  paymentMethod   String
+  receiptUrl      String?
+  registeredById  String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  invite          ReEnrollmentInvite @relation(fields: [inviteId], references: [id], onDelete: Cascade)
+  registeredBy    User               @relation("FeePaymentRegistrar", fields: [registeredById], references: [id])
+
+  @@index([inviteId])
+}

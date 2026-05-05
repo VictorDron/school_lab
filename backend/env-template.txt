@@ -1,0 +1,31 @@
+# COPIE ESTE ARQUIVO PARA .env E PREENCHA COM SUAS CREDENCIAIS
+
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/risys"
+
+# Redis
+REDIS_URL="redis://localhost:6379"
+
+# OpenAI
+OPENAI_API_KEY="your_openai_api_key"
+
+# Supabase
+SUPABASE_URL="https://your-project.supabase.co"
+SUPABASE_KEY="your_supabase_anon_key"
+SUPABASE_SERVICE_KEY="your_supabase_service_key"
+SUPABASE_BUCKET="risys"
+
+# Resend (Email)
+RESEND_API_KEY="your_resend_api_key"
+
+# JWT
+JWT_SECRET="change_me_to_a_long_random_secret"
+JWT_EXPIRES_IN="7d"
+
+# App
+NODE_ENV="development"
+PORT=3001
+FRONTEND_URL="http://localhost:5173"
+
+# Socket.io
+SOCKET_CORS_ORIGIN="http://localhost:5173"

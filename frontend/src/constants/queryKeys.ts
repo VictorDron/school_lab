@@ -1,0 +1,133 @@
+// Centralized React Query key factory
+// Usage: import { queryKeys } from '@/constants/queryKeys'
+// All query keys in one place for consistency and refactoring safety.
+
+export const queryKeys = {
+  leads: {
+    all: ['leads'] as const,
+    list: (filters: Record<string, unknown>) => ['leads', filters] as const,
+    detail: (id: string) => ['lead', id] as const,
+    stats: ['leadStats'] as const,
+    pipeline: ['leadPipeline'] as const,
+    dashboard: ['dashboardStats'] as const,
+    unviewedCount: ['leads', 'unviewed-count'] as const,
+    tokenStatus: (id: string) => ['tokenStatus', id] as const,
+    pipelineStatus: (leadId: string) => ['pipeline-status', leadId] as const,
+  },
+  assets: {
+    all: ['assets'] as const,
+    list: (filters: Record<string, unknown>) => ['assets', filters] as const,
+    detail: (id: string) => ['asset', id] as const,
+    stats: ['assetStats'] as const,
+    categories: ['assetCategories'] as const,
+    locations: ['assetLocations'] as const,
+    maintenance: (assetId: string) => ['assetMaintenance', assetId] as const,
+    upcomingMaintenance: ['upcomingMaintenance'] as const,
+    overdueMaintenance: ['overdueMaintenance'] as const,
+    inventorySessions: ['inventorySessions'] as const,
+    inventorySession: (id: string) => ['inventorySession', id] as const,
+  },
+  contracts: {
+    all: ['contracts'] as const,
+    byLead: (leadId: string) => ['contracts', leadId] as const,
+    prerequisites: (leadId: string) => ['contract-prerequisites', leadId] as const,
+    addendums: ['addendums'] as const,
+    addendumsByContract: (contractId: string) => ['addendums', contractId] as const,
+  },
+  enrollment: {
+    status: (id: string) => ['enrollmentStatus', id] as const,
+    data: (token: string) => ['enrollmentData', token] as const,
+  },
+  channels: {
+    all: ['channels'] as const,
+    members: (channelId: string) => ['channelMembers', channelId] as const,
+    messages: (channelId: string, page: number) => ['messages', channelId, page] as const,
+    directMessages: ['directMessages'] as const,
+    pinnedMessages: (channelId: string) => ['pinnedMessages', channelId] as const,
+    searchMessages: (channelId: string, query: string) => ['searchMessages', channelId, query] as const,
+    threadReplies: (channelId: string, messageId: string) => ['threadReplies', channelId, messageId] as const,
+  },
+  calendar: {
+    events: (startDate: string, endDate: string, channelId?: string) => ['calendarEvents', startDate, endDate, channelId] as const,
+    event: (eventId: string) => ['calendarEvent', eventId] as const,
+    upcoming: (limit?: number) => ['upcomingEvents', limit] as const,
+  },
+  crmEvents: {
+    all: ['crm-events'] as const,
+    list: (filters: Record<string, unknown>) => ['crm-events', filters] as const,
+    detail: (id: string) => ['crm-event', id] as const,
+    byLead: (leadId: string) => ['crm-events', 'lead', leadId] as const,
+  },
+  evaluations: {
+    all: ['evaluations'] as const,
+    detail: (id: string) => ['evaluation', id] as const,
+    byEvent: (eventId: string) => ['evaluations', 'event', eventId] as const,
+    byLead: (leadId: string) => ['evaluations', 'lead', leadId] as const,
+  },
+  gateApprovals: {
+    byLead: (leadId: string) => ['gate-approvals', leadId] as const,
+    myPending: ['my-pending-approvals'] as const,
+    pendingSummary: ['pending-summary'] as const,
+    config: ['gate-config'] as const,
+  },
+  kanban: {
+    columns: ['kanbanColumns'] as const,
+    column: (id: string) => ['kanbanColumn', id] as const,
+  },
+  escalations: {
+    all: ['escalations'] as const,
+    byLead: (leadId: string) => ['escalations', 'lead', leadId] as const,
+  },
+  purchases: {
+    all: ['purchases'] as const,
+    list: (filters: Record<string, unknown>) => ['purchases', filters] as const,
+    detail: (id: string) => ['purchase', id] as const,
+    stats: ['purchaseStats'] as const,
+    suppliers: (filters?: Record<string, unknown>) => ['suppliers', filters] as const,
+    supplier: (id: string) => ['supplier', id] as const,
+  },
+  reEnrollment: {
+    periods: (filters?: Record<string, unknown>) => ['reEnrollmentPeriods', filters] as const,
+    period: (id: string) => ['reEnrollmentPeriod', id] as const,
+    dashboard: (periodId: string, grade?: string) => ['reEnrollmentDashboard', periodId, grade] as const,
+    invites: (periodId: string, filters?: Record<string, unknown>) => ['reEnrollmentInvites', periodId, filters] as const,
+    funnel: (periodId: string) => ['reEnrollmentFunnel', periodId] as const,
+    bottlenecks: (periodId: string) => ['reEnrollmentBottlenecks', periodId] as const,
+    timeline: (periodId: string) => ['reEnrollmentTimeline', periodId] as const,
+    report: (periodId: string) => ['reEnrollmentReport', periodId] as const,
+    form: (token: string) => ['reEnrollmentForm', token] as const,
+  },
+  preReEnrollment: {
+    all: ['preReEnrollment'] as const,
+    dashboard: (periodId: string) => ['preReEnrollment', periodId, 'dashboard'] as const,
+    responses: (periodId: string) => ['preReEnrollment', periodId, 'responses'] as const,
+    emailTemplate: (periodId: string) => ['preReEnrollment', periodId, 'emailTemplate'] as const,
+    report: (periodId: string) => ['preReEnrollment', periodId, 'report'] as const,
+    eligibleStudents: (periodId: string) => ['eligibleStudents', periodId] as const,
+  },
+  students: {
+    all: ['students'] as const,
+    list: (filters: Record<string, unknown>) => ['students', filters] as const,
+    detail: (id: string) => ['student', id] as const,
+    dashboard: (filters?: Record<string, unknown>) => ['studentDashboard', filters] as const,
+    evolution: (filters?: Record<string, unknown>) => ['studentEvolution', filters] as const,
+  },
+  taskBoards: {
+    all: ['taskBoards'] as const,
+    detail: (boardId: string) => ['taskBoard', boardId] as const,
+    labels: (boardId: string) => ['boardLabels', boardId] as const,
+    members: (boardId: string) => ['boardMembers', boardId] as const,
+  },
+  taskCards: {
+    detail: (cardId: string) => ['taskCard', cardId] as const,
+    comments: (cardId: string) => ['taskComments', cardId] as const,
+  },
+  imports: {
+    history: (page: number, limit: number) => ['import-history', page, limit] as const,
+    historyDetail: (id: string) => ['import-history', id] as const,
+    progress: (importHistoryId: string) => ['import-progress', importHistoryId] as const,
+  },
+  users: {
+    search: (query: string) => ['userSearch', query] as const,
+  },
+} as const;
