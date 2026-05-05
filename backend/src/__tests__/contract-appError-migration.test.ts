@@ -1,17 +1,19 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Read all sub-service files to verify patterns across the split service
-const contractServiceSource = [
-  readFileSync(path.resolve(__dirname, '../services/contract/contract-core.service.ts'), 'utf-8'),
-  readFileSync(path.resolve(__dirname, '../services/contract/contract-pdf/index.ts'), 'utf-8'),
-  readFileSync(path.resolve(__dirname, '../services/contract/contract-approval.service.ts'), 'utf-8'),
-  readFileSync(path.resolve(__dirname, '../services/contract/contract-webhook.service.ts'), 'utf-8'),
-].join('\n');
+// The contract service was split across multiple files and sub-folders
+// (contract-webhook/, contract-pdf/, ...). Read every .ts file recursively
+// so adding a new sub-module doesn't silently break these source-string
+// migration assertions.
+const contractDir = path.resolve(__dirname, '../services/contract');
+const contractServiceSource = readdirSync(contractDir, { recursive: true, withFileTypes: true })
+  .filter(entry => entry.isFile() && entry.name.endsWith('.ts'))
+  .map(entry => readFileSync(path.join(entry.parentPath, entry.name), 'utf-8'))
+  .join('\n');
 
 describe('Contract service - AppError migration (BUG-04)', () => {
   it('should import createAppError from error-messages', () => {
@@ -70,6 +72,9 @@ describe('Contract service - ClickSign idempotency (BUG-01 D-17/D-18)', () => {
   });
 
   it('should import AppError for instanceof check in idempotency logic', () => {
-    expect(contractServiceSource).toContain("from '../../middlewares/errorHandler.js'");
+    // Tolerate any relative depth — sub-modules under contract/ live at
+    // different depths (../../ vs ../../../) and we just want to confirm
+    // the AppError import is wired up somewhere in the contract service.
+    expect(contractServiceSource).toMatch(/import\s*\{[^}]*\bAppError\b[^}]*\}\s*from\s*['"](?:\.\.\/)+middlewares\/errorHandler\.js['"]/);
   });
 });
