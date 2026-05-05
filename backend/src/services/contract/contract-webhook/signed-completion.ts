@@ -8,6 +8,7 @@ import { retryUpload } from './helpers.js';
 
 interface ContractRef {
   id: string;
+  tenantId: string;
   code: string;
   leadId: string;
   enrollmentType: string;
@@ -111,9 +112,9 @@ async function completeRenewalFlow(contract: ContractRef): Promise<void> {
       if (lead?.primaryContactEmail) {
         const { sendReEnrollmentWelcomeEmail } = await import('../../email.service.js');
         const { getOrCreateSettings } = await import('../../settings.service.js');
-        const { getDefaultTenant } = await import('../../tenant.service.js');
-        const { id: tenantId } = await getDefaultTenant();
-        const { schoolName } = await getOrCreateSettings(tenantId);
+        // Webhook handler — derive tenantId from the contract being
+        // signed instead of the seed fallback.
+        const { schoolName } = await getOrCreateSettings(contract.tenantId);
         await sendReEnrollmentWelcomeEmail({
           to: lead.primaryContactEmail,
           familyName: lead.familyName ?? '',

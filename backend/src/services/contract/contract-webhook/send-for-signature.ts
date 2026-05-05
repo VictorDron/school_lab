@@ -233,9 +233,9 @@ export async function sendForSignature(contractId: string, userId: string) {
         });
         const { sendReEnrollmentContractSentEmail } = await import('../../email.service.js');
         const { getOrCreateSettings } = await import('../../settings.service.js');
-        const { getDefaultTenant } = await import('../../tenant.service.js');
-        const { id: tenantId } = await getDefaultTenant();
-        const { schoolName } = await getOrCreateSettings(tenantId);
+        // Webhook handler — no JWT, no ALS. Derive tenantId from the
+        // contract being signed (loaded earlier in this function).
+        const { schoolName } = await getOrCreateSettings(contract.tenantId);
         await sendReEnrollmentContractSentEmail({
           to: leadForEmail.primaryContactEmail,
           familyName: leadForEmail.familyName ?? '',

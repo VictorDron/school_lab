@@ -7,7 +7,7 @@ import {
   OperatorEntity,
 } from '../../../templates/contract-template.js';
 import { getOrCreateSettings } from '../../settings.service.js';
-import { getDefaultTenant } from '../../tenant.service.js';
+import { requireTenantId } from '../../../lib/tenant-context.js';
 import {
   formatAddress,
   formatLeadAddress,
@@ -197,7 +197,7 @@ export async function buildContractData(
   }
   const lead = contract.lead;
 
-  const { id: tenantId } = await getDefaultTenant();
+  const tenantId = requireTenantId();
   const settings = await getOrCreateSettings(tenantId);
   const pdfFeeTable = buildPdfFeeTable((settings.feeTable as any[]) ?? null);
   const pdfFoodTable = buildPdfFoodTable((settings.foodTable as any[]) ?? null);

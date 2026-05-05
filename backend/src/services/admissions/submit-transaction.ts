@@ -4,7 +4,7 @@ import type { PublicAdmissionData } from './index.js';
 import { assertSubmissionAllowed, normalizeStudentList } from './validators.js';
 import { applyLeadUpdate } from './lead-update.js';
 import { getOrCreateSettings } from '../settings.service.js';
-import { getDefaultTenant } from '../tenant.service.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import {
   cleanupFormSubmittedEntities,
   createAddress,
@@ -93,7 +93,9 @@ export async function runSubmissionTransaction(
 ): Promise<SubmissionTransactionResult> {
   // Read once outside the transaction — settings is small and per-tenant
   // immutable for the request, so there's no value in including it in the tx.
-  const { id: tenantId } = await getDefaultTenant();
+  // Phase 3a: ALS is established by withTenantFromToken on the public
+  // route, so requireTenantId() resolves to the right tenant.
+  const tenantId = requireTenantId();
   const { schoolName } = await getOrCreateSettings(tenantId);
 
   return prisma.$transaction(

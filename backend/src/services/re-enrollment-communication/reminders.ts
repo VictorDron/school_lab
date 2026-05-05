@@ -2,7 +2,7 @@ import { prisma } from '../../config/database.js';
 import { config } from '../../config/index.js';
 import { sendReEnrollmentInviteEmail } from '../email.service.js';
 import { getOrCreateSettings } from '../settings.service.js';
-import { getDefaultTenant } from '../tenant.service.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import { getIO } from '../../socket/io.js';
 import logger from '../../utils/logger.js';
 
@@ -54,7 +54,11 @@ export async function sendPendingReminders(periodId: string) {
   let failed = 0;
 
   // Read once outside the loop — settings is shared across the whole batch.
-  const { id: tenantId } = await getDefaultTenant();
+  // sendPendingReminders is called from the BullMQ reminder queue worker.
+  // The worker entry point sets ALS context per job (per-tenant queue
+  // jobs are routed by Phase 4 onboarding plumbing); for now this still
+  // assumes a context exists.
+  const tenantId = requireTenantId();
   const { schoolName } = await getOrCreateSettings(tenantId);
 
   for (let i = 0; i < eligible.length; i += REMINDER_BATCH_SIZE) {

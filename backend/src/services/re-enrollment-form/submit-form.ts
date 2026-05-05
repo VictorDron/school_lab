@@ -135,10 +135,11 @@ export async function submitForm(token: string, data: SubmitFormData, metadata?:
   try {
     const { sendReEnrollmentFormConfirmationEmail } = await import('../email.service.js');
     const { getOrCreateSettings } = await import('../settings.service.js');
-    const { getDefaultTenant } = await import('../tenant.service.js');
+    const { requireTenantId } = await import('../../lib/tenant-context.js');
     const contactEmail = lead?.primaryContactEmail;
     if (contactEmail) {
-      const { id: tenantId } = await getDefaultTenant();
+      // Phase 3a: ALS is set by withTenantFromToken on the public route.
+      const tenantId = requireTenantId();
       const { schoolName } = await getOrCreateSettings(tenantId);
       await sendReEnrollmentFormConfirmationEmail({
         to: contactEmail,

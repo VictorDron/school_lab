@@ -56,6 +56,11 @@ vi.mock('../services/tenant.service.js', () => ({
   DEFAULT_TENANT_ID: 'test-tenant-id',
   DEFAULT_TENANT_SLUG: 'test',
 }));
+vi.mock('../lib/tenant-context.js', () => ({
+  requireTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  currentTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  runWithTenant: <T>(_id: string, fn: () => T) => fn(),
+}));
 vi.mock('../utils/logger.js', () => ({
   default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
