@@ -74,33 +74,82 @@ export function calculateNumberOfChildren(incoming: PublicAdmissionData): number
   return 1 + incoming.siblings.length;
 }
 
+// Tokens too generic to identify a specific school. Stripped when deriving
+// brand-specific patterns from the configured schoolName so that strings like
+// "Other School" don't false-positive against a schoolName of "School Lab".
+const SCHOOL_NAME_STOPWORDS = new Set([
+  'school', 'schools', 'escola', 'escolas',
+  'colegio', 'colégio', 'college', 'institute', 'instituto',
+  'the', 'a', 'an', 'do', 'da', 'de', 'dos', 'das', 'of',
+]);
+
+// Language hints that mean "this same school" regardless of the operator's
+// brand name. Apply on top of the brand-derived patterns.
+const GENERIC_SAME_SCHOOL_PATTERNS: readonly RegExp[] = [
+  /nossa\s*escola/i,
+  /mesma\s*escola/i,
+  /\baqui\b/i,
+  /our\s*school/i,
+  /same\s*school/i,
+];
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 /**
- * Check if any siblings are at the school
- * Improved logic: checks for common variations of the school name
- * and does NOT assume empty school means sibling is at our school
+ * Build the set of regexes used to detect that a sibling's school string
+ * refers to the operator's own school. Exported for unit testing.
  */
-export function checkSiblingsAtSchool(siblings: PublicAdmissionData['siblings']): boolean {
-  // School name patterns that indicate sibling is at our school
-  const schoolPatterns = [
-    /\bris\b/i,           // "RIS" as a word
-    /\bschool-lab\b/i,         // "School Lab"
-    /internacional/i,     // Contains "Internacional"
-    /international/i,     // Contains "International" (English)
-    /nossa\s*escola/i,    // "Nossa escola" (our school)
-    /mesma\s*escola/i,    // "Mesma escola" (same school)
-    /aqui/i,              // "Aqui" (here)
-    /^ris$/i,             // Exact match "RIS"
+export function buildSchoolNamePatterns(schoolName: string): RegExp[] {
+  const trimmed = schoolName?.trim() ?? '';
+  if (!trimmed) return [];
+
+  const patterns: RegExp[] = [];
+
+  // Full-name match, tolerant to whitespace differences.
+  const escapedFull = escapeRegex(trimmed).replace(/\s+/g, '\\s+');
+  patterns.push(new RegExp(escapedFull, 'i'));
+
+  // Distinctive tokens (>= 2 chars, alphanumeric, not a stopword).
+  const tokens = trimmed
+    .toLowerCase()
+    .split(/[\s\-_/.,]+/)
+    .filter(token =>
+      token.length >= 2 &&
+      !SCHOOL_NAME_STOPWORDS.has(token) &&
+      /^[\p{L}\p{N}]+$/u.test(token)
+    );
+
+  for (const token of new Set(tokens)) {
+    patterns.push(new RegExp(`\\b${escapeRegex(token)}\\b`, 'i'));
+  }
+
+  return patterns;
+}
+
+/**
+ * Check if any siblings are at the operator's school.
+ *
+ * Combines brand-derived patterns (from `schoolName`, typically read from
+ * `SystemSettings.schoolName`) with generic "our school / aqui" hints.
+ * An empty sibling.school is treated as unknown, NOT as a positive match.
+ */
+export function checkSiblingsAtSchool(
+  siblings: PublicAdmissionData['siblings'],
+  schoolName: string,
+): boolean {
+  const patterns = [
+    ...buildSchoolNamePatterns(schoolName),
+    ...GENERIC_SAME_SCHOOL_PATTERNS,
   ];
 
   return siblings.some(sibling => {
     if (!sibling.school?.trim()) {
-      return false; // Empty school does NOT mean sibling is here
+      return false;
     }
-
-    const schoolName = sibling.school.trim();
-
-    // Check against patterns
-    return schoolPatterns.some(pattern => pattern.test(schoolName));
+    const value = sibling.school.trim();
+    return patterns.some(pattern => pattern.test(value));
   });
 }
 
@@ -173,11 +222,12 @@ export function prepareSiblingChildData(
  */
 export function buildMergedLeadUpdate(
   existing: Lead,
-  incoming: PublicAdmissionData
+  incoming: PublicAdmissionData,
+  schoolName: string,
 ): Partial<Lead> & { applicationStatus: string; lastFormSubmittedAt: Date; formSubmissionCount: number } {
   const contactData = mergeContactData(existing, incoming);
   const numberOfChildren = calculateNumberOfChildren(incoming);
-  const hasSiblingsAtSchool = checkSiblingsAtSchool(incoming.siblings);
+  const hasSiblingsAtSchool = checkSiblingsAtSchool(incoming.siblings, schoolName);
   const mergedNotes = mergeNotes(existing.notes, incoming.additionalInfo?.otherRelevantInfo);
 
   return {

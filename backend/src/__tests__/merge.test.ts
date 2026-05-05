@@ -17,6 +17,7 @@ import {
   mergeNotes,
   calculateNumberOfChildren,
   checkSiblingsAtSchool,
+  buildSchoolNamePatterns,
   prepareStudentChildData,
   prepareSiblingChildData,
   buildMergedLeadUpdate,
@@ -191,35 +192,66 @@ describe('Merge Service', () => {
     });
   });
 
+  describe('buildSchoolNamePatterns', () => {
+    const matchesAll = (patterns: RegExp[], value: string) =>
+      patterns.some(p => p.test(value));
+
+    it('returns no patterns for empty schoolName', () => {
+      expect(buildSchoolNamePatterns('')).toEqual([]);
+      expect(buildSchoolNamePatterns('   ')).toEqual([]);
+    });
+
+    it('matches the full schoolName tolerant to extra whitespace', () => {
+      const patterns = buildSchoolNamePatterns('School Lab');
+      expect(matchesAll(patterns, 'School   Lab')).toBe(true);
+      expect(matchesAll(patterns, 'school lab')).toBe(true);
+    });
+
+    it('matches distinctive tokens but skips stopwords', () => {
+      const patterns = buildSchoolNamePatterns('RIS - Rio Internacional School');
+      expect(matchesAll(patterns, 'RIS')).toBe(true);
+      expect(matchesAll(patterns, 'Internacional')).toBe(true);
+      expect(matchesAll(patterns, 'Rio')).toBe(true);
+      // "school" is a stopword so generic "Other School" should NOT match
+      expect(matchesAll(patterns, 'Other School')).toBe(false);
+    });
+  });
+
   describe('checkSiblingsAtSchool', () => {
-    it('should return false for empty siblings', () => {
-      expect(checkSiblingsAtSchool([])).toBe(false);
+    const sibling = (school: string) =>
+      ({ name: 'A', cpf: '', dateOfBirth: '', grade: '', school });
+
+    it('returns false for empty siblings', () => {
+      expect(checkSiblingsAtSchool([], 'School Lab')).toBe(false);
     });
 
-    it('should return false when siblings have non-matching schools', () => {
-      expect(checkSiblingsAtSchool([
-        { name: 'A', cpf: '', dateOfBirth: '', grade: '', school: 'Other School' },
-      ])).toBe(false);
+    it('returns false when sibling school is empty', () => {
+      expect(checkSiblingsAtSchool([sibling('')], 'School Lab')).toBe(false);
     });
 
-    it('should return false when sibling school is empty', () => {
-      expect(checkSiblingsAtSchool([
-        { name: 'A', cpf: '', dateOfBirth: '', grade: '', school: '' },
-      ])).toBe(false);
+    it('returns false for an unrelated school', () => {
+      expect(checkSiblingsAtSchool([sibling('Other School')], 'School Lab')).toBe(false);
     });
 
-    it('should detect RIS school name variations', () => {
-      const variations = ['RIS', 'ris', 'School Lab', 'Rio Internacional School', 'School International'];
-      for (const school of variations) {
-        expect(checkSiblingsAtSchool([
-          { name: 'A', cpf: '', dateOfBirth: '', grade: '', school },
-        ])).toBe(true);
+    it('matches the configured schoolName exactly', () => {
+      expect(checkSiblingsAtSchool([sibling('School Lab')], 'School Lab')).toBe(true);
+    });
+
+    it('matches distinctive tokens of the configured schoolName', () => {
+      const schoolName = 'RIS - Rio Internacional School';
+      for (const value of ['RIS', 'ris', 'Rio Internacional School', 'Internacional']) {
+        expect(checkSiblingsAtSchool([sibling(value)], schoolName)).toBe(true);
       }
     });
 
-    it('should detect "nossa escola" and "aqui" patterns', () => {
-      expect(checkSiblingsAtSchool([{ name: 'A', cpf: '', dateOfBirth: '', grade: '', school: 'Nossa escola' }])).toBe(true);
-      expect(checkSiblingsAtSchool([{ name: 'A', cpf: '', dateOfBirth: '', grade: '', school: 'Aqui' }])).toBe(true);
+    it('detects generic "nossa escola" / "aqui" hints regardless of schoolName', () => {
+      expect(checkSiblingsAtSchool([sibling('Nossa escola')], 'School Lab')).toBe(true);
+      expect(checkSiblingsAtSchool([sibling('Aqui')], 'School Lab')).toBe(true);
+    });
+
+    it('detects English equivalents "our school" / "same school"', () => {
+      expect(checkSiblingsAtSchool([sibling('our school')], 'School Lab')).toBe(true);
+      expect(checkSiblingsAtSchool([sibling('same school')], 'School Lab')).toBe(true);
     });
   });
 
@@ -287,10 +319,12 @@ describe('Merge Service', () => {
   });
 
   describe('buildMergedLeadUpdate', () => {
+    const SCHOOL = 'School Lab';
+
     it('should build complete merged update with single student', () => {
       const existing = makeExistingLead();
       const incoming = makeSingleStudentData();
-      const result = buildMergedLeadUpdate(existing, incoming);
+      const result = buildMergedLeadUpdate(existing, incoming, SCHOOL);
 
       expect(result.applicationStatus).toBe('FORM_RECEIVED');
       expect(result.formSubmissionCount).toBe(1);
@@ -303,7 +337,7 @@ describe('Merge Service', () => {
     it('should merge desired grades from multiple students', () => {
       const existing = makeExistingLead({ desiredGrades: ['GRADE_2'] });
       const incoming = makeMultiStudentData();
-      const result = buildMergedLeadUpdate(existing, incoming);
+      const result = buildMergedLeadUpdate(existing, incoming, SCHOOL);
 
       expect(result.desiredGrades).toContain('GRADE_2');
       expect(result.desiredGrades).toContain('GRADE_3');
@@ -313,7 +347,7 @@ describe('Merge Service', () => {
     it('should deduplicate desired grades', () => {
       const existing = makeExistingLead({ desiredGrades: ['GRADE_3'] });
       const incoming = makeSingleStudentData(); // desiredGrade = GRADE_3
-      const result = buildMergedLeadUpdate(existing, incoming);
+      const result = buildMergedLeadUpdate(existing, incoming, SCHOOL);
 
       const grade3Count = result.desiredGrades!.filter(g => g === 'GRADE_3').length;
       expect(grade3Count).toBe(1);
@@ -322,18 +356,18 @@ describe('Merge Service', () => {
     it('should increment form submission count', () => {
       const existing = makeExistingLead({ formSubmissionCount: 2 });
       const incoming = makeSingleStudentData();
-      const result = buildMergedLeadUpdate(existing, incoming);
+      const result = buildMergedLeadUpdate(existing, incoming, SCHOOL);
 
       expect(result.formSubmissionCount).toBe(3);
     });
 
-    it('should detect siblings at school', () => {
+    it('should detect siblings at school using the configured schoolName', () => {
       const existing = makeExistingLead();
       const incoming = makeSingleStudentData();
       incoming.siblings = [
         { name: 'Sibling', cpf: '', dateOfBirth: '', grade: '', school: 'RIS' },
       ];
-      const result = buildMergedLeadUpdate(existing, incoming);
+      const result = buildMergedLeadUpdate(existing, incoming, 'RIS - Rio Internacional School');
 
       expect(result.hasSiblingsAtSchool).toBe(true);
     });
@@ -342,7 +376,7 @@ describe('Merge Service', () => {
       const existing = makeExistingLead({ notes: 'Admin note' });
       const incoming = makeSingleStudentData();
       incoming.additionalInfo = { otherRelevantInfo: 'Family note' } as any;
-      const result = buildMergedLeadUpdate(existing, incoming);
+      const result = buildMergedLeadUpdate(existing, incoming, SCHOOL);
 
       expect(result.notes).toContain('Admin note');
       expect(result.notes).toContain('Family note');
