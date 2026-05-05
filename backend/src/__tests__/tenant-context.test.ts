@@ -9,6 +9,8 @@ import {
   runWithTenant,
   currentTenantId,
   requireTenantId,
+  withTenantTx,
+  PLATFORM_ADMIN_TENANT_GUC,
 } from '../lib/tenant-context.js';
 
 describe('tenant-context (AsyncLocalStorage)', () => {
@@ -64,5 +66,62 @@ describe('tenant-context (AsyncLocalStorage)', () => {
     // Smoke-check: round-tripping via the ALS API directly works.
     const id = tenantContext.run({ tenantId: 'tenant-Z' }, () => currentTenantId());
     expect(id).toBe('tenant-Z');
+  });
+});
+
+describe('withTenantTx (Phase 5 — RLS GUC plumbing)', () => {
+  function makePrismaStub() {
+    const calls: Array<{ sql: string; params: unknown[] }> = [];
+    const tx = {
+      $executeRawUnsafe: vi.fn(async (sql: string, ...params: unknown[]) => {
+        calls.push({ sql, params });
+      }),
+    };
+    return {
+      prisma: {
+        $transaction: vi.fn(async (fn: any) => fn(tx)),
+      },
+      tx,
+      calls,
+    };
+  }
+
+  it('sets app.current_tenant_id to the active ALS tenant', async () => {
+    const { prisma, calls } = makePrismaStub();
+    await runWithTenant('tenant-A', async () => {
+      await withTenantTx(prisma, async () => {});
+    });
+    expect(calls).toHaveLength(1);
+    expect(calls[0].sql).toContain("SET LOCAL app.current_tenant_id = 'tenant-A'");
+  });
+
+  it('sets the GUC to empty string when no ALS context is active', async () => {
+    const { prisma, calls } = makePrismaStub();
+    await withTenantTx(prisma, async () => {});
+    expect(calls[0].sql).toContain("SET LOCAL app.current_tenant_id = ''");
+  });
+
+  it('uses the platform-admin sentinel when options.platformAdmin is true', async () => {
+    const { prisma, calls } = makePrismaStub();
+    await withTenantTx(prisma, async () => {}, { platformAdmin: true });
+    expect(calls[0].sql).toContain(`SET LOCAL app.current_tenant_id = '${PLATFORM_ADMIN_TENANT_GUC}'`);
+  });
+
+  it('escapes single quotes in tenant ids to defang SQL injection via ALS', async () => {
+    const { prisma, calls } = makePrismaStub();
+    // ALS is established with a malicious string — withTenantTx must
+    // double-quote it so the SET LOCAL statement stays well-formed.
+    await runWithTenant("tenant'; DROP TABLE x; --", async () => {
+      await withTenantTx(prisma, async () => {});
+    });
+    expect(calls[0].sql).toContain("SET LOCAL app.current_tenant_id = 'tenant''; DROP TABLE x; --'");
+  });
+
+  it("returns the inner function's result", async () => {
+    const { prisma } = makePrismaStub();
+    const result = await runWithTenant('tenant-A', () =>
+      withTenantTx(prisma, async () => 42),
+    );
+    expect(result).toBe(42);
   });
 });

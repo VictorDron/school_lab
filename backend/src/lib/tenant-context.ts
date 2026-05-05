@@ -49,3 +49,45 @@ export function requireTenantId(): string {
   }
   return id;
 }
+
+/**
+ * Sentinel set in Postgres' app.current_tenant_id GUC for platform admin
+ * sessions. The RLS policy installed by migration 20260505120000_phase_5_rls
+ * matches this value to bypass tenant filtering. Keep in sync with that
+ * migration.
+ */
+export const PLATFORM_ADMIN_TENANT_GUC = '__platform_admin__';
+
+type TxClient = {
+  $executeRawUnsafe: (sql: string, ...args: unknown[]) => Promise<unknown>;
+};
+type PrismaLike = {
+  $transaction: <T>(fn: (tx: TxClient) => Promise<T>) => Promise<T>;
+};
+
+/**
+ * Phase 5: run `fn` inside a Postgres transaction with the
+ * `app.current_tenant_id` GUC set to the active ALS tenant. When ALS
+ * has no context, the GUC is set to empty string — RLS policies treat
+ * that as the permissive-when-unset case (legacy code keeps working).
+ *
+ * Use this for code paths that need DB-enforced tenant isolation
+ * (audit log writes, cross-table operations where a malicious or buggy
+ * findUnique could leak). Most reads are already covered by the
+ * application-level auto-scope middleware in config/database.ts.
+ */
+export async function withTenantTx<T>(
+  prisma: PrismaLike,
+  fn: (tx: TxClient) => Promise<T>,
+  options?: { platformAdmin?: boolean },
+): Promise<T> {
+  const guc = options?.platformAdmin
+    ? PLATFORM_ADMIN_TENANT_GUC
+    : currentTenantId() ?? '';
+  return prisma.$transaction(async (tx) => {
+    // SET LOCAL is transaction-scoped — auto-resets on commit/rollback,
+    // so the connection is safe to return to the pool.
+    await tx.$executeRawUnsafe(`SET LOCAL app.current_tenant_id = '${guc.replace(/'/g, "''")}'`);
+    return fn(tx);
+  });
+}
