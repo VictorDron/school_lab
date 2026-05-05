@@ -74,8 +74,13 @@ export async function create(data: CreateEvaluationData, userId: string) {
   });
   if (!child) throw createAppError('CHILD_NOT_FOUND');
 
+  // Inherit tenantId from the parent CrmEvent (which inherited from
+  // Lead). The findUnique above is unscoped (UUID unguessability) but
+  // the leadChild findFirst is auto-scoped, so cross-tenant childId
+  // wouldn't match a child + leadId pair the caller actually owns.
   return prisma.experienceEvaluation.create({
     data: {
+      tenantId: event.tenantId,
       eventId: data.eventId,
       childId: data.childId,
       leadId: data.leadId,

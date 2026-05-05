@@ -30,7 +30,9 @@ export async function transition(
   const targetSlug = gateToColumnSlug[newStatus];
   let columnId: string | undefined;
   if (targetSlug) {
-    const col = await prisma.kanbanColumn.findUnique({ where: { slug: targetSlug } });
+    // findFirst so auto-scope middleware injects tenantId — slug is now
+    // per-tenant unique, no longer global.
+    const col = await prisma.kanbanColumn.findFirst({ where: { slug: targetSlug } });
     if (col) columnId = col.id;
   }
 

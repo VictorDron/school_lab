@@ -140,7 +140,11 @@ export async function create(data: CreateEventData, userId: string) {
     }
   }
 
+  // Inherit tenantId from the parent Lead — invariant enforced by
+  // schema (CrmEvent.tenantId NOT NULL); the auto-scope on the Lead
+  // findUnique above already proved we have access to this tenant.
   const eventData: any = {
+    tenantId: lead.tenantId,
     leadId: data.leadId,
     eventType: data.eventType,
     title: data.title,

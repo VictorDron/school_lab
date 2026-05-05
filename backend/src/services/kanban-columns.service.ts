@@ -1,4 +1,5 @@
 import { prisma } from '../config/database.js';
+import { requireTenantId } from '../lib/tenant-context.js';
 
 // Types
 export interface CreateColumnData {
@@ -75,17 +76,19 @@ export async function create(data: CreateColumnData) {
     });
   }
 
-  // Generate unique slug
+  // Generate unique slug — uniqueness is now per-tenant, so the
+  // findFirst auto-scope handles the lookup correctly.
   let baseSlug = generateSlug(data.name);
   let slug = baseSlug;
   let counter = 1;
-  while (await prisma.kanbanColumn.findUnique({ where: { slug } })) {
+  while (await prisma.kanbanColumn.findFirst({ where: { slug } })) {
     slug = `${baseSlug}_${counter}`;
     counter++;
   }
 
   return prisma.kanbanColumn.create({
     data: {
+      tenantId: requireTenantId(),
       name: data.name,
       slug,
       color: data.color || '#3B82F6',

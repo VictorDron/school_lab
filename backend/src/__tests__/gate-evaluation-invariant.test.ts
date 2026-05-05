@@ -24,7 +24,7 @@ vi.mock('../config/database.js', () => ({
       findMany: vi.fn(),
     },
     kanbanColumn: {
-      findUnique: vi.fn(),
+      findFirst: vi.fn(),
     },
     gateStepConfig: {
       findMany: vi.fn(),
@@ -72,7 +72,7 @@ describe('Gate transition — EVALUATION_COMPLETED invariant', () => {
     mockPrisma.$transaction.mockResolvedValue([{}, {}]);
 
     // Default: no kanban column
-    mockPrisma.kanbanColumn.findUnique.mockResolvedValue(null);
+    mockPrisma.kanbanColumn.findFirst.mockResolvedValue(null);
   });
 
   it('should throw EVALUATION_INCOMPLETE when lead has no children', async () => {

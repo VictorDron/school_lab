@@ -593,7 +593,7 @@ model Tenant {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  // Relations — Phase 0/2a/2b/2d wires these; later phases extend.
+  // Relations — Phase 0/2a/2b/2c/2d wires these; later phases extend.
   settings              SystemSettings?
   users                 User[]
   invites               Invite[]
@@ -602,6 +602,9 @@ model Tenant {
   addendums             ContractAddendum[]
   contractDefaultSigners ContractDefaultSigner[]
   gateStepConfigs       GateStepConfig[]
+  kanbanColumns         KanbanColumn[]
+  crmEvents             CrmEvent[]
+  experienceEvaluations ExperienceEvaluation[]
 
   @@index([slug])
 }
@@ -1229,8 +1232,12 @@ model ModuleChannel {
 
 model KanbanColumn {
   id        String   @id @default(uuid())
+  // Tenancy: per-tenant kanban pipeline. Each tenant configures its own
+  // columns. The slug becomes unique per tenant — different tenants can
+  // each have a "FORM_RECEIVED" column without colliding.
+  tenantId  String
   name      String
-  slug      String   @unique
+  slug      String
   color     String   @default("#3B82F6")
   order     Int
   isFinal   Boolean  @default(false)
@@ -1238,8 +1245,11 @@ model KanbanColumn {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  leads Lead[]
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  leads  Lead[]
 
+  @@unique([tenantId, slug])
+  @@index([tenantId])
   @@index([order])
 }
 
@@ -1886,6 +1896,9 @@ model LeadView {
 
 model CrmEvent {
   id          String       @id @default(uuid())
+  // Tenancy: denormalized from Lead so dashboard groupBy queries
+  // auto-scope without forcing a join. Always equals Lead.tenantId.
+  tenantId    String
   leadId      String
   eventType   CrmEventType
   title       String
@@ -1910,11 +1923,13 @@ model CrmEvent {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  tenant          Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   lead            Lead                   @relation(fields: [leadId], references: [id], onDelete: Cascade)
   createdBy       User                   @relation("EventCreator", fields: [createdById], references: [id], onDelete: Restrict)
   assignedTeacher User?                  @relation("EventTeacher", fields: [assignedTeacherId], references: [id], onDelete: SetNull)
   evaluations     ExperienceEvaluation[]
 
+  @@index([tenantId])
   @@index([leadId])
   @@index([eventType])
   @@index([startDate])
@@ -1923,6 +1938,9 @@ model CrmEvent {
 
 model ExperienceEvaluation {
   id             String   @id @default(uuid())
+  // Tenancy: denormalized from Lead via leadId. Always equals
+  // Lead.tenantId / Event.tenantId — kept in sync at create time.
+  tenantId       String
   eventId        String
   childId        String
   leadId         String
@@ -1952,6 +1970,7 @@ model ExperienceEvaluation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   event        CrmEvent  @relation(fields: [eventId], references: [id], onDelete: Cascade)
   child        LeadChild @relation(fields: [childId], references: [id], onDelete: Cascade)
   lead         Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
@@ -1960,6 +1979,7 @@ model ExperienceEvaluation {
   lastEditedBy User?     @relation("EvaluationEditor", fields: [lastEditedById], references: [id], onDelete: SetNull)
 
   @@unique([eventId, childId])
+  @@index([tenantId])
   @@index([eventId])
   @@index([childId])
   @@index([leadId])

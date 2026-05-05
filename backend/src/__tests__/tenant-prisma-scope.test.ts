@@ -14,6 +14,9 @@ function attachTenantScopeMiddleware(client: PrismaClient): void {
   // Mirror the production list in src/config/database.ts.
   const TENANT_SCOPED_MODELS = new Set<Prisma.ModelName>([
     'Lead',
+    'KanbanColumn',
+    'CrmEvent',
+    'ExperienceEvaluation',
     'Contract',
     'ContractAddendum',
     'ContractDefaultSigner',
@@ -178,6 +181,47 @@ describe('Prisma auto-scope middleware (Phase 2b)', () => {
   it('scopes ContractDefaultSigner.deleteMany (Phase 2d)', async () => {
     await runWithTenant('tenant-A', async () => {
       await runQuery(() => client.contractDefaultSigner.deleteMany({}));
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes KanbanColumn.findMany (Phase 2c)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.kanbanColumn.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes KanbanColumn.findFirst by slug (Phase 2c — slug per-tenant unique)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.kanbanColumn.findFirst({ where: { slug: 'NEW_LEAD' } }));
+    });
+    expect(captured?.params.args.where).toMatchObject({
+      slug: 'NEW_LEAD',
+      tenantId: 'tenant-A',
+    });
+  });
+
+  it('scopes CrmEvent.groupBy (Phase 2c — closes the dashboard analytics leak)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() =>
+        client.crmEvent.groupBy({
+          by: ['eventType'],
+          _count: true,
+        }),
+      );
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes ExperienceEvaluation.groupBy (Phase 2c)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() =>
+        client.experienceEvaluation.groupBy({
+          by: ['decision'],
+          _count: true,
+        }),
+      );
     });
     expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
   });

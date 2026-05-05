@@ -21,7 +21,9 @@ async function applyAutoAdvance(
   const targetSlug = gateToColumnSlug[toStatus];
   let colId: string | undefined;
   if (targetSlug) {
-    const col = await prisma.kanbanColumn.findUnique({ where: { slug: targetSlug } });
+    // findFirst (not findUnique) so the auto-scope middleware injects
+    // tenantId into the where — slug is now per-tenant unique.
+    const col = await prisma.kanbanColumn.findFirst({ where: { slug: targetSlug } });
     if (col) colId = col.id;
   }
 

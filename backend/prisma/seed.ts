@@ -346,9 +346,11 @@ async function main() {
 
   for (const column of kanbanColumns) {
     await prisma.kanbanColumn.upsert({
-      where: { slug: column.slug },
+      where: {
+        tenantId_slug: { tenantId: tenant.id, slug: column.slug },
+      },
       update: {},
-      create: column,
+      create: { ...column, tenantId: tenant.id },
     });
   }
   console.log('✅ Kanban columns created');

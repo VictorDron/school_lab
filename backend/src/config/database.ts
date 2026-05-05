@@ -26,9 +26,13 @@ function isRetryableError(error: unknown): boolean {
 // domain as tenantId columns land. Listed as a Set so the middleware
 // lookup is O(1) on every query.
 //   Phase 2b: Lead
+//   Phase 2c: KanbanColumn, CrmEvent, ExperienceEvaluation
 //   Phase 2d: Contract, ContractAddendum, ContractDefaultSigner, GateStepConfig
 const TENANT_SCOPED_MODELS = new Set<Prisma.ModelName>([
   'Lead',
+  'KanbanColumn',
+  'CrmEvent',
+  'ExperienceEvaluation',
   'Contract',
   'ContractAddendum',
   'ContractDefaultSigner',
