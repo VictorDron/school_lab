@@ -1,6 +1,6 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-const { prismaMock, emailServiceMock, auditServiceMock, gradeProgressionMock, cryptoMock } = vi.hoisted(() => {
+const { prismaMock, emailServiceMock, auditServiceMock, gradeProgressionMock, cryptoMock, settingsMock } = vi.hoisted(() => {
   const prismaMock = {
     reEnrollmentPeriod: {
       findUnique: vi.fn(),
@@ -30,7 +30,10 @@ const { prismaMock, emailServiceMock, auditServiceMock, gradeProgressionMock, cr
       toString: vi.fn(() => 'a'.repeat(64)),
     })),
   };
-  return { prismaMock, emailServiceMock, auditServiceMock, gradeProgressionMock, cryptoMock };
+  const settingsMock = {
+    getOrCreateSettings: vi.fn().mockResolvedValue({ schoolName: 'Test School' }),
+  };
+  return { prismaMock, emailServiceMock, auditServiceMock, gradeProgressionMock, cryptoMock, settingsMock };
 });
 
 vi.mock('../config/database.js', () => ({
@@ -43,6 +46,8 @@ vi.mock('crypto', () => ({
 }));
 
 vi.mock('../services/email.service.js', () => emailServiceMock);
+
+vi.mock('../services/settings.service.js', () => settingsMock);
 
 vi.mock('../services/audit.service.js', () => auditServiceMock);
 

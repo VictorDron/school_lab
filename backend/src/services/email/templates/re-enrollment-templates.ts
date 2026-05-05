@@ -8,9 +8,9 @@ export async function sendReEnrollmentInviteEmail(params: {
   formLink: string;
   suggestedGrade: string | null;
   deadline: Date;
-  schoolName?: string;
+  schoolName: string;
 }) {
-  const { to, familyName, studentName, formLink, suggestedGrade, deadline, schoolName = 'Rio International School' } = params;
+  const { to, familyName, studentName, formLink, suggestedGrade, deadline, schoolName } = params;
 
   if (!to) {
     logger.warn('[Email] RE_ENROLLMENT_INVITE skipped — no email address');
@@ -60,9 +60,9 @@ export async function sendReEnrollmentFormConfirmationEmail(params: {
   to: string;
   familyName: string;
   studentName: string;
-  schoolName?: string;
+  schoolName: string;
 }) {
-  const { to, familyName, studentName, schoolName = 'Rio International School' } = params;
+  const { to, familyName, studentName, schoolName } = params;
 
   if (!to) {
     logger.warn('[Email] RE_ENROLLMENT_FORM_CONFIRMATION skipped — no email address');
@@ -103,9 +103,9 @@ export async function sendReEnrollmentContractSentEmail(params: {
   to: string;
   familyName: string;
   studentName: string;
-  schoolName?: string;
+  schoolName: string;
 }) {
-  const { to, familyName, studentName, schoolName = 'Rio International School' } = params;
+  const { to, familyName, studentName, schoolName } = params;
 
   if (!to) {
     logger.warn('[Email] RE_ENROLLMENT_CONTRACT_SENT skipped — no email address');
@@ -148,9 +148,9 @@ export async function sendReEnrollmentWelcomeEmail(params: {
   studentName: string;
   newGrade: string | null;
   targetYear: number;
-  schoolName?: string;
+  schoolName: string;
 }) {
-  const { to, familyName, studentName, newGrade, targetYear, schoolName = 'Rio International School' } = params;
+  const { to, familyName, studentName, newGrade, targetYear, schoolName } = params;
 
   if (!to) {
     logger.warn('[Email] RE_ENROLLMENT_WELCOME skipped — no email address');
@@ -202,6 +202,7 @@ export async function sendPreReEnrollmentEmail(params: {
   responseLink: string;
   deadline: string;
   customBody: string;
+  schoolName: string;
   // Legacy fields (kept for backward compat)
   currentMonthlyValue?: string;
   newMonthlyValue?: string;
@@ -210,7 +211,7 @@ export async function sendPreReEnrollmentEmail(params: {
   const {
     to, familyName, studentName, grade,
     fullMonthlyValue, discountedMonthlyValue,
-    responseLink, deadline, customBody,
+    responseLink, deadline, customBody, schoolName,
   } = params;
 
   if (!to) {
@@ -264,7 +265,7 @@ export async function sendPreReEnrollmentEmail(params: {
 
   return sendEmail({
     to,
-    subject: `Pré-Rematrícula — ${studentName} — Rio International School`,
+    subject: `Pré-Rematrícula — ${studentName} — ${schoolName}`,
     html,
   });
 }
@@ -275,9 +276,9 @@ export async function sendDocumentRejectionEmail(params: {
   studentName: string;
   formLink: string;
   rejectedDocuments: Array<{ type: string; name: string }>;
-  schoolName?: string;
+  schoolName: string;
 }) {
-  const { to, familyName, studentName, formLink, rejectedDocuments, schoolName = 'Rio International School' } = params;
+  const { to, familyName, studentName, formLink, rejectedDocuments, schoolName } = params;
 
   if (!to) {
     logger.warn('[Email] DOCUMENT_REJECTION skipped — no email address');

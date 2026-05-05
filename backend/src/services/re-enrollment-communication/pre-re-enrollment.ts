@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid';
 import { prisma } from '../../config/database.js';
 import { config } from '../../config/index.js';
 import { sendPreReEnrollmentEmail, sendReEnrollmentInviteEmail } from '../email.service.js';
+import { getOrCreateSettings } from '../settings.service.js';
 import { createInviteForStudent } from '../re-enrollment-invite.service.js';
 import logger from '../../utils/logger.js';
 import { formatBRL, toNum } from './shared.js';
@@ -109,6 +110,9 @@ export async function sendPreReEnrollmentEmails(params: SendEmailsParams): Promi
   let sent = 0;
   let failed = 0;
 
+  // Read once outside the loop — settings is shared across the whole batch.
+  const { schoolName } = await getOrCreateSettings();
+
   for (const student of students) {
     try {
       const email = student.lead?.primaryContactEmail;
@@ -175,6 +179,7 @@ export async function sendPreReEnrollmentEmails(params: SendEmailsParams): Promi
         responseLink,
         deadline: formatDeadlineBR(deadline),
         customBody,
+        schoolName,
       });
 
       await prisma.preReEnrollmentResponse.update({
@@ -244,6 +249,7 @@ export async function recordResponse(
       });
 
       if (student?.lead?.primaryContactEmail && period) {
+        const { schoolName } = await getOrCreateSettings();
         await sendReEnrollmentInviteEmail({
           to: student.lead.primaryContactEmail,
           familyName: student.lead.familyName ?? student.lead.primaryContactName ?? '',
@@ -251,6 +257,7 @@ export async function recordResponse(
           formLink: `${config.frontendUrl}/re-enrollment/${invite.token}`,
           suggestedGrade: student.grade,
           deadline: period.endDate,
+          schoolName,
         });
         logger.info('Auto-sent re-enrollment form email after AGREED', {
           periodId: updated.periodId,
@@ -413,6 +420,7 @@ export async function resendPreReEnrollmentEmail(responseId: string) {
   const deadline = response.period?.preReEnrollmentDeadline;
   const formattedDeadline = deadline ? formatDeadlineBR(deadline) : '';
 
+  const { schoolName } = await getOrCreateSettings();
   await sendPreReEnrollmentEmail({
     to: email,
     familyName,
@@ -423,6 +431,7 @@ export async function resendPreReEnrollmentEmail(responseId: string) {
     responseLink,
     deadline: formattedDeadline,
     customBody: response.period?.preReEnrollmentEmailTemplate ?? '',
+    schoolName,
   });
 
   await prisma.preReEnrollmentResponse.update({

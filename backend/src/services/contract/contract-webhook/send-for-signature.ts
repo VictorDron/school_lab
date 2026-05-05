@@ -232,10 +232,13 @@ export async function sendForSignature(contractId: string, userId: string) {
           include: { student: { select: { fullName: true } } },
         });
         const { sendReEnrollmentContractSentEmail } = await import('../../email.service.js');
+        const { getOrCreateSettings } = await import('../../settings.service.js');
+        const { schoolName } = await getOrCreateSettings();
         await sendReEnrollmentContractSentEmail({
           to: leadForEmail.primaryContactEmail,
           familyName: leadForEmail.familyName ?? '',
           studentName: invite?.student?.fullName ?? '',
+          schoolName,
         });
       }
     } catch (emailErr) {

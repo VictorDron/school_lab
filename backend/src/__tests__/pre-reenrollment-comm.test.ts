@@ -30,6 +30,10 @@ vi.mock('../services/email.service.js', () => ({
   sendPreReEnrollmentEmail: mockSendPreReEnrollmentEmail,
 }));
 
+vi.mock('../services/settings.service.js', () => ({
+  getOrCreateSettings: vi.fn().mockResolvedValue({ schoolName: 'Test School' }),
+}));
+
 vi.mock('../services/re-enrollment-invite.service.js', () => ({
   createInviteForStudent: mockCreateInviteForStudent,
   updateInviteStatus: vi.fn(),

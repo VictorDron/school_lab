@@ -1,6 +1,6 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-const { prismaMock, emailMock, queueMock } = vi.hoisted(() => {
+const { prismaMock, emailMock, queueMock, settingsMock } = vi.hoisted(() => {
   const prismaMock = {
     reEnrollmentPeriod: {
       findUnique: vi.fn(),
@@ -19,11 +19,15 @@ const { prismaMock, emailMock, queueMock } = vi.hoisted(() => {
       removeRepeatableByKey: vi.fn(),
     },
   };
-  return { prismaMock, emailMock, queueMock };
+  const settingsMock = {
+    getOrCreateSettings: vi.fn().mockResolvedValue({ schoolName: 'Test School' }),
+  };
+  return { prismaMock, emailMock, queueMock, settingsMock };
 });
 
 vi.mock('../config/database.js', () => ({ prisma: prismaMock }));
 vi.mock('../services/email.service.js', () => emailMock);
+vi.mock('../services/settings.service.js', () => settingsMock);
 vi.mock('../queues/reminder.queue.js', () => queueMock);
 vi.mock('../utils/logger.js', () => ({
   default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },

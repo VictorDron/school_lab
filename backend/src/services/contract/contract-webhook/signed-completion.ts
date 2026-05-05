@@ -110,12 +110,15 @@ async function completeRenewalFlow(contract: ContractRef): Promise<void> {
       });
       if (lead?.primaryContactEmail) {
         const { sendReEnrollmentWelcomeEmail } = await import('../../email.service.js');
+        const { getOrCreateSettings } = await import('../../settings.service.js');
+        const { schoolName } = await getOrCreateSettings();
         await sendReEnrollmentWelcomeEmail({
           to: lead.primaryContactEmail,
           familyName: lead.familyName ?? '',
           studentName: invite.student.fullName,
           newGrade: nextGrade,
           targetYear: invite.period.targetYear,
+          schoolName,
         });
       }
     } catch (emailErr) {

@@ -1,6 +1,7 @@
 import { prisma } from '../../config/database.js';
 import { config } from '../../config/index.js';
 import { sendReEnrollmentInviteEmail } from '../email.service.js';
+import { getOrCreateSettings } from '../settings.service.js';
 import { getIO } from '../../socket/io.js';
 import logger from '../../utils/logger.js';
 
@@ -51,6 +52,9 @@ export async function sendPendingReminders(periodId: string) {
   let sent = 0;
   let failed = 0;
 
+  // Read once outside the loop — settings is shared across the whole batch.
+  const { schoolName } = await getOrCreateSettings();
+
   for (let i = 0; i < eligible.length; i += REMINDER_BATCH_SIZE) {
     const batch = eligible.slice(i, i + REMINDER_BATCH_SIZE);
     const results = await Promise.all(
@@ -74,6 +78,7 @@ export async function sendPendingReminders(periodId: string) {
             formLink: `${config.frontendUrl}/re-enrollment/${invite.token}`,
             suggestedGrade: invite.student.grade,
             deadline: effectiveDeadline,
+            schoolName,
           });
 
           return 'sent';

@@ -134,12 +134,15 @@ export async function submitForm(token: string, data: SubmitFormData, metadata?:
   // Send form confirmation email (non-fatal) — REMAT-11
   try {
     const { sendReEnrollmentFormConfirmationEmail } = await import('../email.service.js');
+    const { getOrCreateSettings } = await import('../settings.service.js');
     const contactEmail = lead?.primaryContactEmail;
     if (contactEmail) {
+      const { schoolName } = await getOrCreateSettings();
       await sendReEnrollmentFormConfirmationEmail({
         to: contactEmail,
         familyName: invite.student.fullName,
         studentName: invite.student.fullName,
+        schoolName,
       });
     }
   } catch (emailErr) {
