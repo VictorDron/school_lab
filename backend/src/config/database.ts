@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import logger from '../utils/logger.js';
+import { currentTenantId } from '../lib/tenant-context.js';
 
 declare global {
   var prisma: PrismaClient | undefined;
@@ -21,9 +22,49 @@ function isRetryableError(error: unknown): boolean {
   return false;
 }
 
+// Models that auto-scope by tenantId. Phase 2b ships Lead; later phases
+// add the rest as their domain models gain a tenantId column. Listed as a
+// Set so the middleware lookup is O(1) on every query.
+const TENANT_SCOPED_MODELS = new Set<Prisma.ModelName>(['Lead']);
+
+// Read-style actions where merging tenantId into args.where is safe.
+// Excluded: findUnique / findUniqueOrThrow / update / delete / upsert —
+// those use a unique-key where that wouldn't accept a non-unique tenantId
+// filter. UUID v4 IDs are unguessable so the cross-tenant risk on
+// findUnique by id is soft; Phase 5 (RLS) closes the gap at the DB level.
+const SCOPED_READ_ACTIONS = new Set<Prisma.PrismaAction>([
+  'findFirst',
+  'findFirstOrThrow',
+  'findMany',
+  'count',
+  'aggregate',
+  'groupBy',
+  'updateMany',
+  'deleteMany',
+]);
+
 function createPrismaClient(): PrismaClient {
   const client = new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+  });
+
+  // Tenant auto-scope middleware. When a request handler is running
+  // inside `runWithTenant(...)`, every read-style query against a
+  // tenant-scoped model gets `tenantId: <ctx>` injected into its where
+  // clause. Without active context (background jobs, server boot, tests
+  // that don't establish context) this is a no-op.
+  client.$use(async (params, next) => {
+    const tenantId = currentTenantId();
+    if (
+      tenantId &&
+      params.model &&
+      TENANT_SCOPED_MODELS.has(params.model) &&
+      SCOPED_READ_ACTIONS.has(params.action)
+    ) {
+      params.args = params.args ?? {};
+      params.args.where = { ...(params.args.where ?? {}), tenantId };
+    }
+    return next(params);
   });
 
   // Add retry middleware for transient connection errors

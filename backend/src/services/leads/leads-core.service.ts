@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import {
   LeadSource,
   CommentType,
@@ -190,6 +191,7 @@ export async function create(
 
   const lead = await prisma.lead.create({
     data: {
+      tenantId: requireTenantId(),
       code: generateCode('LD'),
       familyName: data.familyName,
       primaryContactName: data.primaryContactName,

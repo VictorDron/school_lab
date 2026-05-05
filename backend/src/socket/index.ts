@@ -66,6 +66,11 @@ export function initializeSocket(httpServer: HttpServer) {
       };
       socket.data.tenantId = user.tenantId;
 
+      // Note: AsyncLocalStorage context for Socket.IO event handlers is
+      // not established here — socket events fire on a different async
+      // path than the connect handler. Per-event ALS wrapping happens at
+      // the event handler level when needed (Phase 2f Communication).
+
       next();
     } catch (error) {
       next(new Error('Invalid token'));

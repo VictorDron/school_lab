@@ -593,10 +593,11 @@ model Tenant {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  // Relations — Phase 0/2a wires these; later phases extend.
+  // Relations — Phase 0/2a/2b wires these; later phases extend.
   settings SystemSettings?
   users    User[]
   invites  Invite[]
+  leads    Lead[]
 
   @@index([slug])
 }
@@ -1240,6 +1241,11 @@ model KanbanColumn {
 
 model Lead {
   id                      String     @id @default(uuid())
+  // Tenancy: every Lead belongs to a tenant. Phase 2b root — all Lead-
+  // family children (LeadChild, LeadAddress, etc.) derive their tenant
+  // through this FK. Auto-scoping middleware injects this into every
+  // Lead findMany/findFirst/count/etc. when an ALS context is active.
+  tenantId                String
   code                    String     @unique
   familyName              String
   primaryContactName      String
@@ -1287,6 +1293,7 @@ model Lead {
   enrollmentSubmittedAt     DateTime? // Quando família preencheu o formulário
   enrollmentSubmissionCount Int                  @default(0) // Quantas vezes form foi preenchido
 
+  tenant           Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   column           KanbanColumn           @relation(fields: [columnId], references: [id], onDelete: Restrict)
   creator          User?                  @relation("LeadCreator", fields: [createdById], references: [id], onDelete: SetNull)
   children         LeadChild[]
@@ -1331,6 +1338,7 @@ model Lead {
   @@index([admissionGateStatus])
   @@index([createdAt])
   @@index([primaryContactEmail])
+  @@index([tenantId])
 }
 
 model LeadChild {

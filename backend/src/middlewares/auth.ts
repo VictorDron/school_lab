@@ -5,6 +5,7 @@ import { prisma } from '../config/database.js';
 import { AuthenticatedRequest, JwtPayload, AuthUser } from '../types/index.js';
 import { AccessLevel, AppModule, UserRole } from '@prisma/client';
 import logger from '../utils/logger.js';
+import { runWithTenant } from '../lib/tenant-context.js';
 
 export async function authenticate(
   req: Request,
@@ -63,7 +64,7 @@ export async function authenticate(
     }
 
     const authReq = req as AuthenticatedRequest;
-    authReq.tenantId = user.tenantId ?? undefined;
+    authReq.tenantId = user.tenantId;
     authReq.user = {
       id: user.id,
       email: user.email,
@@ -79,7 +80,15 @@ export async function authenticate(
       })),
     };
 
-    next();
+    // Establish AsyncLocalStorage context so every Prisma query fired
+    // inside this request — including async deep stacks — auto-scopes
+    // by tenant via the middleware in config/database.ts. Platform admins
+    // intentionally omit context (they cross-tenant by design).
+    if (user.isPlatformAdmin) {
+      next();
+    } else {
+      runWithTenant(user.tenantId, () => next());
+    }
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       return res.status(401).json({
