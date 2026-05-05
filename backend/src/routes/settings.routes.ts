@@ -6,7 +6,10 @@ import * as SettingsController from '../controllers/settings.controller.js';
 const router = Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.get('/', SettingsController.getSettings);
+// Phase 3c: GET requires auth — settings is per-tenant now, anonymous
+// reads would have to fall back to seed which leaks the original
+// tenant's identity to public callers.
+router.get('/', authenticate, SettingsController.getSettings);
 
 router.patch(
   '/',
