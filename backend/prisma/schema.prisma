@@ -718,6 +718,10 @@ model SystemSettings {
   // currency math; null = clause is omitted entirely (for tenants that
   // don't charge a separate material fee).
   internationalMaterialFee Decimal? @db.Decimal(12, 2)
+  // Per-tenant grade progression in ascending order. Empty array (the
+  // default) means "use the system default K-12 progression" — a Brazilian
+  // EF/EM school or a non-K-12 curriculum can override the list here.
+  gradeProgression String[] @default([])
   logoUrl         String?
   defaultLanguage String   @default("pt")
   dateFormat      String   @default("DD/MM/YYYY")
