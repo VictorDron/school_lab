@@ -2,6 +2,7 @@ import { prisma } from '../../config/database.js';
 import { config } from '../../config/index.js';
 import { sendReEnrollmentInviteEmail } from '../email.service.js';
 import { getOrCreateSettings } from '../settings.service.js';
+import { getDefaultTenant } from '../tenant.service.js';
 import { getIO } from '../../socket/io.js';
 import logger from '../../utils/logger.js';
 
@@ -53,7 +54,8 @@ export async function sendPendingReminders(periodId: string) {
   let failed = 0;
 
   // Read once outside the loop — settings is shared across the whole batch.
-  const { schoolName } = await getOrCreateSettings();
+  const { id: tenantId } = await getDefaultTenant();
+  const { schoolName } = await getOrCreateSettings(tenantId);
 
   for (let i = 0; i < eligible.length; i += REMINDER_BATCH_SIZE) {
     const batch = eligible.slice(i, i + REMINDER_BATCH_SIZE);

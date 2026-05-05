@@ -28,6 +28,11 @@ const { prismaMock, emailMock, queueMock, settingsMock } = vi.hoisted(() => {
 vi.mock('../config/database.js', () => ({ prisma: prismaMock }));
 vi.mock('../services/email.service.js', () => emailMock);
 vi.mock('../services/settings.service.js', () => settingsMock);
+vi.mock('../services/tenant.service.js', () => ({
+  getDefaultTenant: vi.fn().mockResolvedValue({ id: 'test-tenant-id', slug: 'test', name: 'Test' }),
+  DEFAULT_TENANT_ID: 'test-tenant-id',
+  DEFAULT_TENANT_SLUG: 'test',
+}));
 vi.mock('../queues/reminder.queue.js', () => queueMock);
 vi.mock('../utils/logger.js', () => ({
   default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },

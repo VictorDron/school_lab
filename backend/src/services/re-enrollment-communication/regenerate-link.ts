@@ -4,6 +4,7 @@ import { config } from '../../config/index.js';
 import { createAppError } from '../../lib/error-messages.js';
 import { sendDocumentRejectionEmail } from '../email.service.js';
 import { getOrCreateSettings } from '../settings.service.js';
+import { getDefaultTenant } from '../tenant.service.js';
 import { getIO } from '../../socket/io.js';
 import logger from '../../utils/logger.js';
 
@@ -61,7 +62,8 @@ export async function regenerateInviteLink(inviteId: string, _userId: string) {
 
   if (email) {
     try {
-      const { schoolName } = await getOrCreateSettings();
+      const { id: tenantId } = await getDefaultTenant();
+      const { schoolName } = await getOrCreateSettings(tenantId);
       await sendDocumentRejectionEmail({
         to: email,
         familyName: lead?.familyName ?? lead?.primaryContactName ?? '',

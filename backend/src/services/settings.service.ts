@@ -47,18 +47,23 @@ export interface UpdateFeesData {
   discountOptions?: unknown;
 }
 
-export async function getOrCreateSettings() {
-  const existing = await prisma.systemSettings.findFirst();
+// All settings reads/writes are now scoped to a single tenant. Each Tenant
+// owns at most one SystemSettings row (1:1 in the schema), looked up via
+// the unique tenantId. Phase 0: callers either pass req.tenantId once it
+// exists, or fall back to getDefaultTenant().id during the transition.
+
+export async function getOrCreateSettings(tenantId: string) {
+  const existing = await prisma.systemSettings.findUnique({ where: { tenantId } });
   if (existing) return existing;
 
-  return prisma.systemSettings.create({ data: DEFAULT_SETTINGS });
+  return prisma.systemSettings.create({ data: { ...DEFAULT_SETTINGS, tenantId } });
 }
 
-export async function updateSettings(data: UpdateSettingsData) {
-  const existing = await prisma.systemSettings.findFirst();
+export async function updateSettings(tenantId: string, data: UpdateSettingsData) {
+  const existing = await prisma.systemSettings.findUnique({ where: { tenantId } });
 
   if (!existing) {
-    return prisma.systemSettings.create({ data });
+    return prisma.systemSettings.create({ data: { ...data, tenantId } });
   }
 
   return prisma.systemSettings.update({
@@ -67,11 +72,11 @@ export async function updateSettings(data: UpdateSettingsData) {
   });
 }
 
-export async function updateLogoUrl(logoUrl: string) {
-  const existing = await prisma.systemSettings.findFirst();
+export async function updateLogoUrl(tenantId: string, logoUrl: string) {
+  const existing = await prisma.systemSettings.findUnique({ where: { tenantId } });
 
   if (!existing) {
-    return prisma.systemSettings.create({ data: { logoUrl } });
+    return prisma.systemSettings.create({ data: { logoUrl, tenantId } });
   }
 
   return prisma.systemSettings.update({
@@ -80,8 +85,8 @@ export async function updateLogoUrl(logoUrl: string) {
   });
 }
 
-export async function getFees() {
-  const settings = await prisma.systemSettings.findFirst();
+export async function getFees(tenantId: string) {
+  const settings = await prisma.systemSettings.findUnique({ where: { tenantId } });
   return {
     feeTable: settings?.feeTable ?? DEFAULT_FEE_TABLE,
     foodTable: settings?.foodTable ?? DEFAULT_FOOD_TABLE,
@@ -89,12 +94,13 @@ export async function getFees() {
   };
 }
 
-export async function updateFees(data: UpdateFeesData) {
-  const existing = await prisma.systemSettings.findFirst();
+export async function updateFees(tenantId: string, data: UpdateFeesData) {
+  const existing = await prisma.systemSettings.findUnique({ where: { tenantId } });
 
   const settings = !existing
     ? await prisma.systemSettings.create({
         data: {
+          tenantId,
           feeTable: (data.feeTable ?? DEFAULT_FEE_TABLE) as never,
           foodTable: (data.foodTable ?? DEFAULT_FOOD_TABLE) as never,
           discountOptions: (data.discountOptions ??

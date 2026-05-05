@@ -3,6 +3,7 @@ import { prisma } from '../../config/database.js';
 import { config } from '../../config/index.js';
 import { sendPreReEnrollmentEmail, sendReEnrollmentInviteEmail } from '../email.service.js';
 import { getOrCreateSettings } from '../settings.service.js';
+import { getDefaultTenant } from '../tenant.service.js';
 import { createInviteForStudent } from '../re-enrollment-invite.service.js';
 import logger from '../../utils/logger.js';
 import { formatBRL, toNum } from './shared.js';
@@ -111,7 +112,8 @@ export async function sendPreReEnrollmentEmails(params: SendEmailsParams): Promi
   let failed = 0;
 
   // Read once outside the loop — settings is shared across the whole batch.
-  const { schoolName } = await getOrCreateSettings();
+  const { id: tenantId } = await getDefaultTenant();
+  const { schoolName } = await getOrCreateSettings(tenantId);
 
   for (const student of students) {
     try {
@@ -249,7 +251,8 @@ export async function recordResponse(
       });
 
       if (student?.lead?.primaryContactEmail && period) {
-        const { schoolName } = await getOrCreateSettings();
+        const { id: tenantId } = await getDefaultTenant();
+        const { schoolName } = await getOrCreateSettings(tenantId);
         await sendReEnrollmentInviteEmail({
           to: student.lead.primaryContactEmail,
           familyName: student.lead.familyName ?? student.lead.primaryContactName ?? '',
@@ -420,7 +423,8 @@ export async function resendPreReEnrollmentEmail(responseId: string) {
   const deadline = response.period?.preReEnrollmentDeadline;
   const formattedDeadline = deadline ? formatDeadlineBR(deadline) : '';
 
-  const { schoolName } = await getOrCreateSettings();
+  const { id: tenantId } = await getDefaultTenant();
+  const { schoolName } = await getOrCreateSettings(tenantId);
   await sendPreReEnrollmentEmail({
     to: email,
     familyName,

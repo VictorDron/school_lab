@@ -3,6 +3,7 @@ import { config } from '../../config/index.js';
 import { createAppError } from '../../lib/error-messages.js';
 import { sendReEnrollmentInviteEmail } from '../email.service.js';
 import { getOrCreateSettings } from '../settings.service.js';
+import { getDefaultTenant } from '../tenant.service.js';
 import { updateInviteStatus } from '../re-enrollment-invite.service.js';
 import { getIO } from '../../socket/io.js';
 import logger from '../../utils/logger.js';
@@ -36,7 +37,8 @@ export async function resendInvite(inviteId: string, _userId: string) {
     const child = invite.student.child;
 
     if (lead?.primaryContactEmail) {
-      const { schoolName } = await getOrCreateSettings();
+      const { id: tenantId } = await getDefaultTenant();
+      const { schoolName } = await getOrCreateSettings(tenantId);
       await sendReEnrollmentInviteEmail({
         to: lead.primaryContactEmail,
         familyName: lead.familyName ?? lead.primaryContactName ?? '',

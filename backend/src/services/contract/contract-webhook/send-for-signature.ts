@@ -233,7 +233,9 @@ export async function sendForSignature(contractId: string, userId: string) {
         });
         const { sendReEnrollmentContractSentEmail } = await import('../../email.service.js');
         const { getOrCreateSettings } = await import('../../settings.service.js');
-        const { schoolName } = await getOrCreateSettings();
+        const { getDefaultTenant } = await import('../../tenant.service.js');
+        const { id: tenantId } = await getDefaultTenant();
+        const { schoolName } = await getOrCreateSettings(tenantId);
         await sendReEnrollmentContractSentEmail({
           to: leadForEmail.primaryContactEmail,
           familyName: leadForEmail.familyName ?? '',

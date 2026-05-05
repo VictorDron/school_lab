@@ -51,6 +51,11 @@ vi.mock('../config/database.js', () => ({
 vi.mock('../services/clicksign.service.js', () => clicksignMock);
 vi.mock('../config/supabase.js', () => supabaseMock);
 vi.mock('../services/settings.service.js', () => settingsMock);
+vi.mock('../services/tenant.service.js', () => ({
+  getDefaultTenant: vi.fn().mockResolvedValue({ id: 'test-tenant-id', slug: 'test', name: 'Test' }),
+  DEFAULT_TENANT_ID: 'test-tenant-id',
+  DEFAULT_TENANT_SLUG: 'test',
+}));
 vi.mock('../utils/logger.js', () => ({
   default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));

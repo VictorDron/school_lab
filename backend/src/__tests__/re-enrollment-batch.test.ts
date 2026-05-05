@@ -49,6 +49,12 @@ vi.mock('../services/email.service.js', () => emailServiceMock);
 
 vi.mock('../services/settings.service.js', () => settingsMock);
 
+vi.mock('../services/tenant.service.js', () => ({
+  getDefaultTenant: vi.fn().mockResolvedValue({ id: 'test-tenant-id', slug: 'test', name: 'Test' }),
+  DEFAULT_TENANT_ID: 'test-tenant-id',
+  DEFAULT_TENANT_SLUG: 'test',
+}));
+
 vi.mock('../services/audit.service.js', () => auditServiceMock);
 
 vi.mock('../services/grade-progression.js', () => gradeProgressionMock);

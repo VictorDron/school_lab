@@ -10,6 +10,7 @@ import {
   OperatorEntity,
 } from '../../templates/addendum-template.js';
 import { getOrCreateSettings } from '../settings.service.js';
+import { getDefaultTenant } from '../tenant.service.js';
 
 function formatDateBR(date: Date | string | null): string {
   if (!date) return 'Não informado';
@@ -78,7 +79,8 @@ export async function generateAddendumPdf(addendumId: string) {
 
   const changedValues = (addendum.changedValues as any[]) ?? [];
 
-  const settings = await getOrCreateSettings();
+  const { id: tenantId } = await getDefaultTenant();
+  const settings = await getOrCreateSettings(tenantId);
   const operator: OperatorEntity = {
     schoolName: settings.schoolName,
     legalName: settings.legalName,

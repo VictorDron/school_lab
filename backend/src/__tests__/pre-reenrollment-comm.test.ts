@@ -34,6 +34,12 @@ vi.mock('../services/settings.service.js', () => ({
   getOrCreateSettings: vi.fn().mockResolvedValue({ schoolName: 'Test School' }),
 }));
 
+vi.mock('../services/tenant.service.js', () => ({
+  getDefaultTenant: vi.fn().mockResolvedValue({ id: 'test-tenant-id', slug: 'test', name: 'Test' }),
+  DEFAULT_TENANT_ID: 'test-tenant-id',
+  DEFAULT_TENANT_SLUG: 'test',
+}));
+
 vi.mock('../services/re-enrollment-invite.service.js', () => ({
   createInviteForStudent: mockCreateInviteForStudent,
   updateInviteStatus: vi.fn(),

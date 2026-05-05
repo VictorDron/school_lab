@@ -74,7 +74,9 @@ export async function registerFeePayment(
     if (lead?.primaryContactEmail) {
       const { sendReEnrollmentWelcomeEmail } = await import('../email.service.js');
       const { getOrCreateSettings } = await import('../settings.service.js');
-      const { schoolName } = await getOrCreateSettings();
+      const { getDefaultTenant } = await import('../tenant.service.js');
+      const { id: tenantId } = await getDefaultTenant();
+      const { schoolName } = await getOrCreateSettings(tenantId);
       await sendReEnrollmentWelcomeEmail({
         to: lead.primaryContactEmail,
         familyName: lead.familyName ?? '',

@@ -135,9 +135,11 @@ export async function submitForm(token: string, data: SubmitFormData, metadata?:
   try {
     const { sendReEnrollmentFormConfirmationEmail } = await import('../email.service.js');
     const { getOrCreateSettings } = await import('../settings.service.js');
+    const { getDefaultTenant } = await import('../tenant.service.js');
     const contactEmail = lead?.primaryContactEmail;
     if (contactEmail) {
-      const { schoolName } = await getOrCreateSettings();
+      const { id: tenantId } = await getDefaultTenant();
+      const { schoolName } = await getOrCreateSettings(tenantId);
       await sendReEnrollmentFormConfirmationEmail({
         to: contactEmail,
         familyName: invite.student.fullName,

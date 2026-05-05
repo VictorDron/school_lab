@@ -2,6 +2,7 @@ import { prisma } from '../config/database.js';
 import { createAppError } from '../lib/error-messages.js';
 import { sendReEnrollmentInviteEmail } from './email.service.js';
 import { getOrCreateSettings } from './settings.service.js';
+import { getDefaultTenant } from './tenant.service.js';
 import { getNextGrade } from './grade-progression.js';
 import { createAuditLog } from './audit.service.js';
 import { config } from '../config/index.js';
@@ -222,7 +223,8 @@ export async function createBatchInvites(periodId: string, userId: string) {
   let failed = 0;
 
   // Read once outside the loop — settings is shared across the whole batch.
-  const { schoolName } = await getOrCreateSettings();
+  const { id: tenantId } = await getDefaultTenant();
+  const { schoolName } = await getOrCreateSettings(tenantId);
 
   for (let i = 0; i < eligible.length; i += BATCH_SIZE) {
     const batch = eligible.slice(i, i + BATCH_SIZE);

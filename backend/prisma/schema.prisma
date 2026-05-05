@@ -578,10 +578,44 @@ enum EnrollmentType {
   RENEWAL
 }
 
+// ==================== TENANCY ====================
+
+// One row per school (or org) using the platform. Phase 0 of multi-tenancy:
+// the model exists, every tenant-scoped row will eventually link here, and a
+// single "ics" seed tenant claims all the data that pre-dates this change.
+// Phase 1 wires tenantId through JWT/auth so requests are scoped at runtime.
+model Tenant {
+  id        String       @id @default(uuid())
+  slug      String       @unique // URL-safe identifier ("ics", "acme")
+  name      String       // Display name; SystemSettings.schoolName is the
+                         // operator-facing version
+  status    TenantStatus @default(ACTIVE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  // Relations — only the ones we wire in Phase 0; later phases extend.
+  settings SystemSettings?
+  users    User[]
+
+  @@index([slug])
+}
+
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+}
+
 // ==================== CORE MODELS ====================
 
 model User {
   id                    String     @id @default(uuid())
+  // Tenancy: every user belongs to exactly one tenant (1:N). Made nullable
+  // here only because the migration backfills existing rows in two steps;
+  // Phase 1 / 2a will tighten this to required after onboarding flow exists.
+  tenantId              String?
+  // Platform-level admin (cross-tenant view for support/billing). Defaults
+  // to false; flipped manually for ops staff.
+  isPlatformAdmin       Boolean    @default(false)
   email                 String     @unique
   passwordHash          String?
   displayName           String
@@ -601,6 +635,7 @@ model User {
   updatedAt             DateTime   @updatedAt
 
   // Relations
+  tenant               Tenant?                @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   moduleAccess         ModuleAccess[]
   createdTickets       Ticket[]               @relation("TicketCreator")
   assignedTickets      Ticket[]               @relation("TicketAssignee")
@@ -703,6 +738,9 @@ model Invite {
 
 model SystemSettings {
   id              String   @id @default(uuid())
+  // 1:1 with Tenant — each tenant owns exactly one SystemSettings row.
+  tenantId        String   @unique
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   schoolName      String   @default("School Lab")
   // Legal-entity identity used by contract / addendum / re-enrollment
   // documents. All optional so a fresh tenant can fill them in over time;

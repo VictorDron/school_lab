@@ -15,6 +15,7 @@
  */
 
 import { getOrCreateSettings } from './settings.service.js';
+import { getDefaultTenant } from './tenant.service.js';
 
 export const DEFAULT_GRADE_ORDER: readonly string[] = [
   'Nursery',
@@ -77,7 +78,8 @@ export function isValidGrade(
  * request and pass the result down to the sync helpers above.
  */
 export async function getTenantGradeOrder(): Promise<readonly string[]> {
-  const settings = await getOrCreateSettings();
+  const { id: tenantId } = await getDefaultTenant();
+  const settings = await getOrCreateSettings(tenantId);
   if (settings.gradeProgression && settings.gradeProgression.length > 0) {
     return settings.gradeProgression;
   }
