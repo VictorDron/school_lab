@@ -1,4 +1,5 @@
 import { prisma } from '../../config/database.js';
+import { requireTenantId } from '../../lib/tenant-context.js';
 import { createAppError } from '../../lib/error-messages.js';
 import logger from '../../utils/logger.js';
 import { toNum } from './shared.js';
@@ -171,6 +172,9 @@ export async function applyDiscountImport(
   let applied = 0;
   let errors = 0;
 
+  // Read once outside the loop — tenantId is shared across the import.
+  const tenantId = requireTenantId();
+
   for (const row of rows) {
     try {
       await prisma.familyPriceException.upsert({
@@ -183,6 +187,7 @@ export async function applyDiscountImport(
           approvalDecidedAt: new Date(),
         },
         create: {
+          tenantId,
           periodId,
           studentId: row.studentId,
           overrideDiscountPercent: row.discountPercent,

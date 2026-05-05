@@ -25,6 +25,12 @@ vi.mock('../config/database.js', () => ({
   prisma: mockPrisma,
 }));
 
+vi.mock('../lib/tenant-context.js', () => ({
+  requireTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  currentTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  runWithTenant: <T>(_id: string, fn: () => T) => fn(),
+}));
+
 vi.mock('../config/redis.js', () => ({ redis: { publish: vi.fn() } }));
 vi.mock('../socket/io.js', () => ({
   getIO: vi.fn(() => ({ to: vi.fn(() => ({ emit: vi.fn() })) })),

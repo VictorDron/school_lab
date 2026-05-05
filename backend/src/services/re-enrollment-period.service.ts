@@ -1,4 +1,5 @@
 import { prisma } from '../config/database.js';
+import { requireTenantId } from '../lib/tenant-context.js';
 import { createAppError } from '../lib/error-messages.js';
 import { redis } from '../config/redis.js';
 import { getIO } from '../socket/io.js';
@@ -91,6 +92,7 @@ export async function createPeriod(data: CreatePeriodData, userId: string) {
   return prisma.reEnrollmentPeriod.create({
     data: {
       ...data,
+      tenantId: requireTenantId(),
       eligibleGrades,
       status: 'DRAFT',
       createdById: userId,

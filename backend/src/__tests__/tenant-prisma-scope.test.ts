@@ -21,6 +21,11 @@ function attachTenantScopeMiddleware(client: PrismaClient): void {
     'ContractAddendum',
     'ContractDefaultSigner',
     'GateStepConfig',
+    'ReEnrollmentPeriod',
+    'PeriodPriceTable',
+    'FamilyPriceException',
+    'PreReEnrollmentResponse',
+    'ReEnrollmentInvite',
   ]);
   const SCOPED_READ_ACTIONS = new Set<Prisma.PrismaAction>([
     'findFirst',
@@ -222,6 +227,46 @@ describe('Prisma auto-scope middleware (Phase 2b)', () => {
           _count: true,
         }),
       );
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes ReEnrollmentPeriod.findMany (Phase 2e)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.reEnrollmentPeriod.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes ReEnrollmentInvite.groupBy — closes the kanban dashboard leak (Phase 2e)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() =>
+        client.reEnrollmentInvite.groupBy({
+          by: ['gateStatus'],
+          _count: true,
+        }),
+      );
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes PreReEnrollmentResponse.findMany (Phase 2e)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.preReEnrollmentResponse.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes PeriodPriceTable.findMany (Phase 2e)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.periodPriceTable.findMany());
+    });
+    expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
+  });
+
+  it('scopes FamilyPriceException.findMany (Phase 2e)', async () => {
+    await runWithTenant('tenant-A', async () => {
+      await runQuery(() => client.familyPriceException.findMany());
     });
     expect(captured?.params.args.where).toMatchObject({ tenantId: 'tenant-A' });
   });

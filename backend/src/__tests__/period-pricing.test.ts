@@ -37,6 +37,14 @@ vi.mock('../config/database.js', () => ({
   prisma: mockPrisma,
 }));
 
+// Phase 2e: services now read tenant context via ALS. Tests don't run
+// inside an authenticated request, so stub requireTenantId.
+vi.mock('../lib/tenant-context.js', () => ({
+  requireTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  currentTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  runWithTenant: <T>(_id: string, fn: () => T) => fn(),
+}));
+
 // ── Pure calculation tests ──────────────────────────────────────────
 
 describe('calculateProposedValue', () => {

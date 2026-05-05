@@ -40,6 +40,12 @@ vi.mock('../services/tenant.service.js', () => ({
   DEFAULT_TENANT_SLUG: 'test',
 }));
 
+vi.mock('../lib/tenant-context.js', () => ({
+  requireTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  currentTenantId: vi.fn().mockReturnValue('test-tenant-id'),
+  runWithTenant: <T>(_id: string, fn: () => T) => fn(),
+}));
+
 vi.mock('../services/re-enrollment-invite.service.js', () => ({
   createInviteForStudent: mockCreateInviteForStudent,
   updateInviteStatus: vi.fn(),

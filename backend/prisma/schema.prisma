@@ -593,18 +593,23 @@ model Tenant {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  // Relations — Phase 0/2a/2b/2c/2d wires these; later phases extend.
-  settings              SystemSettings?
-  users                 User[]
-  invites               Invite[]
-  leads                 Lead[]
-  contracts             Contract[]
-  addendums             ContractAddendum[]
-  contractDefaultSigners ContractDefaultSigner[]
-  gateStepConfigs       GateStepConfig[]
-  kanbanColumns         KanbanColumn[]
-  crmEvents             CrmEvent[]
-  experienceEvaluations ExperienceEvaluation[]
+  // Relations — Phase 0/2a/2b/2c/2d/2e wires these; later phases extend.
+  settings                 SystemSettings?
+  users                    User[]
+  invites                  Invite[]
+  leads                    Lead[]
+  contracts                Contract[]
+  addendums                ContractAddendum[]
+  contractDefaultSigners   ContractDefaultSigner[]
+  gateStepConfigs          GateStepConfig[]
+  kanbanColumns            KanbanColumn[]
+  crmEvents                CrmEvent[]
+  experienceEvaluations    ExperienceEvaluation[]
+  reEnrollmentPeriods      ReEnrollmentPeriod[]
+  periodPriceTables        PeriodPriceTable[]
+  familyPriceExceptions    FamilyPriceException[]
+  preReEnrollmentResponses PreReEnrollmentResponse[]
+  reEnrollmentInvites      ReEnrollmentInvite[]
 
   @@index([slug])
 }
@@ -2782,6 +2787,10 @@ model ImportHistory {
 
 model ReEnrollmentPeriod {
   id              String                     @id @default(uuid())
+  // Tenancy: per-tenant re-enrollment campaign. Each tenant runs its
+  // own periods independently; children (invites, prices, responses)
+  // denormalize tenantId from here.
+  tenantId        String
   name            String
   targetYear      Int
   startDate       DateTime
@@ -2804,12 +2813,14 @@ model ReEnrollmentPeriod {
   earlyBirdDiscountPercent      Decimal?  @db.Decimal(5, 2) // e.g., 50 for 50% early bird discount
   discountOptions               Json?    @default("[]")
 
+  tenant                   Tenant                     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   createdBy                User                       @relation("PeriodCreator", fields: [createdById], references: [id], onDelete: Restrict)
   invites                  ReEnrollmentInvite[]
   priceTable               PeriodPriceTable[]
   familyExceptions         FamilyPriceException[]
   preReEnrollmentResponses PreReEnrollmentResponse[]
 
+  @@index([tenantId])
   @@index([status])
   @@index([targetYear])
   // Partial unique index: only one OPEN period at a time (enforced via manual migration)
@@ -2817,6 +2828,8 @@ model ReEnrollmentPeriod {
 
 model PeriodPriceTable {
   id              String   @id @default(uuid())
+  // Tenancy: denormalized from ReEnrollmentPeriod.
+  tenantId        String
   periodId        String
   grade           String
   baseAnnualValue Decimal  @db.Decimal(12, 2)
@@ -2825,14 +2838,18 @@ model PeriodPriceTable {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  tenant Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   period ReEnrollmentPeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
 
   @@unique([periodId, grade])
+  @@index([tenantId])
   @@index([periodId])
 }
 
 model FamilyPriceException {
   id                     String   @id @default(uuid())
+  // Tenancy: denormalized from ReEnrollmentPeriod.
+  tenantId               String
   periodId               String
   studentId              String
   overrideAnnualValue    Decimal? @db.Decimal(12, 2)
@@ -2847,12 +2864,14 @@ model FamilyPriceException {
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
 
+  tenant     Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   period     ReEnrollmentPeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
   student    Student            @relation(fields: [studentId], references: [id], onDelete: Cascade)
   createdBy  User               @relation("ExceptionCreator", fields: [createdById], references: [id], onDelete: Restrict)
   approvedBy User?              @relation("ExceptionApprover", fields: [approvedById], references: [id], onDelete: SetNull)
 
   @@unique([periodId, studentId])
+  @@index([tenantId])
   @@index([periodId])
   @@index([studentId])
   @@index([approvalStatus])
@@ -2861,6 +2880,8 @@ model FamilyPriceException {
 // Migration: 20260403200000_add_pre_reenrollment_response (manual)
 model PreReEnrollmentResponse {
   id                           String                          @id @default(uuid())
+  // Tenancy: denormalized from ReEnrollmentPeriod.
+  tenantId                     String
   periodId                     String
   studentId                    String
   token                        String                          @unique
@@ -2879,11 +2900,13 @@ model PreReEnrollmentResponse {
   createdAt                    DateTime                         @default(now())
   updatedAt                    DateTime                         @updatedAt
 
+  tenant                Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   period                ReEnrollmentPeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
   student               Student            @relation(fields: [studentId], references: [id], onDelete: Cascade)
   negotiationApprovedBy User?              @relation("NegotiationApprover", fields: [negotiationApprovedById], references: [id], onDelete: SetNull)
 
   @@unique([periodId, studentId])
+  @@index([tenantId])
   @@index([periodId])
   @@index([studentId])
   @@index([token])
@@ -2892,6 +2915,9 @@ model PreReEnrollmentResponse {
 
 model ReEnrollmentInvite {
   id              String                     @id @default(uuid())
+  // Tenancy: denormalized from ReEnrollmentPeriod. Auto-scope here is
+  // the one closing the dashboard groupBy leak in re-enrollment-kanban.
+  tenantId        String
   periodId        String
   studentId       String
   token           String                     @unique
@@ -2913,11 +2939,13 @@ model ReEnrollmentInvite {
   createdAt       DateTime                   @default(now())
   updatedAt       DateTime                   @updatedAt
 
+  tenant          Tenant                     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   period          ReEnrollmentPeriod         @relation(fields: [periodId], references: [id], onDelete: Cascade)
   student         Student                    @relation(fields: [studentId], references: [id], onDelete: Cascade)
   feePayment      EnrollmentFeePayment?
 
   @@unique([periodId, studentId])
+  @@index([tenantId])
   @@index([token])
   @@index([periodId])
   @@index([studentId])

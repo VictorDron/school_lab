@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import { prisma } from '../config/database.js';
+import { requireTenantId } from '../lib/tenant-context.js';
 import { createAppError } from '../lib/error-messages.js';
 import { redis } from '../config/redis.js';
 import { getIO } from '../socket/io.js';
@@ -55,6 +56,7 @@ export async function createInvite(periodId: string, studentId: string) {
 
   const invite = await prisma.reEnrollmentInvite.create({
     data: {
+      tenantId: period.tenantId,
       periodId,
       studentId,
       token,
@@ -90,6 +92,7 @@ export async function createInviteForStudent(periodId: string, studentId: string
     where: { periodId_studentId: { periodId, studentId } },
     update: {},
     create: {
+      tenantId: requireTenantId(),
       periodId,
       studentId,
       token,
