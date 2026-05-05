@@ -578,7 +578,7 @@ export function generateContractHtml(data: ContractTemplateData): string {
   </div>
 
   <div class="item">
-    <span class="item-number">4.7.</span> Os titulares dos dados poderão exercer seus direitos previstos na LGPD (acesso, correção, eliminação, portabilidade, entre outros) mediante solicitação formal ao Encarregado de Proteção de Dados da <strong>ESCOLA</strong>, pelo e-mail dpo@icsrio.org.
+    <span class="item-number">4.7.</span> Os titulares dos dados poderão exercer seus direitos previstos na LGPD (acesso, correção, eliminação, portabilidade, entre outros) mediante solicitação formal ao Encarregado de Proteção de Dados da <strong>ESCOLA</strong>${data.operator.lgpdContactEmail ? `, pelo e-mail ${data.operator.lgpdContactEmail}` : ''}.
   </div>
 
   <div class="item">

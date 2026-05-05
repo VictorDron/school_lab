@@ -90,6 +90,7 @@ export async function generateAddendumPdf(addendumId: string) {
     internationalMaterialFee: settings.internationalMaterialFee
       ? Number(settings.internationalMaterialFee)
       : null,
+    lgpdContactEmail: settings.lgpdContactEmail,
   };
 
   const templateData: AddendumTemplateData = {

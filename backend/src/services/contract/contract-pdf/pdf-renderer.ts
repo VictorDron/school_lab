@@ -77,7 +77,7 @@ export async function renderContractPdf(args: RenderContractPdfArgs): Promise<Bu
   renderClause1(ctx, operator);
   renderClause2(ctx, operator);
   renderClause3(ctx, templateData, pdfFeeTable, pdfFoodTable, gradeLevels, negotiated);
-  renderClause4(ctx);
+  renderClause4(ctx, operator);
   renderClause5(ctx, operator);
   renderSignaturesAndFooter(ctx, templateData, witnesses, contractCode);
 
@@ -415,19 +415,28 @@ function renderClause3(
   }
 }
 
-const CLAUSE_4_ITEMS = [
-  '4.1. As partes reconhecem e concordam que o tratamento de dados pessoais realizado no âmbito deste contrato está sujeito à Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 - LGPD).',
-  '4.2. A ESCOLA, na qualidade de controladora de dados, coletará e tratará os dados pessoais do(a) aluno(a), do(a) RESPONSÁVEL FINANCEIRO e do(a) RESPONSÁVEL ACADÊMICO estritamente necessários para: (i) execução deste contrato; (ii) cumprimento de obrigações legais e regulatórias; (iii) exercício regular de direitos em processos judiciais, administrativos ou arbitrais; (iv) proteção da vida e da incolumidade física do(a) aluno(a).',
-  '4.3. Os dados pessoais tratados incluem, sem limitação: dados cadastrais (nome, CPF, RG, endereço, e-mail, telefone), dados acadêmicos (notas, frequência, histórico escolar), dados de saúde (informações médicas necessárias para o atendimento do aluno), dados financeiros (dados bancários, histórico de pagamentos) e dados sensíveis estritamente necessários.',
-  '4.4. A ESCOLA adotará medidas técnicas e administrativas aptas a proteger os dados pessoais de acessos não autorizados e de situações acidentais ou ilícitas de destruição, perda, alteração, comunicação ou difusão.',
-  '4.5. Os dados pessoais poderão ser compartilhados com: (i) órgãos governamentais (MEC, Secretarias de Educação) em cumprimento de obrigações legais; (ii) prestadores de serviço da ESCOLA (sistemas de gestão escolar, plataformas digitais educacionais) mediante contratos que garantam a proteção adequada; (iii) parceiros pedagógicos internacionais para fins de certificação e intercâmbio.',
-  '4.6. O(A) RESPONSÁVEL FINANCEIRO e o(a) RESPONSÁVEL ACADÊMICO, na qualidade de representantes legais do(a) aluno(a) menor de idade, consentem com o tratamento dos dados nos termos deste contrato e da Política de Privacidade da ESCOLA.',
-  '4.7. Os titulares dos dados poderão exercer seus direitos previstos na LGPD (acesso, correção, eliminação, portabilidade, entre outros) mediante solicitação formal ao Encarregado de Proteção de Dados da ESCOLA, pelo e-mail dpo@icsrio.org.',
-  '4.8. Os dados pessoais serão mantidos pela ESCOLA pelo prazo necessário ao cumprimento das finalidades descritas neste contrato e, após o término da relação contratual, pelo prazo exigido por lei ou regulamento aplicável.',
-];
+function clause4Items(operator: OperatorEntity): string[] {
+  // Clause 4.7 names the LGPD/data-protection contact. When the tenant
+  // hasn't filled in lgpdContactEmail, drop the email pointer fragment
+  // (titulares can still exercise their rights — they just contact the
+  // school directly, the wording remains valid).
+  const emailFragment = operator.lgpdContactEmail?.trim()
+    ? `, pelo e-mail ${operator.lgpdContactEmail.trim()}`
+    : '';
+  return [
+    '4.1. As partes reconhecem e concordam que o tratamento de dados pessoais realizado no âmbito deste contrato está sujeito à Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 - LGPD).',
+    '4.2. A ESCOLA, na qualidade de controladora de dados, coletará e tratará os dados pessoais do(a) aluno(a), do(a) RESPONSÁVEL FINANCEIRO e do(a) RESPONSÁVEL ACADÊMICO estritamente necessários para: (i) execução deste contrato; (ii) cumprimento de obrigações legais e regulatórias; (iii) exercício regular de direitos em processos judiciais, administrativos ou arbitrais; (iv) proteção da vida e da incolumidade física do(a) aluno(a).',
+    '4.3. Os dados pessoais tratados incluem, sem limitação: dados cadastrais (nome, CPF, RG, endereço, e-mail, telefone), dados acadêmicos (notas, frequência, histórico escolar), dados de saúde (informações médicas necessárias para o atendimento do aluno), dados financeiros (dados bancários, histórico de pagamentos) e dados sensíveis estritamente necessários.',
+    '4.4. A ESCOLA adotará medidas técnicas e administrativas aptas a proteger os dados pessoais de acessos não autorizados e de situações acidentais ou ilícitas de destruição, perda, alteração, comunicação ou difusão.',
+    '4.5. Os dados pessoais poderão ser compartilhados com: (i) órgãos governamentais (MEC, Secretarias de Educação) em cumprimento de obrigações legais; (ii) prestadores de serviço da ESCOLA (sistemas de gestão escolar, plataformas digitais educacionais) mediante contratos que garantam a proteção adequada; (iii) parceiros pedagógicos internacionais para fins de certificação e intercâmbio.',
+    '4.6. O(A) RESPONSÁVEL FINANCEIRO e o(a) RESPONSÁVEL ACADÊMICO, na qualidade de representantes legais do(a) aluno(a) menor de idade, consentem com o tratamento dos dados nos termos deste contrato e da Política de Privacidade da ESCOLA.',
+    `4.7. Os titulares dos dados poderão exercer seus direitos previstos na LGPD (acesso, correção, eliminação, portabilidade, entre outros) mediante solicitação formal ao Encarregado de Proteção de Dados da ESCOLA${emailFragment}.`,
+    '4.8. Os dados pessoais serão mantidos pela ESCOLA pelo prazo necessário ao cumprimento das finalidades descritas neste contrato e, após o término da relação contratual, pelo prazo exigido por lei ou regulamento aplicável.',
+  ];
+}
 
-function renderClause4(ctx: PdfRenderContext): void {
-  renderClauseList(ctx, 'CLÁUSULA 4ª - DA PROTEÇÃO E TRATAMENTO DE DADOS', CLAUSE_4_ITEMS);
+function renderClause4(ctx: PdfRenderContext, operator: OperatorEntity): void {
+  renderClauseList(ctx, 'CLÁUSULA 4ª - DA PROTEÇÃO E TRATAMENTO DE DADOS', clause4Items(operator));
 }
 
 function clause5Items(operator: OperatorEntity): string[] {

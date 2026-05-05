@@ -15,6 +15,7 @@ const fullOperator: OperatorEntity = {
   legalRepresentative: 'Sra. Fulana de Tal, Diretora',
   jurisdiction: 'Comarca de São Paulo - SP',
   internationalMaterialFee: 4500,
+  lgpdContactEmail: 'dpo@acme.example.com',
 };
 
 const baseTemplateData: ContractTemplateData = {
@@ -133,5 +134,22 @@ describe('generateContractHtml — multi-tenant rendering', () => {
       operator: { ...fullOperator, jurisdiction: null, legalCity: null },
     });
     expect(html).toContain('foro da sede da ESCOLA');
+  });
+
+  it('renders the LGPD contact email in clause 4.7 when configured', () => {
+    const html = generateContractHtml(baseTemplateData);
+    expect(html).toContain('Encarregado de Proteção de Dados da');
+    expect(html).toContain('pelo e-mail dpo@acme.example.com');
+    expect(html).not.toContain('dpo@icsrio.org');
+  });
+
+  it('omits the email pointer in clause 4.7 when lgpdContactEmail is null', () => {
+    const html = generateContractHtml({
+      ...baseTemplateData,
+      operator: { ...fullOperator, lgpdContactEmail: null },
+    });
+    expect(html).toContain('Encarregado de Proteção de Dados da');
+    expect(html).not.toContain('pelo e-mail');
+    expect(html).not.toContain('dpo@');
   });
 });

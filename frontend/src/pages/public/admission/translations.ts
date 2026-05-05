@@ -22,7 +22,7 @@ export interface AdmissionTranslations {
   studentType: string;
   newStudent: string;
   returningStudent: string;
-  currentRisStudent: string;
+  currentStudent: string;
   currentGrade: string;
   fullName: string;
   dateOfBirth: string;
@@ -151,7 +151,7 @@ export function buildAdmissionTranslations(language: AdmissionLanguage): Admissi
     studentType: isPt ? 'Tipo de Aluno' : 'Student Type',
     newStudent: isPt ? 'Aluno Novo' : 'New Student',
     returningStudent: isPt ? 'Ex-Aluno Retornando' : 'Returning Student',
-    currentRisStudent: isPt ? 'Aluno Atual RIS' : 'Current RIS Student',
+    currentStudent: isPt ? 'Aluno Atual' : 'Current Student',
     currentGrade: isPt ? 'Série Atual do Aluno' : 'Current Grade',
     fullName: isPt ? 'Nome Completo do Aluno(a)' : 'Student Full Name',
     dateOfBirth: isPt ? 'Data de Nascimento do Aluno(a)' : 'Student Date of Birth',

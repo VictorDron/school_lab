@@ -38,6 +38,7 @@ const { prismaMock, clicksignMock, supabaseMock, settingsMock } = vi.hoisted(() 
       legalRepresentative: null,
       jurisdiction: null,
       internationalMaterialFee: null,
+      lgpdContactEmail: null,
     }),
   };
   return { prismaMock, clicksignMock, supabaseMock, settingsMock };
@@ -303,6 +304,7 @@ describe('Addendum template — operator legal-entity rendering', () => {
     legalRepresentative: null,
     jurisdiction: null,
     internationalMaterialFee: null,
+    lgpdContactEmail: null,
   };
 
   describe('buildContratadaSentence', () => {

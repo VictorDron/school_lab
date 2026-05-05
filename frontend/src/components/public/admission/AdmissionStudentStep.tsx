@@ -111,7 +111,7 @@ export function AdmissionStudentStep({
             >
               <option value="NEW">{t.newStudent}</option>
               <option value="RETURNING">{t.returningStudent}</option>
-              <option value="CURRENT">{t.currentRisStudent}</option>
+              <option value="CURRENT">{t.currentStudent}</option>
             </select>
           </FormField>
 

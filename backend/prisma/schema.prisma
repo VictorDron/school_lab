@@ -713,6 +713,9 @@ model SystemSettings {
   legalCity       String? // Cidade da sede (used in document footer)
   legalRepresentative String? // "Sra. Fulana, Presidente" — used in CONTRATADA clause
   jurisdiction        String? // "Comarca do Rio de Janeiro - RJ" — used in foro clause
+  // LGPD data-protection officer contact email (used in contract clause
+  // 4.7). Null = the email-pointer fragment of the clause is omitted.
+  lgpdContactEmail    String?
   // International / pedagogical material fee, applied as the optional
   // clause 3.8 in the school contract. Stored as Decimal for exact pt-BR
   // currency math; null = clause is omitted entirely (for tenants that

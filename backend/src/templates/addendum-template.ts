@@ -17,6 +17,7 @@ export interface OperatorEntity {
   // Optional anually-charged international/pedagogical material fee.
   // null means the corresponding clause is omitted from the contract.
   internationalMaterialFee: number | null;
+  lgpdContactEmail: string | null; // DPO contact in clause 4.7
 }
 
 export interface AddendumTemplateData {
