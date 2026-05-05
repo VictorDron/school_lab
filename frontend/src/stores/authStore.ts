@@ -27,6 +27,10 @@ export interface User {
   area?: string;
   status: 'ACTIVE' | 'PENDING' | 'ARCHIVED';
   requirePasswordChange?: boolean;
+  /** Phase 4: cross-tenant ops (platform admin only). */
+  isPlatformAdmin?: boolean;
+  /** Phase 1: tenant the user belongs to (null only during onboarding). */
+  tenantId?: string | null;
   moduleAccess: ModuleAccess[];
 }
 

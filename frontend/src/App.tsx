@@ -31,6 +31,7 @@ const AdmissionFormPage = lazy(() => import('@/pages/public/AdmissionFormPage'))
 const EnrollmentFormPage = lazy(() => import('@/pages/public/EnrollmentFormPage'));
 const ReEnrollmentFormPage = lazy(() => import('@/pages/public/ReEnrollmentFormPage'));
 const PreReEnrollmentResponsePage = lazy(() => import('@/pages/public/PreReEnrollmentResponsePage'));
+const PlatformTenantsPage = lazy(() => import('@/pages/platform/PlatformTenantsPage'));
 
 // Protected Route wrapper
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -109,6 +110,10 @@ export default function App() {
           }
         >
           <Route path="/launcher" element={<LauncherPage />} />
+
+          {/* Phase 4: platform-admin only — gated client-side AND
+              server-side (requirePlatformAdmin in /api/platform/*). */}
+          <Route path="/platform/tenants" element={<PlatformTenantsPage />} />
 
           <Route
             path="/communication/*"

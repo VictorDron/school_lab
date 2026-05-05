@@ -179,6 +179,15 @@ export default function LauncherPage() {
               {user?.role} {user?.area && `• ${user.area}`}
             </p>
           </div>
+          {user?.isPlatformAdmin && (
+            <button
+              onClick={() => navigate('/platform/tenants')}
+              className="ml-auto rounded-md border border-primary-200 bg-primary-50 px-3 py-1.5 text-xs font-semibold text-primary-700 hover:bg-primary-100"
+              title="Cross-tenant management — platform admins only"
+            >
+              Plataforma · Tenants
+            </button>
+          )}
         </motion.div>
 
         {/* Module Grid */}
