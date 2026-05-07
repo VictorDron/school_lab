@@ -30,6 +30,9 @@ import importRoutes from './import.routes.js';
 import reEnrollmentRoutes from './re-enrollment.routes.js';
 import addendumRoutes from './addendum.routes.js';
 import contractDefaultSignersRoutes from './contract-default-signers.routes.js';
+import teamRoutes from './team.routes.js';
+import financeRoutes from './finance.routes.js';
+import pedagogicalRoutes from './pedagogical.routes.js';
 
 const router = Router();
 
@@ -78,5 +81,8 @@ router.use('/import', importRoutes);
 router.use('/re-enrollment', reEnrollmentRoutes);
 router.use('/addendums', addendumRoutes);
 router.use('/contract-default-signers', contractDefaultSignersRoutes);
+router.use('/team', teamRoutes);
+router.use('/finance', financeRoutes);
+router.use('/pedagogical', pedagogicalRoutes);
 
 export default router;

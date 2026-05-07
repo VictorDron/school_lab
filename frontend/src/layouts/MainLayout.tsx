@@ -32,16 +32,16 @@ type NavItem =
   | { kind: 'placeholder'; id: string; icon: typeof Home; label: string };
 
 const navItems: NavItem[] = [
-  { kind: 'live',        id: 'home',               icon: Home,         label: 'nav.launcher',                path: '/launcher' },
-  { kind: 'live',        id: 'CRM',                icon: Users,        label: 'module.crm',                  path: '/crm' },
-  { kind: 'live',        id: 'STUDENT_MANAGEMENT', icon: GraduationCap,label: 'module.studentManagement',    path: '/students' },
-  { kind: 'live',        id: 'GED',                icon: FileText,     label: 'module.ged',                  path: '/ged' },
-  { kind: 'placeholder', id: 'pedagogical',        icon: BookOpen,     label: 'module.pedagogical' },
-  { kind: 'placeholder', id: 'team',               icon: UserCog,      label: 'module.team' },
-  { kind: 'placeholder', id: 'financial',          icon: Wallet,       label: 'module.financial' },
-  { kind: 'live',        id: 'ADMIN',              icon: Shield,       label: 'module.admin',                path: '/admin' },
-  { kind: 'live',        id: 'COMMUNICATION',      icon: MessageSquare,label: 'module.communication',        path: '/communication' },
-  { kind: 'live',        id: 'PROCUREMENT',        icon: Package,      label: 'resources.title',             path: '/resources' },
+  { kind: 'live', id: 'home',               icon: Home,         label: 'nav.launcher',             path: '/launcher' },
+  { kind: 'live', id: 'CRM',                icon: Users,        label: 'module.crm',               path: '/crm' },
+  { kind: 'live', id: 'STUDENT_MANAGEMENT', icon: GraduationCap,label: 'module.studentManagement', path: '/students' },
+  { kind: 'live', id: 'GED',                icon: FileText,     label: 'module.ged',               path: '/ged' },
+  { kind: 'live', id: 'PEDAGOGICAL',        icon: BookOpen,     label: 'module.pedagogical',       path: '/pedagogical' },
+  { kind: 'live', id: 'TEAM_MANAGEMENT',    icon: UserCog,      label: 'module.team',              path: '/team' },
+  { kind: 'live', id: 'FINANCIAL',          icon: Wallet,       label: 'module.financial',         path: '/financial' },
+  { kind: 'live', id: 'ADMIN',              icon: Shield,       label: 'module.admin',             path: '/admin' },
+  { kind: 'live', id: 'COMMUNICATION',      icon: MessageSquare,label: 'module.communication',     path: '/communication' },
+  { kind: 'live', id: 'PROCUREMENT',        icon: Package,      label: 'resources.title',          path: '/resources' },
 ];
 
 export default function MainLayout() {

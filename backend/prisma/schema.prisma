@@ -49,6 +49,9 @@ enum AppModule {
   GED
   ADMIN
   STUDENT_MANAGEMENT
+  PEDAGOGICAL
+  TEAM_MANAGEMENT
+  FINANCIAL
 }
 
 enum StudentStatus {

@@ -35,15 +35,15 @@ type ModuleCard =
     };
 
 const MODULES: ModuleCard[] = [
-  { kind: 'live',        id: 'CRM',                icon: Users,         labelKey: 'module.crm',                descriptionKey: 'module.crm.description',                path: '/crm' },
-  { kind: 'live',        id: 'STUDENT_MANAGEMENT', icon: GraduationCap, labelKey: 'module.studentManagement',  descriptionKey: 'module.studentManagement.description',  path: '/students' },
-  { kind: 'live',        id: 'GED',                icon: FileText,      labelKey: 'module.ged',                descriptionKey: 'module.ged.description',                path: '/ged' },
-  { kind: 'placeholder', id: 'pedagogical',        icon: BookOpen,      labelKey: 'module.pedagogical',        descriptionKey: 'module.pedagogical.description' },
-  { kind: 'placeholder', id: 'team',               icon: UserCog,       labelKey: 'module.team',               descriptionKey: 'module.team.description' },
-  { kind: 'placeholder', id: 'financial',          icon: Wallet,        labelKey: 'module.financial',          descriptionKey: 'module.financial.description' },
-  { kind: 'live',        id: 'ADMIN',              icon: Shield,        labelKey: 'module.admin',              descriptionKey: 'module.admin.description',              path: '/admin' },
-  { kind: 'live',        id: 'COMMUNICATION',      icon: MessageSquare, labelKey: 'module.communication',      descriptionKey: 'module.communication.description',      path: '/communication' },
-  { kind: 'live',        id: 'PROCUREMENT',        icon: Package,       labelKey: 'resources.title',           descriptionKey: 'resources.module.description',          path: '/resources' },
+  { kind: 'live', id: 'CRM',                icon: Users,         labelKey: 'module.crm',                descriptionKey: 'module.crm.description',                path: '/crm' },
+  { kind: 'live', id: 'STUDENT_MANAGEMENT', icon: GraduationCap, labelKey: 'module.studentManagement',  descriptionKey: 'module.studentManagement.description',  path: '/students' },
+  { kind: 'live', id: 'GED',                icon: FileText,      labelKey: 'module.ged',                descriptionKey: 'module.ged.description',                path: '/ged' },
+  { kind: 'live', id: 'PEDAGOGICAL',        icon: BookOpen,      labelKey: 'module.pedagogical',        descriptionKey: 'module.pedagogical.description',        path: '/pedagogical' },
+  { kind: 'live', id: 'TEAM_MANAGEMENT',    icon: UserCog,       labelKey: 'module.team',               descriptionKey: 'module.team.description',               path: '/team' },
+  { kind: 'live', id: 'FINANCIAL',          icon: Wallet,        labelKey: 'module.financial',          descriptionKey: 'module.financial.description',          path: '/financial' },
+  { kind: 'live', id: 'ADMIN',              icon: Shield,        labelKey: 'module.admin',              descriptionKey: 'module.admin.description',              path: '/admin' },
+  { kind: 'live', id: 'COMMUNICATION',      icon: MessageSquare, labelKey: 'module.communication',      descriptionKey: 'module.communication.description',      path: '/communication' },
+  { kind: 'live', id: 'PROCUREMENT',        icon: Package,       labelKey: 'resources.title',           descriptionKey: 'resources.module.description',          path: '/resources' },
 ];
 
 const container = {

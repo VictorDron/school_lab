@@ -27,6 +27,9 @@ const GEDPage = lazy(() => import('@/pages/modules/GEDPage'));
 const AdminPage = lazy(() => import('@/pages/modules/AdminPage'));
 const StudentManagementPage = lazy(() => import('@/pages/modules/StudentManagementPage'));
 const ResourceManagementPage = lazy(() => import('@/pages/modules/ResourceManagementPage'));
+const TeamPage = lazy(() => import('@/pages/modules/TeamPage'));
+const FinancePage = lazy(() => import('@/pages/modules/FinancePage'));
+const PedagogicalPage = lazy(() => import('@/pages/modules/PedagogicalPage'));
 const AdmissionFormPage = lazy(() => import('@/pages/public/AdmissionFormPage'));
 const EnrollmentFormPage = lazy(() => import('@/pages/public/EnrollmentFormPage'));
 const ReEnrollmentFormPage = lazy(() => import('@/pages/public/ReEnrollmentFormPage'));
@@ -55,7 +58,17 @@ function ModuleRoute({
   module
 }: {
   children: React.ReactNode;
-  module: 'COMMUNICATION' | 'PROCUREMENT' | 'ASSETS' | 'CRM' | 'GED' | 'ADMIN' | 'STUDENT_MANAGEMENT';
+  module:
+    | 'COMMUNICATION'
+    | 'PROCUREMENT'
+    | 'ASSETS'
+    | 'CRM'
+    | 'GED'
+    | 'ADMIN'
+    | 'STUDENT_MANAGEMENT'
+    | 'PEDAGOGICAL'
+    | 'TEAM_MANAGEMENT'
+    | 'FINANCIAL';
 }) {
   const { hasModuleAccess } = useAuthStore();
 
@@ -174,6 +187,33 @@ export default function App() {
             element={
               <ModuleRoute module="STUDENT_MANAGEMENT">
                 <StudentManagementPage />
+              </ModuleRoute>
+            }
+          />
+
+          <Route
+            path="/team/*"
+            element={
+              <ModuleRoute module="TEAM_MANAGEMENT">
+                <TeamPage />
+              </ModuleRoute>
+            }
+          />
+
+          <Route
+            path="/financial/*"
+            element={
+              <ModuleRoute module="FINANCIAL">
+                <FinancePage />
+              </ModuleRoute>
+            }
+          />
+
+          <Route
+            path="/pedagogical/*"
+            element={
+              <ModuleRoute module="PEDAGOGICAL">
+                <PedagogicalPage />
               </ModuleRoute>
             }
           />

@@ -10,7 +10,17 @@ export type UserRole =
 
 export type AccessLevel = 'NONE' | 'VIEW' | 'EDIT' | 'ADMIN';
 
-export type AppModule = 'COMMUNICATION' | 'PROCUREMENT' | 'ASSETS' | 'CRM' | 'GED' | 'ADMIN' | 'STUDENT_MANAGEMENT';
+export type AppModule =
+  | 'COMMUNICATION'
+  | 'PROCUREMENT'
+  | 'ASSETS'
+  | 'CRM'
+  | 'GED'
+  | 'ADMIN'
+  | 'STUDENT_MANAGEMENT'
+  | 'PEDAGOGICAL'
+  | 'TEAM_MANAGEMENT'
+  | 'FINANCIAL';
 
 export interface ModuleAccess {
   module: AppModule;
