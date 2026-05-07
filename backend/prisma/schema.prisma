@@ -537,6 +537,47 @@ enum AuditAction {
   RE_ENROLLMENT_FORM_SUBMITTED
   RE_ENROLLMENT_DATA_UPDATED
   RE_ENROLLMENT_PERIOD_DELETED
+
+  // Phase 7 — Team management
+  DEPARTMENT_CREATED
+  DEPARTMENT_UPDATED
+  DEPARTMENT_DELETED
+  POSITION_CREATED
+  POSITION_UPDATED
+  POSITION_DELETED
+  EMPLOYEE_HR_UPDATED
+
+  // Phase 7 — Financial (school finance)
+  TUITION_CREATED
+  TUITION_UPDATED
+  TUITION_DELETED
+  INVOICE_CREATED
+  INVOICE_UPDATED
+  INVOICE_PAID
+  INVOICE_DELETED
+  PAYABLE_CREATED
+  PAYABLE_UPDATED
+  PAYABLE_PAID
+  PAYABLE_DELETED
+
+  // Phase 7 — Pedagogical
+  SCHOOL_SUBJECT_CREATED
+  SCHOOL_SUBJECT_UPDATED
+  SCHOOL_SUBJECT_DELETED
+  SCHOOL_CLASS_CREATED
+  SCHOOL_CLASS_UPDATED
+  SCHOOL_CLASS_DELETED
+  CLASS_SUBJECT_ADDED
+  CLASS_SUBJECT_REMOVED
+  STUDENT_ENROLLED_CLASS
+  STUDENT_UNENROLLED_CLASS
+  LESSON_PLAN_CREATED
+  LESSON_PLAN_UPDATED
+  LESSON_PLAN_DELETED
+  STUDENT_GRADE_RECORDED
+  STUDENT_GRADE_UPDATED
+  STUDENT_GRADE_DELETED
+  ATTENDANCE_RECORDED
 }
 
 // ==================== RE-ENROLLMENT ENUMS ====================
@@ -632,6 +673,9 @@ model Tenant {
   calendarEvents           CalendarEvent[]
   students                 Student[]
   importHistory            ImportHistory[]
+  // Phase 7 — team management
+  departments              Department[]
+  positions                Position[]
 
   @@index([slug])
 }
@@ -639,6 +683,15 @@ model Tenant {
 enum TenantStatus {
   ACTIVE
   SUSPENDED
+}
+
+enum EmploymentType {
+  CLT
+  PJ
+  ESTAGIO
+  TERCEIRIZADO
+  AUTONOMO
+  TEMPORARIO
 }
 
 // ==================== CORE MODELS ====================
@@ -661,6 +714,12 @@ model User {
   role                  UserRole   @default(STAFF)
   area                  String?
   status                UserStatus @default(PENDING)
+  // Phase 7 — HR fields
+  hireDate              DateTime?
+  employmentType        EmploymentType?
+  departmentId          String?
+  positionId            String?
+  managerId             String?
   lastLoginAt           DateTime?
   emailVerified              Boolean    @default(false)
   emailNotificationsEnabled  Boolean    @default(false)
@@ -736,9 +795,60 @@ model User {
   contractNegotiationApprovals   Contract[]                @relation("ContractNegotiationApprover")
   feePaymentsRegistered          EnrollmentFeePayment[]    @relation("FeePaymentRegistrar")
 
+  // Phase 7 — team management
+  department               Department? @relation("UserDepartment", fields: [departmentId], references: [id], onDelete: SetNull)
+  position                 Position?   @relation("UserPosition", fields: [positionId], references: [id], onDelete: SetNull)
+  manager                  User?       @relation("UserManager", fields: [managerId], references: [id], onDelete: SetNull)
+  reports                  User[]      @relation("UserManager")
+  headedDepartments        Department[] @relation("DepartmentHead")
+
   @@index([email])
   @@index([status])
   @@index([role])
+  @@index([departmentId])
+  @@index([positionId])
+  @@index([managerId])
+}
+
+// ==================== TEAM MANAGEMENT (Phase 7) ====================
+
+model Department {
+  id                  String   @id @default(uuid())
+  tenantId            String
+  name                String
+  description         String?
+  headUserId          String?
+  parentDepartmentId  String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  tenant     Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  head       User?        @relation("DepartmentHead", fields: [headUserId], references: [id], onDelete: SetNull)
+  parent     Department?  @relation("DepartmentTree", fields: [parentDepartmentId], references: [id], onDelete: SetNull)
+  children   Department[] @relation("DepartmentTree")
+  positions  Position[]
+  employees  User[]       @relation("UserDepartment")
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+}
+
+model Position {
+  id           String   @id @default(uuid())
+  tenantId     String
+  departmentId String?
+  name         String
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tenant     Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  department Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  employees  User[]      @relation("UserPosition")
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@index([departmentId])
 }
 
 model ModuleAccess {
