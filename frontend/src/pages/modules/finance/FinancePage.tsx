@@ -1,6 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ModuleSubNav from '@/components/layout/ModuleSubNav';
-import EmptyModulePlaceholder from '@/components/layout/EmptyModulePlaceholder';
+import CashFlowView from '@/components/finance/CashFlowView';
+import TuitionsView from '@/components/finance/TuitionsView';
+import InvoicesView from '@/components/finance/InvoicesView';
+import PayablesView from '@/components/finance/PayablesView';
 
 export default function FinancePage() {
   return (
@@ -8,17 +11,17 @@ export default function FinancePage() {
       <ModuleSubNav
         items={[
           { to: '/financial/cash-flow', label: '— Fluxo de Caixa' },
-          { to: '/financial/tuitions', label: '— Mensalidades' },
           { to: '/financial/invoices', label: '— Cobranças' },
           { to: '/financial/payables', label: '— Contas a Pagar' },
+          { to: '/financial/tuitions', label: '— Mensalidades' },
         ]}
       />
       <Routes>
         <Route index element={<Navigate to="cash-flow" replace />} />
-        <Route path="cash-flow" element={<EmptyModulePlaceholder title="Fluxo de Caixa" subtitle="Visão consolidada de receitas e despesas" />} />
-        <Route path="tuitions" element={<EmptyModulePlaceholder title="Mensalidades" subtitle="Tabela-base de mensalidades por série/ano" />} />
-        <Route path="invoices" element={<EmptyModulePlaceholder title="Cobranças" subtitle="Mensalidades e cobranças avulsas" />} />
-        <Route path="payables" element={<EmptyModulePlaceholder title="Contas a Pagar" subtitle="Contas, fornecedores e despesas operacionais" />} />
+        <Route path="cash-flow" element={<CashFlowView />} />
+        <Route path="invoices"  element={<InvoicesView />} />
+        <Route path="payables"  element={<PayablesView />} />
+        <Route path="tuitions"  element={<TuitionsView />} />
       </Routes>
     </div>
   );

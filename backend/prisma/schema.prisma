@@ -676,6 +676,10 @@ model Tenant {
   // Phase 7 — team management
   departments              Department[]
   positions                Position[]
+  // Phase 7 — school finance
+  tuitions                 Tuition[]
+  schoolInvoices           SchoolInvoice[]
+  accountsPayables         AccountsPayable[]
 
   @@index([slug])
 }
@@ -692,6 +696,39 @@ enum EmploymentType {
   TERCEIRIZADO
   AUTONOMO
   TEMPORARIO
+}
+
+// Phase 7 — School finance
+enum SchoolInvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum SchoolInvoiceType {
+  TUITION
+  MATERIAL
+  ENROLLMENT_FEE
+  ACTIVITY
+  OTHER
+}
+
+enum PayableStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PayableCategory {
+  RENT
+  UTILITIES
+  PAYROLL
+  SUPPLIES
+  SERVICES
+  TAXES
+  OTHER
 }
 
 // ==================== CORE MODELS ====================
@@ -801,6 +838,9 @@ model User {
   manager                  User?       @relation("UserManager", fields: [managerId], references: [id], onDelete: SetNull)
   reports                  User[]      @relation("UserManager")
   headedDepartments        Department[] @relation("DepartmentHead")
+  // Phase 7 — finance
+  createdInvoices          SchoolInvoice[]   @relation("InvoiceCreator")
+  createdPayables          AccountsPayable[] @relation("PayableCreator")
 
   @@index([email])
   @@index([status])
@@ -849,6 +889,87 @@ model Position {
   @@unique([tenantId, name])
   @@index([tenantId])
   @@index([departmentId])
+}
+
+// ==================== SCHOOL FINANCE (Phase 7) ====================
+
+/// Tabela-base de mensalidades por série/ano. Define o valor padrão
+/// que servirá como referência ao gerar cobranças individuais.
+model Tuition {
+  id             String   @id @default(uuid())
+  tenantId       String
+  grade          String   // série (e.g., "1º Ano EF")
+  year           Int
+  monthlyAmount  Decimal  @db.Decimal(10, 2)
+  materialAmount Decimal? @db.Decimal(10, 2)
+  enrollmentFee  Decimal? @db.Decimal(10, 2)
+  notes          String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, grade, year])
+  @@index([tenantId])
+  @@index([year])
+}
+
+/// Cobranças avulsas. Distinto de ContractPayment (que é vinculado a
+/// contrato de matrícula); cobre mensalidades soltas, materiais,
+/// atividades extras, etc.
+model SchoolInvoice {
+  id          String              @id @default(uuid())
+  tenantId    String
+  studentId   String?
+  type        SchoolInvoiceType   @default(TUITION)
+  description String
+  amount      Decimal             @db.Decimal(10, 2)
+  dueDate     DateTime
+  status      SchoolInvoiceStatus @default(PENDING)
+  paidAt      DateTime?
+  paidAmount  Decimal?            @db.Decimal(10, 2)
+  notes       String?
+  createdById String
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  student   Student? @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  createdBy User     @relation("InvoiceCreator", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([tenantId])
+  @@index([studentId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+/// Contas a pagar (despesas operacionais — fornecedores, folha,
+/// utilities, etc).
+model AccountsPayable {
+  id            String          @id @default(uuid())
+  tenantId      String
+  supplierName  String
+  description   String
+  category      PayableCategory @default(OTHER)
+  amount        Decimal         @db.Decimal(10, 2)
+  dueDate       DateTime
+  status        PayableStatus   @default(PENDING)
+  paidAt        DateTime?
+  paidAmount    Decimal?        @db.Decimal(10, 2)
+  attachmentUrl String?
+  notes         String?
+  createdById   String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdBy User   @relation("PayableCreator", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([tenantId])
+  @@index([status])
+  @@index([dueDate])
+  @@index([category])
 }
 
 model ModuleAccess {
@@ -2958,6 +3079,8 @@ model Student {
   reEnrollmentInvites ReEnrollmentInvite[]
   familyPriceExceptions FamilyPriceException[]
   preReEnrollmentResponses PreReEnrollmentResponse[]
+  // Phase 7
+  schoolInvoices SchoolInvoice[]
 
   @@unique([tenantId, code])
   @@unique([leadChildId, academicYear])
