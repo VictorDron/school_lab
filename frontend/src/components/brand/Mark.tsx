@@ -19,11 +19,11 @@ interface MarkProps {
 }
 
 const SIZE: Record<NonNullable<MarkProps['size']>, { font: string; tracking: string; dot: string; gap: string }> = {
-  xs: { font: '14px',  tracking: '-0.040em', dot: '3px',  gap: '2px' },
-  sm: { font: '18px',  tracking: '-0.045em', dot: '4px',  gap: '3px' },
-  md: { font: '28px',  tracking: '-0.050em', dot: '6px',  gap: '5px' },
-  lg: { font: '56px',  tracking: '-0.050em', dot: '11px', gap: '9px' },
-  xl: { font: '96px',  tracking: '-0.055em', dot: '18px', gap: '12px' },
+  xs: { font: '14px',                            tracking: '-0.040em', dot: '3px',                          gap: '2px' },
+  sm: { font: '18px',                            tracking: '-0.045em', dot: '4px',                          gap: '3px' },
+  md: { font: 'clamp(22px, 4.5vw, 28px)',        tracking: '-0.050em', dot: 'clamp(5px, 0.95vw, 6px)',      gap: 'clamp(4px, 0.8vw, 5px)' },
+  lg: { font: 'clamp(36px, 8vw, 56px)',          tracking: '-0.050em', dot: 'clamp(7px, 1.6vw, 11px)',      gap: 'clamp(5px, 1.3vw, 9px)' },
+  xl: { font: 'clamp(44px, 13vw, 96px)',         tracking: '-0.055em', dot: 'clamp(8px, 2.5vw, 18px)',      gap: 'clamp(6px, 1.6vw, 12px)' },
 };
 
 export default function Mark({

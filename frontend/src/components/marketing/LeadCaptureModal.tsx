@@ -54,6 +54,20 @@ export default function LeadCaptureModal({ open, intent, onClose }: Props) {
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
+  useEffect(() => {
+    if (!open) return;
+    const { body } = document;
+    const prevOverflow = body.style.overflow;
+    const prevPaddingRight = body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
+    return () => {
+      body.style.overflow = prevOverflow;
+      body.style.paddingRight = prevPaddingRight;
+    };
+  }, [open]);
+
   const onSubmit = async (data: LeadForm) => {
     setSubmitting(true);
     try {
@@ -85,13 +99,13 @@ export default function LeadCaptureModal({ open, intent, onClose }: Props) {
             className="overlay"
             onClick={onClose}
           />
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+          <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-4 pointer-events-none overflow-y-auto">
             <motion.div
               initial={{ opacity: 0, y: 20, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.98 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-paper border border-ink w-full max-w-[560px] pointer-events-auto relative"
+              className="bg-paper border border-ink w-full max-w-[560px] pointer-events-auto relative my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto"
               style={{ boxShadow: '0 24px 56px -12px rgba(14, 13, 11, 0.25)' }}
             >
               <button
@@ -104,16 +118,16 @@ export default function LeadCaptureModal({ open, intent, onClose }: Props) {
               </button>
 
               {!done ? (
-                <div className="p-10">
-                  <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-iris mb-5">
+                <div className="p-6 sm:p-10 pt-12 sm:pt-10">
+                  <div className="font-mono text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.18em] text-iris mb-4 sm:mb-5">
                     {copy.eyebrow}
                   </div>
-                  <h3 className="font-display font-light leading-none mb-3 text-ink" style={{ fontSize: 36, letterSpacing: '-0.035em', fontVariationSettings: '"opsz" 144, "SOFT" 50' }}>
+                  <h3 className="font-display font-light leading-[1.05] sm:leading-none mb-3 text-ink break-words" style={{ fontSize: 'clamp(26px, 7vw, 36px)', letterSpacing: '-0.035em', fontVariationSettings: '"opsz" 144, "SOFT" 50' }}>
                     {copy.title}{' '}
                     <em className="display-em">{copy.italic}</em>
                     <span className="text-iris">.</span>
                   </h3>
-                  <p className="serif-em text-stone-deep mb-8" style={{ fontSize: 15 }}>
+                  <p className="serif-em text-stone-deep mb-6 sm:mb-8" style={{ fontSize: 'clamp(13px, 3.6vw, 15px)' }}>
                     — Preencha rapidinho. A gente retorna em até 1 dia útil.
                   </p>
 
@@ -203,14 +217,14 @@ export default function LeadCaptureModal({ open, intent, onClose }: Props) {
                   </form>
                 </div>
               ) : (
-                <div className="p-12 text-center">
+                <div className="p-8 sm:p-12 pt-14 sm:pt-12 text-center">
                   <div className="inline-flex w-14 h-14 mb-6 items-center justify-center" style={{ background: 'rgba(27, 138, 78, 0.08)', color: '#1B8A4E', borderRadius: '100px', border: '1px solid rgba(27, 138, 78, 0.2)' }}>
                     <CheckCircle2 className="w-7 h-7" />
                   </div>
                   <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-iris mb-4">
                     — Recebido
                   </div>
-                  <h3 className="font-display font-light leading-none mb-4 text-ink" style={{ fontSize: 36, letterSpacing: '-0.035em', fontVariationSettings: '"opsz" 144, "SOFT" 50' }}>
+                  <h3 className="font-display font-light leading-none mb-4 text-ink" style={{ fontSize: 'clamp(28px, 7vw, 36px)', letterSpacing: '-0.035em', fontVariationSettings: '"opsz" 144, "SOFT" 50' }}>
                     Até <em className="display-em">breve</em>.
                   </h3>
                   <p className="text-ink-soft mb-7 max-w-sm mx-auto leading-relaxed">
