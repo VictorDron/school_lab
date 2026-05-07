@@ -680,6 +680,14 @@ model Tenant {
   tuitions                 Tuition[]
   schoolInvoices           SchoolInvoice[]
   accountsPayables         AccountsPayable[]
+  // Phase 7 — pedagogical
+  schoolSubjects           SchoolSubject[]
+  schoolClasses            SchoolClass[]
+  classSubjects            ClassSubject[]
+  classEnrollments         ClassEnrollment[]
+  lessonPlans              LessonPlan[]
+  studentGrades            StudentGrade[]
+  attendances              Attendance[]
 
   @@index([slug])
 }
@@ -729,6 +737,13 @@ enum PayableCategory {
   SERVICES
   TAXES
   OTHER
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
 }
 
 // ==================== CORE MODELS ====================
@@ -841,6 +856,12 @@ model User {
   // Phase 7 — finance
   createdInvoices          SchoolInvoice[]   @relation("InvoiceCreator")
   createdPayables          AccountsPayable[] @relation("PayableCreator")
+  // Phase 7 — pedagogical
+  homeroomClasses          SchoolClass[]     @relation("ClassHomeroom")
+  classSubjectsTaught      ClassSubject[]    @relation("SubjectTeacher")
+  lessonPlansAuthored      LessonPlan[]      @relation("LessonTeacher")
+  gradesRecorded           StudentGrade[]    @relation("GradeRecorder")
+  attendanceRecorded       Attendance[]      @relation("AttendanceRecorder")
 
   @@index([email])
   @@index([status])
@@ -970,6 +991,169 @@ model AccountsPayable {
   @@index([status])
   @@index([dueDate])
   @@index([category])
+}
+
+// ==================== PEDAGOGICAL (Phase 7) ====================
+
+/// Catálogo de disciplinas oferecidas pela escola.
+model SchoolSubject {
+  id          String   @id @default(uuid())
+  tenantId    String
+  name        String
+  code        String?
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  classSubjects ClassSubject[]
+  lessonPlans   LessonPlan[]
+  grades        StudentGrade[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+}
+
+/// Turma — agrupa alunos para um ano letivo.
+model SchoolClass {
+  id                String   @id @default(uuid())
+  tenantId          String
+  name              String   // "1º Ano A"
+  grade             String   // "1º Ano EF"
+  year              Int
+  shift             String?  // "manhã", "tarde", "integral"
+  capacity          Int?
+  homeroomTeacherId String?
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant          Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  homeroomTeacher User?             @relation("ClassHomeroom", fields: [homeroomTeacherId], references: [id], onDelete: SetNull)
+  enrollments     ClassEnrollment[]
+  classSubjects   ClassSubject[]
+  lessonPlans     LessonPlan[]
+  grades          StudentGrade[]
+  attendance      Attendance[]
+
+  @@unique([tenantId, name, year])
+  @@index([tenantId])
+  @@index([year])
+}
+
+/// Junção turma × disciplina + professor responsável + carga horária.
+model ClassSubject {
+  id          String   @id @default(uuid())
+  tenantId    String
+  classId     String
+  subjectId   String
+  teacherId   String?
+  weeklyHours Int?
+  createdAt   DateTime @default(now())
+
+  tenant  Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  class   SchoolClass   @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subject SchoolSubject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  teacher User?         @relation("SubjectTeacher", fields: [teacherId], references: [id], onDelete: SetNull)
+
+  @@unique([classId, subjectId])
+  @@index([tenantId])
+  @@index([teacherId])
+}
+
+/// Matrícula de aluno em turma.
+model ClassEnrollment {
+  id          String    @id @default(uuid())
+  tenantId    String
+  classId     String
+  studentId   String
+  enrolledAt  DateTime  @default(now())
+  withdrawnAt DateTime?
+
+  tenant  Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  class   SchoolClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  student Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, studentId])
+  @@index([tenantId])
+  @@index([studentId])
+}
+
+/// Plano de aula.
+model LessonPlan {
+  id            String    @id @default(uuid())
+  tenantId      String
+  classId       String
+  subjectId     String
+  teacherId     String
+  title         String
+  objectives    String?
+  content       String?
+  scheduledDate DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  tenant  Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  class   SchoolClass   @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subject SchoolSubject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  teacher User          @relation("LessonTeacher", fields: [teacherId], references: [id], onDelete: Restrict)
+
+  @@index([tenantId])
+  @@index([classId])
+  @@index([scheduledDate])
+}
+
+/// Nota individual.
+model StudentGrade {
+  id           String   @id @default(uuid())
+  tenantId     String
+  classId      String
+  studentId    String
+  subjectId    String
+  period       String   // "1º Bim", "2º Bim", etc.
+  grade        Float
+  weight       Float    @default(1.0)
+  type         String?  // "Prova", "Trabalho", etc.
+  notes        String?
+  recordedById String
+  recordedAt   DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tenant     Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  class      SchoolClass   @relation(fields: [classId], references: [id], onDelete: Cascade)
+  student    Student       @relation("StudentGrades", fields: [studentId], references: [id], onDelete: Cascade)
+  subject    SchoolSubject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  recordedBy User          @relation("GradeRecorder", fields: [recordedById], references: [id], onDelete: Restrict)
+
+  @@index([tenantId])
+  @@index([studentId])
+  @@index([classId])
+  @@index([period])
+}
+
+/// Frequência diária por aluno × turma.
+model Attendance {
+  id           String           @id @default(uuid())
+  tenantId     String
+  classId      String
+  studentId    String
+  date         DateTime         @db.Date
+  status       AttendanceStatus @default(PRESENT)
+  notes        String?
+  recordedById String
+  recordedAt   DateTime         @default(now())
+
+  tenant     Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  class      SchoolClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  student    Student     @relation("StudentAttendance", fields: [studentId], references: [id], onDelete: Cascade)
+  recordedBy User        @relation("AttendanceRecorder", fields: [recordedById], references: [id], onDelete: Restrict)
+
+  @@unique([classId, studentId, date])
+  @@index([tenantId])
+  @@index([studentId])
+  @@index([date])
 }
 
 model ModuleAccess {
@@ -3080,7 +3264,10 @@ model Student {
   familyPriceExceptions FamilyPriceException[]
   preReEnrollmentResponses PreReEnrollmentResponse[]
   // Phase 7
-  schoolInvoices SchoolInvoice[]
+  schoolInvoices       SchoolInvoice[]
+  classEnrollments     ClassEnrollment[]
+  studentGrades        StudentGrade[]    @relation("StudentGrades")
+  attendanceRecords    Attendance[]      @relation("StudentAttendance")
 
   @@unique([tenantId, code])
   @@unique([leadChildId, academicYear])

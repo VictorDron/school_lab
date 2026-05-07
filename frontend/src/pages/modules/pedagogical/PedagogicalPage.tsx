@@ -1,6 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ModuleSubNav from '@/components/layout/ModuleSubNav';
-import EmptyModulePlaceholder from '@/components/layout/EmptyModulePlaceholder';
+import ClassesView from '@/components/pedagogical/ClassesView';
+import SubjectsView from '@/components/pedagogical/SubjectsView';
+import LessonPlansView from '@/components/pedagogical/LessonPlansView';
+import GradesView from '@/components/pedagogical/GradesView';
+import AttendanceView from '@/components/pedagogical/AttendanceView';
 
 export default function PedagogicalPage() {
   return (
@@ -16,11 +20,11 @@ export default function PedagogicalPage() {
       />
       <Routes>
         <Route index element={<Navigate to="classes" replace />} />
-        <Route path="classes" element={<EmptyModulePlaceholder title="Turmas" subtitle="Turmas, alunos matriculados e disciplinas" />} />
-        <Route path="subjects" element={<EmptyModulePlaceholder title="Disciplinas" subtitle="Catálogo de disciplinas oferecidas pela escola" />} />
-        <Route path="lesson-plans" element={<EmptyModulePlaceholder title="Plano de Aulas" subtitle="Planos de aula por turma, disciplina e professor" />} />
-        <Route path="grades" element={<EmptyModulePlaceholder title="Notas" subtitle="Lançamento e histórico de notas" />} />
-        <Route path="attendance" element={<EmptyModulePlaceholder title="Frequência" subtitle="Registro diário de presença" />} />
+        <Route path="classes"      element={<ClassesView />} />
+        <Route path="subjects"     element={<SubjectsView />} />
+        <Route path="lesson-plans" element={<LessonPlansView />} />
+        <Route path="grades"       element={<GradesView />} />
+        <Route path="attendance"   element={<AttendanceView />} />
       </Routes>
     </div>
   );

@@ -2,7 +2,7 @@ import { FileText, GraduationCap, User, Users } from 'lucide-react';
 import { defaultStudentData } from '@/components/public/admission/types';
 import type { AdmissionForm } from '@/components/public/admission/types';
 
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+export const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export const STEPS = [
   { id: 1, icon: User, labelPt: 'Aluno', labelEn: 'Student' },

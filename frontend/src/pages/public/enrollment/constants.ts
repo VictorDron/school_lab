@@ -11,7 +11,7 @@ import { ENROLLMENT_STEPS } from '@/types/enrollment';
 import type { StepDef } from '@/components/public/shared';
 
 export const API_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+  import.meta.env.VITE_API_URL || '/api';
 
 export const STORAGE_KEY = 'enrollment_form_draft';
 

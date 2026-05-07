@@ -5,7 +5,7 @@ import { Upload, FileText, Trash2, CheckCircle, Loader2, AlertCircle } from 'luc
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Document types for families to upload
 const PUBLIC_DOCUMENT_TYPES = [

@@ -9,7 +9,7 @@ const pendingListeners: Map<string, Set<(data: unknown) => void>> = new Map();
 // Store pending room joins to re-emit on connect/reconnect
 const pendingRoomJoins: Set<{ event: string; args: unknown[] }> = new Set();
 
-const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3001';
+const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || '';
 
 export function connectSocket(): Socket | null {
   const token = useAuthStore.getState().token;
