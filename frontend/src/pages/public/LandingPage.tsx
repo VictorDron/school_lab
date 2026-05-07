@@ -318,8 +318,15 @@ export default function LandingPage() {
       {/* ============ NAV ============ */}
       <header className="sticky top-0 z-30 glass border-b border-rule">
         <div className="max-w-[1320px] mx-auto px-8 lg:px-14 h-[68px] flex items-center justify-between">
-          <Link to="/" aria-label="agente school">
-            <Mark size="sm" />
+          <Link
+            to="/"
+            aria-label="agente school"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          >
+            <Mark size="md" />
           </Link>
           <nav className="hidden md:flex items-center gap-9 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-stone-deep">
             <a href="#sistema" className="hover:text-ink transition-colors">Sistema</a>

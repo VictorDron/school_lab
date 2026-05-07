@@ -1,0 +1,35 @@
+# Excludes paths from the snapshot Railway uploads to its builder.
+# Same syntax as .gitignore. Applies to all services in this monorepo.
+
+# Workspaces' build outputs and dep caches — Railpack rebuilds these.
+node_modules/
+**/node_modules/
+**/dist/
+**/build/
+**/.next/
+**/.turbo/
+
+# Prisma migration archive + backup — kept in git for forensics, never
+# read at build or runtime. Big folder, no reason to ship it to the builder.
+backend/prisma/_archive_pre_baseline_20260507/
+backend/prisma/_baseline_backup_20260507/
+
+# Standalone marketing/branding HTML mockups at the repo root — not part
+# of the deployed app, just reference artefacts.
+agente-lab-*.html
+agente-lab-*.html\ copy.html
+agente_school_pricing_final.html
+
+# Logs, caches, OS junk
+*.log
+.DS_Store
+.eslintcache
+*.tsbuildinfo
+coverage/
+.nyc_output/
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
