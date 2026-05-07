@@ -46,6 +46,20 @@ export default function Mark({
         color: nameColor,
       }}
     >
+      <img
+        src="/agente.png"
+        alt=""
+        aria-hidden
+        style={{
+          height: '1.1em',
+          width: '1.1em',
+          objectFit: 'contain',
+          marginRight: '0.32em',
+          alignSelf: 'center',
+          filter: inverted ? 'invert(1)' : 'none',
+          flexShrink: 0,
+        }}
+      />
       <span style={{ fontWeight: 600 }}>agente</span>
       <span style={{ fontWeight: 400, color: verticalColor, marginLeft: '0.28em' }}>
         {vertical}
