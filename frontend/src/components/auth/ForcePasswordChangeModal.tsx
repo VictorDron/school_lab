@@ -72,7 +72,7 @@ export function ForcePasswordChangeModal() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+        <form method="post" onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
           <div className="p-4 bg-primary-50 border border-primary-200 rounded-lg flex gap-3">
             <AlertCircle className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-primary-800">
