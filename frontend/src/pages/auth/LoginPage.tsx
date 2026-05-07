@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/stores/authStore';
@@ -34,108 +34,112 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="card p-8 shadow-lg border border-neutral-200">
-      {/* Logo */}
-      <div className="text-center mb-8">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="flex flex-col items-center"
-        >
-          <img 
-            src="/logo_ris.png" 
-            alt="School Lab" 
-            className="h-16 w-auto mb-3"
-          />
-          <p className="text-neutral-500 text-sm">Sistema de Gestão Escolar</p>
-        </motion.div>
-      </div>
+    <div className="bg-paper border border-ink p-10">
+      <Link
+        to="/"
+        className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-deep hover:text-ink transition-colors mb-8"
+      >
+        <ArrowLeft className="w-3 h-3" /> Voltar ao site
+      </Link>
 
-      {/* Form */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+      >
+        <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-iris mb-5">
+          — Acesso · v1
+        </div>
+        <h1 className="font-display font-light leading-none mb-3 text-ink" style={{ fontSize: 44, letterSpacing: '-0.035em', fontVariationSettings: '"opsz" 144, "SOFT" 50' }}>
+          Bem-<em className="display-em">vindo</em>.
+        </h1>
+        <p className="serif-em text-stone-deep mb-9" style={{ fontSize: 16 }}>
+          — Acesse sua conta para continuar.
+        </p>
+      </motion.div>
+
       <motion.form
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-5"
       >
-        {/* Email */}
         <div>
-          <label className="label">{t('auth.email')}</label>
-          <div className="relative">
-            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
-            <input
-              type="email"
-              {...register('email', {
-                required: 'Email é obrigatório',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Email inválido',
-                },
-              })}
-              className={`input pl-11 ${errors.email ? 'input-error' : ''}`}
-              placeholder="seu@email.com"
-            />
-          </div>
+          <label className="label">— {t('auth.email')}</label>
+          <input
+            type="email"
+            {...register('email', {
+              required: 'Email é obrigatório',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Email inválido',
+              },
+            })}
+            className={`input ${errors.email ? 'input-error' : ''}`}
+            placeholder="seu@email.com"
+            autoFocus
+          />
           {errors.email && (
-            <p className="text-error-500 text-sm mt-1">{errors.email.message}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.12em] mt-2" style={{ color: '#C0411E' }}>
+              {errors.email.message}
+            </p>
           )}
         </div>
 
-        {/* Password */}
         <div>
-          <label className="label">{t('auth.password')}</label>
+          <label className="label">— {t('auth.password')}</label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
             <input
               type={showPassword ? 'text' : 'password'}
-              {...register('password', {
-                required: 'Senha é obrigatória',
-              })}
-              className={`input pl-11 pr-11 ${errors.password ? 'input-error' : ''}`}
+              {...register('password', { required: 'Senha é obrigatória' })}
+              className={`input pr-11 ${errors.password ? 'input-error' : ''}`}
               placeholder="••••••••"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone hover:text-ink transition-colors"
+              tabIndex={-1}
             >
-              {showPassword ? (
-                <EyeOff className="w-5 h-5" />
-              ) : (
-                <Eye className="w-5 h-5" />
-              )}
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
           {errors.password && (
-            <p className="text-error-500 text-sm mt-1">{errors.password.message}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.12em] mt-2" style={{ color: '#C0411E' }}>
+              {errors.password.message}
+            </p>
           )}
         </div>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full btn btn-primary btn-lg"
-        >
+        <button type="submit" disabled={isLoading} className="btn btn-primary btn-lg w-full">
           {isLoading ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
+            <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            t('auth.login')
+            <>
+              {t('auth.login')} <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} />
+            </>
           )}
         </button>
 
-        {/* Forgot Password */}
         <div className="text-center">
           <Link
             to="/forgot-password"
-            className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-deep hover:text-iris transition-colors"
           >
-            {t('auth.forgotPassword')}
+            — Esqueci a senha
           </Link>
         </div>
       </motion.form>
+
+      <div className="mt-9 pt-6 border-t border-rule text-center">
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-stone-deep">
+          Ainda não conhece a plataforma?{' '}
+          <Link to="/" className="text-iris hover:underline">
+            Conheça os planos →
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

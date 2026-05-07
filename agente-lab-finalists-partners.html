@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agente Lab — Brand Finalists</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300;9..144,400;9..144,500&family=Geist+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --paper: #F4F2EC;
+  --ink: #0E0D0B;
+  --rule: #D4D0C5;
+  --gray: #8B877F;
+  --gray-deep: #5C5A54;
+  --serif: 'Fraunces', serif;
+  --mono: 'Geist Mono', monospace;
+  --sans: 'Inter', sans-serif;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  background-image: radial-gradient(circle at 1px 1px, rgba(10,9,8,0.025) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  z-index: 1000;
+}
+
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 56px; }
+
+/* TOP */
+.topbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.topbar-mid {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  color: var(--gray-deep);
+}
+.topbar-right { text-align: right; color: var(--gray-deep); }
+
+/* HERO */
+.hero { padding: 80px 0 56px; border-bottom: 1px solid var(--ink); }
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: '';
+  width: 32px; height: 1px;
+  background: var(--ink);
+}
+
+.hero-title {
+  font-family: var(--serif);
+  font-size: 76px;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  max-width: 900px;
+}
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.hero-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--gray-deep);
+  margin-top: 24px;
+  max-width: 720px;
+  line-height: 1.45;
+}
+
+.hero-meta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 56px;
+  border-top: 1px solid var(--ink);
+}
+.hero-meta div {
+  padding: 18px 24px 18px 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+  border-right: 1px solid var(--rule);
+}
+.hero-meta div:nth-child(4n) { border-right: none; }
+.hero-meta div:not(:nth-child(4n)) { padding-right: 24px; padding-left: 0; }
+.hero-meta div:not(:first-child) { padding-left: 24px; }
+.hero-meta strong {
+  display: block;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+/* ===== CONCEPT BLOCK ===== */
+.concept {
+  padding: 100px 0 80px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.concept-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 56px;
+  align-items: end;
+  margin-bottom: 56px;
+}
+
+.concept-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 120px;
+  font-weight: 300;
+  letter-spacing: -0.05em;
+  line-height: 0.85;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+.concept-num small {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-style: normal;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+  margin-top: 12px;
+}
+
+.concept-title {
+  font-family: var(--sans);
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.concept-pitch {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--gray-deep);
+  line-height: 1.4;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  max-width: 580px;
+}
+
+/* HERO MARK CELL */
+.mark-hero {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 120px 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 380px;
+  margin-bottom: 2px;
+}
+
+.mark-hero-tag {
+  position: absolute;
+  top: 18px; left: 22px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+.mark-hero-id {
+  position: absolute;
+  bottom: 18px; right: 22px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--gray-deep);
+}
+
+/* COLOR VARIANTS GRID — 4 variants per concept */
+.color-block {
+  margin-top: 56px;
+}
+
+.color-block-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.color-block-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.color-cell {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 56px 32px 28px;
+  position: relative;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.color-cell-tag {
+  position: absolute;
+  top: 14px; left: 18px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+
+.color-cell-mark {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.color-cell-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+.color-cell-name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.color-cell-hex {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--gray-deep);
+}
+
+/* SCALE SHOWCASE — same variant in 3 sizes */
+.scale-block {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 0.8fr;
+  gap: 2px;
+}
+
+.scale-cell {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 56px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 220px;
+}
+
+.scale-cell-tag {
+  position: absolute;
+  top: 14px; left: 18px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+
+/* SYSTEM PREVIEW — Mãe + filhos */
+.system-preview {
+  margin-top: 32px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 52px 48px;
+  position: relative;
+}
+
+.system-preview-tag {
+  position: absolute;
+  top: 18px; left: 22px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+
+.system-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.system-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 0 0;
+  border-top: 1px solid var(--rule);
+}
+
+.system-role {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+
+.system-role.mother { color: var(--ink); font-weight: 600; }
+
+.system-mark {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+}
+
+/* ============= MARK A — DOT ============= */
+.markA {
+  display: flex;
+  align-items: baseline;
+}
+.markA .name {
+  font-family: var(--sans);
+  font-size: 64px;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+.markA .name span {
+  font-weight: 400;
+  color: var(--gray-deep);
+}
+.markA .dot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  margin-left: 6px;
+  align-self: flex-end;
+  margin-bottom: 8px;
+}
+
+/* MARK A scaled */
+.markA.md .name { font-size: 32px; }
+.markA.md .dot { width: 6px; height: 6px; margin-left: 3px; margin-bottom: 4px; }
+
+.markA.sm .name { font-size: 16px; letter-spacing: -0.04em; }
+.markA.sm .dot { width: 4px; height: 4px; margin-left: 2px; margin-bottom: 2px; }
+
+.markA.xs .name { font-size: 14px; letter-spacing: -0.04em; }
+.markA.xs .dot { width: 3px; height: 3px; margin-left: 2px; margin-bottom: 1px; }
+
+/* Color theme overrides for DOT — applied via parent class .theme-X */
+.theme-signal .markA .dot { background: #FF4A1C; }
+.theme-iris .markA .dot { background: #6B4FFF; }
+.theme-emerald .markA .dot { background: #15B886; }
+.theme-mono .markA .dot { background: #0E0D0B; }
+
+/* INK background overrides */
+.bg-ink .markA .name { color: #F4F2EC; }
+.bg-ink .markA .name span { color: rgba(244,242,236,0.55); }
+.bg-ink.theme-mono .markA .dot { background: #F4F2EC; }
+
+
+/* ============= MARK B — SLASH ============= */
+.markB {
+  font-family: var(--sans);
+  font-size: 64px;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: baseline;
+}
+.markB .slash {
+  font-weight: 300;
+  margin: 0 0.08em;
+  display: inline-block;
+}
+.markB .lab {
+  font-weight: 300;
+  color: var(--gray-deep);
+}
+
+.markB.md { font-size: 32px; }
+.markB.sm { font-size: 16px; letter-spacing: -0.04em; }
+.markB.xs { font-size: 14px; letter-spacing: -0.04em; }
+
+.theme-signal .markB .slash { color: #FF4A1C; }
+.theme-iris .markB .slash { color: #6B4FFF; }
+.theme-emerald .markB .slash { color: #15B886; }
+.theme-mono .markB .slash { color: #0E0D0B; }
+
+.bg-ink .markB { color: #F4F2EC; }
+.bg-ink .markB .lab { color: rgba(244,242,236,0.55); }
+.bg-ink.theme-mono .markB .slash { color: #F4F2EC; }
+
+
+/* ============= MARK C — CARET ============= */
+.markC {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.markC .caret {
+  width: 0; height: 0;
+  border-top: 21px solid transparent;
+  border-bottom: 21px solid transparent;
+  border-left: 28px solid var(--ink);
+  flex-shrink: 0;
+}
+.markC .name {
+  font-family: var(--sans);
+  font-size: 50px;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+.markC .name span {
+  font-weight: 300;
+}
+
+.markC.md { gap: 8px; }
+.markC.md .caret { border-top-width: 11px; border-bottom-width: 11px; border-left-width: 14px; }
+.markC.md .name { font-size: 26px; }
+
+.markC.sm { gap: 5px; }
+.markC.sm .caret { border-top-width: 6px; border-bottom-width: 6px; border-left-width: 8px; }
+.markC.sm .name { font-size: 14px; letter-spacing: -0.04em; }
+
+.markC.xs { gap: 4px; }
+.markC.xs .caret { border-top-width: 5px; border-bottom-width: 5px; border-left-width: 7px; }
+.markC.xs .name { font-size: 12px; letter-spacing: -0.04em; }
+
+.theme-signal .markC .name span { color: #FF4A1C; }
+.theme-iris .markC .name span { color: #6B4FFF; }
+.theme-emerald .markC .name span { color: #15B886; }
+.theme-mono .markC .name span { color: #0E0D0B; }
+
+.bg-ink .markC .caret { border-left-color: #F4F2EC; }
+.bg-ink .markC .name { color: #F4F2EC; }
+.bg-ink.theme-mono .markC .name span { color: #F4F2EC; }
+
+
+/* DECISION SECTION */
+.decision {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--ink);
+}
+
+.decision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  margin-top: 48px;
+}
+
+.decision-cell {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.decision-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 56px;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.decision-title {
+  font-family: var(--sans);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.decision-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.decision-item {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
+}
+
+.decision-item::before {
+  content: '+';
+  color: #1B8A4E;
+  font-family: var(--mono);
+  font-weight: 600;
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.decision-item.con::before {
+  content: '−';
+  color: #FF4A1C;
+}
+
+/* FOOTER */
+.footer {
+  padding: 80px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.footer-mark {
+  font-family: var(--serif);
+  font-size: 96px;
+  font-weight: 300;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+}
+.footer-mark em {
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.footer-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+  text-align: right;
+  line-height: 2;
+}
+
+@media (max-width: 900px) {
+  .wrap { padding: 0 24px; }
+  .topbar { grid-template-columns: 1fr; gap: 8px; text-align: center; }
+  .topbar-right { text-align: center; }
+  .hero-title { font-size: 44px; }
+  .hero-meta { grid-template-columns: 1fr 1fr; }
+  .hero-meta div:nth-child(4n) { border-right: 1px solid var(--rule); }
+  .hero-meta div:nth-child(2n) { border-right: none; }
+  .concept-head { grid-template-columns: 1fr; gap: 24px; }
+  .concept-num { font-size: 80px; }
+  .concept-title { font-size: 36px; }
+  .color-grid { grid-template-columns: 1fr 1fr; }
+  .scale-block { grid-template-columns: 1fr; }
+  .system-grid { grid-template-columns: 1fr; gap: 16px; }
+  .decision-grid { grid-template-columns: 1fr; }
+  .footer { flex-direction: column; align-items: flex-start; gap: 24px; }
+  .footer-meta { text-align: left; }
+  .markA .name, .markB, .markC .name { font-size: 38px; }
+  .markC .caret { border-top-width: 14px; border-bottom-width: 14px; border-left-width: 18px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div>Brand Finalists · v1</div>
+    <div class="topbar-mid">— For partner review —</div>
+    <div class="topbar-right">MMXXVI · Decision doc</div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">Brand decision · Round final</div>
+    <div class="hero-title">
+      Três marcas.<br>
+      <em>Quatro</em> cores cada.<br>
+      Uma <em>decisão</em>.
+    </div>
+    <div class="hero-sub">
+      A Agente Lab é uma casa de produtos — Agente.School virá, e outros depois. Cada finalista é apresentado em quatro paletas e testado como sistema mãe-filho.
+    </div>
+    <div class="hero-meta">
+      <div><strong>Discipline</strong>Brand identity</div>
+      <div><strong>Architecture</strong>Mother + sub-products</div>
+      <div><strong>Audience</strong>Founding partners</div>
+      <div><strong>Status</strong>Awaiting decision</div>
+    </div>
+  </section>
+
+
+  <!-- ============ CONCEPT 01 — DOT ============ -->
+  <section class="concept">
+    <div class="concept-head">
+      <div class="concept-num">01<small>Dot</small></div>
+      <div>
+        <div class="concept-title">Dot.</div>
+        <div class="concept-pitch">
+          O nome com um ponto colorido. <em>Cursor. Status. Sinal de vida.</em> Tipográfico, simples, escala.
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero mark in primary color -->
+    <div class="mark-hero theme-signal">
+      <div class="mark-hero-tag">— Primary expression</div>
+      <div class="markA">
+        <div class="name">agente <span>lab</span></div>
+        <div class="dot"></div>
+      </div>
+      <div class="mark-hero-id">01 · DOT</div>
+    </div>
+
+    <!-- COLOR VARIANTS -->
+    <div class="color-block">
+      <div class="color-block-label">— Variações de cor</div>
+      <div class="color-grid">
+
+        <div class="color-cell theme-signal">
+          <div class="color-cell-tag">A · Signal</div>
+          <div class="color-cell-mark">
+            <div class="markA md">
+              <div class="name">agente <span>lab</span></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Signal</div>
+            <div class="color-cell-hex">#FF4A1C</div>
+          </div>
+        </div>
+
+        <div class="color-cell theme-iris">
+          <div class="color-cell-tag">B · Iris</div>
+          <div class="color-cell-mark">
+            <div class="markA md">
+              <div class="name">agente <span>lab</span></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Iris</div>
+            <div class="color-cell-hex">#6B4FFF</div>
+          </div>
+        </div>
+
+        <div class="color-cell theme-emerald">
+          <div class="color-cell-tag">C · Emerald</div>
+          <div class="color-cell-mark">
+            <div class="markA md">
+              <div class="name">agente <span>lab</span></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Emerald</div>
+            <div class="color-cell-hex">#15B886</div>
+          </div>
+        </div>
+
+        <div class="color-cell theme-mono">
+          <div class="color-cell-tag">D · Mono</div>
+          <div class="color-cell-mark">
+            <div class="markA md">
+              <div class="name">agente <span>lab</span></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Mono</div>
+            <div class="color-cell-hex">#0E0D0B</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SCALE TEST -->
+    <div class="color-block">
+      <div class="color-block-label">— Teste de escala (variante Signal)</div>
+      <div class="scale-block">
+        <div class="scale-cell theme-signal">
+          <div class="scale-cell-tag">— Display · 64px</div>
+          <div class="markA">
+            <div class="name">agente <span>lab</span></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="scale-cell theme-signal">
+          <div class="scale-cell-tag">— Header · 32px</div>
+          <div class="markA md">
+            <div class="name">agente <span>lab</span></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="scale-cell theme-signal">
+          <div class="scale-cell-tag">— Favicon · 16px</div>
+          <div class="markA sm">
+            <div class="name">agente <span>lab</span></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYSTEM -->
+    <div class="system-preview theme-signal">
+      <div class="system-preview-tag">— Sistema mãe + filhos</div>
+      <div class="system-grid">
+        <div class="system-cell">
+          <div class="system-role mother">Mãe</div>
+          <div class="system-mark">
+            <div class="markA xs">
+              <div class="name">agente <span>lab</span></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+        <div class="system-cell">
+          <div class="system-role">Filho 01</div>
+          <div class="system-mark">
+            <div class="markA xs">
+              <div class="name">agente.<span>school</span></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+        <div class="system-cell">
+          <div class="system-role">Filho 02</div>
+          <div class="system-mark">
+            <div class="markA xs">
+              <div class="name">agente.<span>finance</span></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+        <div class="system-cell">
+          <div class="system-role">Filho N</div>
+          <div class="system-mark">
+            <div class="markA xs">
+              <div class="name">agente.<span>[product]</span></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DECISION SUMMARY -->
+    <div class="decision-grid">
+      <div class="decision-cell">
+        <div class="decision-num">+</div>
+        <div class="decision-title">A favor</div>
+        <ul class="decision-list">
+          <li class="decision-item">Lê perfeitamente a 16px</li>
+          <li class="decision-item">Sistema flexível — cada filho herda o ponto</li>
+          <li class="decision-item">Tipograficamente puro, neutro</li>
+          <li class="decision-item">O ponto pode "piscar" como agente ativo</li>
+        </ul>
+      </div>
+      <div class="decision-cell">
+        <div class="decision-num">−</div>
+        <div class="decision-title">Contra</div>
+        <ul class="decision-list">
+          <li class="decision-item con">Conceito do "ponto" é familiar (Notion, Wise)</li>
+          <li class="decision-item con">Sem símbolo isolável — depende do nome</li>
+          <li class="decision-item con">Pode parecer "pouco" para alguns clientes</li>
+        </ul>
+      </div>
+      <div class="decision-cell">
+        <div class="decision-num">·</div>
+        <div class="decision-title">Personalidade</div>
+        <ul class="decision-list">
+          <li class="decision-item">Discreta, técnica, confiável</li>
+          <li class="decision-item">Tipo Notion, Wise, Read.cv</li>
+          <li class="decision-item">"O agente está vivo"</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ CONCEPT 02 — SLASH ============ -->
+  <section class="concept">
+    <div class="concept-head">
+      <div class="concept-num">02<small>Slash</small></div>
+      <div>
+        <div class="concept-title">Slash.</div>
+        <div class="concept-pitch">
+          Agente <em>/</em> lab. <em>A barra é o sistema.</em> URL-like, técnica, infinita — a estrutura de produtos é a marca.
+        </div>
+      </div>
+    </div>
+
+    <div class="mark-hero theme-signal">
+      <div class="mark-hero-tag">— Primary expression</div>
+      <div class="markB">
+        agente<span class="slash">/</span><span class="lab">lab</span>
+      </div>
+      <div class="mark-hero-id">02 · SLASH</div>
+    </div>
+
+    <div class="color-block">
+      <div class="color-block-label">— Variações de cor</div>
+      <div class="color-grid">
+
+        <div class="color-cell theme-signal">
+          <div class="color-cell-tag">A · Signal</div>
+          <div class="color-cell-mark">
+            <div class="markB md">agente<span class="slash">/</span><span class="lab">lab</span></div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Signal</div>
+            <div class="color-cell-hex">#FF4A1C</div>
+          </div>
+        </div>
+
+        <div class="color-cell theme-iris">
+          <div class="color-cell-tag">B · Iris</div>
+          <div class="color-cell-mark">
+            <div class="markB md">agente<span class="slash">/</span><span class="lab">lab</span></div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Iris</div>
+            <div class="color-cell-hex">#6B4FFF</div>
+          </div>
+        </div>
+
+        <div class="color-cell theme-emerald">
+          <div class="color-cell-tag">C · Emerald</div>
+          <div class="color-cell-mark">
+            <div class="markB md">agente<span class="slash">/</span><span class="lab">lab</span></div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Emerald</div>
+            <div class="color-cell-hex">#15B886</div>
+          </div>
+        </div>
+
+        <div class="color-cell theme-mono">
+          <div class="color-cell-tag">D · Mono</div>
+          <div class="color-cell-mark">
+            <div class="markB md">agente<span class="slash">/</span><span class="lab">lab</span></div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Mono</div>
+            <div class="color-cell-hex">#0E0D0B</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="color-block">
+      <div class="color-block-label">— Teste de escala (variante Signal)</div>
+      <div class="scale-block">
+        <div class="scale-cell theme-signal">
+          <div class="scale-cell-tag">— Display · 64px</div>
+          <div class="markB">agente<span class="slash">/</span><span class="lab">lab</span></div>
+        </div>
+        <div class="scale-cell theme-signal">
+          <div class="scale-cell-tag">— Header · 32px</div>
+          <div class="markB md">agente<span class="slash">/</span><span class="lab">lab</span></div>
+        </div>
+        <div class="scale-cell theme-signal">
+          <div class="scale-cell-tag">— Favicon · 16px</div>
+          <div class="markB sm">agente<span class="slash">/</span><span class="lab">lab</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="system-preview theme-signal">
+      <div class="system-preview-tag">— Sistema mãe + filhos</div>
+      <div class="system-grid">
+        <div class="system-cell">
+          <div class="system-role mother">Mãe</div>
+          <div class="system-mark">
+            <div class="markB xs">agente<span class="slash">/</span><span class="lab">lab</span></div>
+          </div>
+        </div>
+        <div class="system-cell">
+          <div class="system-role">Filho 01</div>
+          <div class="system-mark">
+            <div class="markB xs">agente<span class="slash">/</span><span class="lab">school</span></div>
+          </div>
+        </div>
+        <div class="system-cell">
+          <div class="system-role">Filho 02</div>
+          <div class="system-mark">
+            <div class="markB xs">agente<span class="slash">/</span><span class="lab">finance</span></div>
+          </div>
+        </div>
+        <div class="system-cell">
+          <div class="system-role">Filho N</div>
+          <div class="system-mark">
+            <div class="markB xs">agente<span class="slash">/</span><span class="lab">[product]</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-grid">
+      <div class="decision-cell">
+        <div class="decision-num">+</div>
+        <div class="decision-title">A favor</div>
+        <ul class="decision-list">
+          <li class="decision-item">A barra <em>é</em> a estrutura mãe-filho</li>
+          <li class="decision-item">Look de path/route — natural pra plataforma</li>
+          <li class="decision-item">Cada produto fica óbvio: agente/X</li>
+          <li class="decision-item">Vibe técnica, Vercel, Read.cv</li>
+        </ul>
+      </div>
+      <div class="decision-cell">
+        <div class="decision-num">−</div>
+        <div class="decision-title">Contra</div>
+        <ul class="decision-list">
+          <li class="decision-item con">Slash em logos virou tendência (saturação)</li>
+          <li class="decision-item con">Pode soar "muito dev" pra clientes não-tech</li>
+          <li class="decision-item con">Sem símbolo destacável (mesma do Dot)</li>
+        </ul>
+      </div>
+      <div class="decision-cell">
+        <div class="decision-num">/</div>
+        <div class="decision-title">Personalidade</div>
+        <ul class="decision-list">
+          <li class="decision-item">Técnica, sistêmica, infraestrutural</li>
+          <li class="decision-item">Tipo Vercel, Linear, Stripe</li>
+          <li class="decision-item">"Tudo é um caminho"</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ CONCEPT 03 — CARET ============ -->
+  <section class="concept">
+    <div class="concept-head">
+      <div class="concept-num">03<small>Caret</small></div>
+      <div>
+        <div class="concept-title">Caret.</div>
+        <div class="concept-pitch">
+          ▶ agente lab. <em>Play.</em> O agente está rodando. Símbolo universal de execução.
+        </div>
+      </div>
+    </div>
+
+    <div class="mark-hero theme-signal">
+      <div class="mark-hero-tag">— Primary expression</div>
+      <div class="markC">
+        <div class="caret"></div>
+        <div class="name">agente <span>lab</span></div>
+      </div>
+      <div class="mark-hero-id">03 · CARET</div>
+    </div>
+
+    <div class="color-block">
+      <div class="color-block-label">— Variações de cor</div>
+      <div class="color-grid">
+
+        <div class="color-cell theme-signal">
+          <div class="color-cell-tag">A · Signal</div>
+          <div class="color-cell-mark">
+            <div class="markC md">
+              <div class="caret"></div>
+              <div class="name">agente <span>lab</span></div>
+            </div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Signal</div>
+            <div class="color-cell-hex">#FF4A1C</div>
+          </div>
+        </div>
+
+        <div class="color-cell theme-iris">
+          <div class="color-cell-tag">B · Iris</div>
+          <div class="color-cell-mark">
+            <div class="markC md">
+              <div class="caret"></div>
+              <div class="name">agente <span>lab</span></div>
+            </div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Iris</div>
+            <div class="color-cell-hex">#6B4FFF</div>
+          </div>
+        </div>
+
+        <div class="color-cell theme-emerald">
+          <div class="color-cell-tag">C · Emerald</div>
+          <div class="color-cell-mark">
+            <div class="markC md">
+              <div class="caret"></div>
+              <div class="name">agente <span>lab</span></div>
+            </div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Emerald</div>
+            <div class="color-cell-hex">#15B886</div>
+          </div>
+        </div>
+
+        <div class="color-cell theme-mono">
+          <div class="color-cell-tag">D · Mono</div>
+          <div class="color-cell-mark">
+            <div class="markC md">
+              <div class="caret"></div>
+              <div class="name">agente <span>lab</span></div>
+            </div>
+          </div>
+          <div class="color-cell-info">
+            <div class="color-cell-name">Mono</div>
+            <div class="color-cell-hex">#0E0D0B</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="color-block">
+      <div class="color-block-label">— Teste de escala (variante Signal)</div>
+      <div class="scale-block">
+        <div class="scale-cell theme-signal">
+          <div class="scale-cell-tag">— Display · 50px</div>
+          <div class="markC">
+            <div class="caret"></div>
+            <div class="name">agente <span>lab</span></div>
+          </div>
+        </div>
+        <div class="scale-cell theme-signal">
+          <div class="scale-cell-tag">— Header · 26px</div>
+          <div class="markC md">
+            <div class="caret"></div>
+            <div class="name">agente <span>lab</span></div>
+          </div>
+        </div>
+        <div class="scale-cell theme-signal">
+          <div class="scale-cell-tag">— Favicon · 14px</div>
+          <div class="markC sm">
+            <div class="caret"></div>
+            <div class="name">agente <span>lab</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="system-preview theme-signal">
+      <div class="system-preview-tag">— Sistema mãe + filhos</div>
+      <div class="system-grid">
+        <div class="system-cell">
+          <div class="system-role mother">Mãe</div>
+          <div class="system-mark">
+            <div class="markC xs">
+              <div class="caret"></div>
+              <div class="name">agente <span>lab</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="system-cell">
+          <div class="system-role">Filho 01</div>
+          <div class="system-mark">
+            <div class="markC xs">
+              <div class="caret"></div>
+              <div class="name">agente <span>school</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="system-cell">
+          <div class="system-role">Filho 02</div>
+          <div class="system-mark">
+            <div class="markC xs">
+              <div class="caret"></div>
+              <div class="name">agente <span>finance</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="system-cell">
+          <div class="system-role">Filho N</div>
+          <div class="system-mark">
+            <div class="markC xs">
+              <div class="caret"></div>
+              <div class="name">agente <span>[product]</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-grid">
+      <div class="decision-cell">
+        <div class="decision-num">+</div>
+        <div class="decision-title">A favor</div>
+        <ul class="decision-list">
+          <li class="decision-item">Símbolo universal: ▶ = executar</li>
+          <li class="decision-item">Tem ícone destacável (caret isolado)</li>
+          <li class="decision-item">Cada filho herda o caret, troca o nome</li>
+          <li class="decision-item">Mais "logo" tradicional dos três</li>
+        </ul>
+      </div>
+      <div class="decision-cell">
+        <div class="decision-num">−</div>
+        <div class="decision-title">Contra</div>
+        <ul class="decision-list">
+          <li class="decision-item con">Caret/play é literal — sem ambiguidade</li>
+          <li class="decision-item con">"Agente school" + play soa estranho</li>
+          <li class="decision-item con">Visualmente próximo de Loom, Cal.com</li>
+        </ul>
+      </div>
+      <div class="decision-cell">
+        <div class="decision-num">▶</div>
+        <div class="decision-title">Personalidade</div>
+        <ul class="decision-list">
+          <li class="decision-item">Direta, ativa, presente</li>
+          <li class="decision-item">Tipo Loom, Cal.com</li>
+          <li class="decision-item">"O agente está em execução"</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-mark">
+      <em>Decisão.</em>
+    </div>
+    <div class="footer-meta">
+      <p>Agente Lab</p>
+      <p>Brand decision · v1</p>
+      <p>For partner review · MMXXVI</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

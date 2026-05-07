@@ -31,6 +31,7 @@ const AdmissionFormPage = lazy(() => import('@/pages/public/AdmissionFormPage'))
 const EnrollmentFormPage = lazy(() => import('@/pages/public/EnrollmentFormPage'));
 const ReEnrollmentFormPage = lazy(() => import('@/pages/public/ReEnrollmentFormPage'));
 const PreReEnrollmentResponsePage = lazy(() => import('@/pages/public/PreReEnrollmentResponsePage'));
+const LandingPage = lazy(() => import('@/pages/public/LandingPage'));
 const PlatformTenantsPage = lazy(() => import('@/pages/platform/PlatformTenantsPage'));
 
 // Protected Route wrapper
@@ -42,7 +43,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;
@@ -83,10 +84,16 @@ export default function App() {
       <ForcePasswordChangeModal />
       <Suspense fallback={<LoadingScreen />}>
         <Routes>
+          {/* Public landing — SaaS marketing entry */}
+          <Route
+            path="/"
+            element={isAuthenticated ? <Navigate to="/launcher" replace /> : <LandingPage />}
+          />
+
           {/* Auth Routes */}
           <Route element={<AuthLayout />}>
             <Route
-              path="/"
+              path="/login"
               element={isAuthenticated ? <Navigate to="/launcher" replace /> : <LoginPage />}
             />
             <Route path="/register" element={<RegisterPage />} />

@@ -1,0 +1,2534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agente Lab — Brand Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300;9..144,400;9..144,500&family=Geist+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --paper: #F4F2EC;
+  --paper-deep: #E5E2D8;
+  --ink: #0E0D0B;
+  --ink-soft: #2A2825;
+  --rule: #D4D0C5;
+  --gray: #8B877F;
+  --gray-deep: #5C5A54;
+  --signal: #15B886;
+  --signal-deep: #0F8E69;
+  --serif: 'Fraunces', serif;
+  --mono: 'Geist Mono', monospace;
+  --sans: 'Inter', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.5;
+  background-image: radial-gradient(circle at 1px 1px, rgba(10,9,8,0.025) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  z-index: 1000;
+}
+
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 56px; }
+
+/* NAV */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 56px;
+  background: rgba(244,242,236,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.nav-logo {
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  display: flex;
+  align-items: baseline;
+}
+.nav-logo .lab { font-weight: 300; color: var(--gray-deep); }
+.nav-logo .nav-caret { display: inline-block; width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 7px solid var(--signal); margin-right: 8px; vertical-align: middle; transform: translateY(-1px); }
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.nav-links a {
+  color: var(--gray-deep);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--ink); }
+
+.nav-version {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+/* TOPBAR */
+.topbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.topbar-mid {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  color: var(--gray-deep);
+}
+.topbar-right { text-align: right; color: var(--gray-deep); }
+.topbar-right .signal { color: var(--signal); }
+
+/* HERO */
+.hero {
+  padding: 100px 0 80px;
+  border-bottom: 1px solid var(--ink);
+  position: relative;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: '';
+  width: 32px; height: 1px;
+  background: var(--ink);
+}
+
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(80px, 12vw, 168px);
+  font-weight: 300;
+  letter-spacing: -0.05em;
+  line-height: 0.88;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+}
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+.hero-title .signal { color: var(--signal); font-style: italic; font-weight: 300; }
+
+.hero-pitch {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--ink-soft);
+  margin-top: 36px;
+  max-width: 680px;
+  line-height: 1.4;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+}
+
+.hero-meta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 80px;
+  border-top: 1px solid var(--ink);
+}
+.hero-meta-cell {
+  padding: 24px 24px 24px 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+  border-right: 1px solid var(--rule);
+}
+.hero-meta-cell:not(:first-child) { padding-left: 24px; }
+.hero-meta-cell:nth-child(4n) { border-right: none; }
+.hero-meta-cell strong {
+  display: block;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--ink);
+  margin-bottom: 4px;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+
+.hero-title .hero-caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 0.36em solid transparent;
+  border-bottom: 0.36em solid transparent;
+  border-left: 0.48em solid var(--signal);
+  margin-right: 0.16em;
+  vertical-align: 0.05em;
+}
+
+/* TOC */
+.toc {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--ink);
+}
+
+.toc-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: 32px;
+}
+
+.toc-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.toc-item {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: baseline;
+  gap: 32px;
+  padding: 24px 0;
+  border-top: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--ink);
+  transition: padding 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+.toc-item:last-child { border-bottom: 1px solid var(--rule); }
+
+.toc-item:hover {
+  padding-left: 12px;
+}
+
+.toc-item:hover .toc-name { color: var(--signal); }
+
+.toc-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--gray-deep);
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.toc-name {
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  transition: color 0.2s;
+}
+.toc-name em {
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.toc-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+
+/* SECTION */
+.section {
+  padding: 120px 0;
+  border-bottom: 1px solid var(--ink);
+}
+
+.section-head {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 56px;
+  align-items: end;
+  margin-bottom: 64px;
+}
+
+.section-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 96px;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+.section-num small {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-style: normal;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+  margin-top: 14px;
+}
+
+.section-title {
+  font-family: var(--serif);
+  font-size: 56px;
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+}
+.section-title em {
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+.section-title .signal { color: var(--signal); font-style: italic; }
+
+.section-lead {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 19px;
+  font-weight: 300;
+  color: var(--gray-deep);
+  max-width: 720px;
+  line-height: 1.5;
+  margin-top: 24px;
+}
+
+
+.section-title .title-caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 0.28em solid transparent;
+  border-bottom: 0.28em solid transparent;
+  border-left: 0.36em solid var(--signal);
+  margin-right: 0.12em;
+  vertical-align: 0.06em;
+}
+
+/* ===== MARK · CARET ===== */
+.markB {
+  font-family: var(--sans);
+  font-size: 64px;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  color: var(--ink);
+}
+.markB .caret {
+  width: 0;
+  height: 0;
+  border-top: 0.32em solid transparent;
+  border-bottom: 0.32em solid transparent;
+  border-left: 0.42em solid var(--signal);
+  flex-shrink: 0;
+}
+.markB .lab {
+  font-weight: 300;
+  color: var(--gray-deep);
+}
+.markB.xl { font-size: 120px; }
+.markB.lg { font-size: 80px; }
+.markB.md { font-size: 36px; }
+.markB.sm { font-size: 18px; letter-spacing: -0.045em; gap: 0.2em; }
+.markB.sm .caret {
+  border-top-width: 0.36em;
+  border-bottom-width: 0.36em;
+  border-left-width: 0.46em;
+}
+.markB.xs { font-size: 14px; letter-spacing: -0.04em; gap: 0.18em; }
+.markB.xs .caret {
+  border-top-width: 0.36em;
+  border-bottom-width: 0.36em;
+  border-left-width: 0.46em;
+}
+
+.bg-ink .markB { color: var(--paper); }
+.bg-ink .markB .lab { color: rgba(244,242,236,0.55); }
+.bg-signal .markB { color: var(--ink); }
+.bg-signal .markB .caret { border-left-color: var(--ink); }
+.bg-signal .markB .lab { color: rgba(14,13,11,0.6); }
+
+/* MONOLITH HERO */
+.monolith {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 140px 80px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.monolith::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(transparent 49.5%, rgba(255,255,255,0.04) 49.5%, rgba(255,255,255,0.04) 50.5%, transparent 50.5%),
+    linear-gradient(90deg, transparent 49.5%, rgba(255,255,255,0.04) 49.5%, rgba(255,255,255,0.04) 50.5%, transparent 50.5%);
+  background-size: 80px 80px;
+  pointer-events: none;
+}
+
+.monolith-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monolith-meta {
+  position: absolute;
+  bottom: 32px;
+  left: 80px; right: 80px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(244,242,236,0.5);
+}
+.monolith-meta strong { color: var(--paper); font-weight: 500; }
+
+/* SPECIMEN ROW */
+.specimen-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 2px;
+}
+
+.specimen {
+  border: 1px solid var(--ink);
+  padding: 64px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 240px;
+}
+.specimen.bg-paper { background: var(--paper); }
+.specimen.bg-ink { background: var(--ink); }
+.specimen.bg-signal { background: var(--signal); }
+
+.specimen-tag {
+  position: absolute;
+  top: 14px; left: 18px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+.specimen.bg-ink .specimen-tag { color: rgba(244,242,236,0.5); }
+.specimen.bg-signal .specimen-tag { color: rgba(14,13,11,0.7); }
+
+.specimen-id {
+  position: absolute;
+  bottom: 14px; right: 18px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--gray-deep);
+}
+.specimen.bg-ink .specimen-id { color: rgba(244,242,236,0.4); }
+.specimen.bg-signal .specimen-id { color: rgba(14,13,11,0.5); }
+
+/* CONSTRUCTION */
+.construction-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.construction {
+  border: 1px solid var(--ink);
+  padding: 56px 48px;
+  background: var(--paper);
+  position: relative;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.construction-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: 8px;
+}
+
+.construction-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.construction-body {
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+.construction-body strong { color: var(--ink); font-weight: 600; }
+.construction-body em { color: var(--signal); font-style: italic; font-family: var(--serif); font-weight: 400; }
+
+/* SCALE BLOCK */
+.scale-block {
+  margin-top: 2px;
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 0.8fr 0.6fr;
+  gap: 2px;
+}
+
+.scale-cell {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 56px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 220px;
+}
+
+.scale-cell-tag {
+  position: absolute;
+  top: 14px; left: 18px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+
+.scale-cell-px {
+  position: absolute;
+  bottom: 14px; right: 18px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--gray-deep);
+}
+
+/* COLOR PALETTE */
+.palette {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--ink);
+}
+
+.palette-cell {
+  padding: 44px 32px 32px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  border-right: 1px solid rgba(0,0,0,0.08);
+}
+.palette-cell:last-child { border-right: none; }
+
+.palette-cell.dark { background: var(--ink); color: var(--paper); border-right-color: rgba(255,255,255,0.08); }
+.palette-cell.signal { background: var(--signal); color: var(--paper); border-right-color: rgba(255,255,255,0.15); }
+.palette-cell.paper { background: var(--paper); color: var(--ink); }
+.palette-cell.deep { background: var(--paper-deep); color: var(--ink); }
+.palette-cell.gray { background: var(--gray-deep); color: var(--paper); }
+
+.palette-name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 36px;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.palette-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.7;
+}
+.palette-cell.dark .palette-meta,
+.palette-cell.signal .palette-meta,
+.palette-cell.gray .palette-meta {
+  color: rgba(239,236,228,0.55);
+}
+
+.palette-hex {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  margin-top: 10px;
+}
+
+.palette-usage {
+  font-family: var(--sans);
+  font-size: 11px;
+  margin-top: 8px;
+  opacity: 0.85;
+  letter-spacing: 0.02em;
+}
+
+/* TYPOGRAPHY SHOWCASE */
+.type-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.type-row {
+  border: 1px solid var(--ink);
+  padding: 48px 56px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 56px;
+  align-items: baseline;
+  background: var(--paper);
+}
+
+.type-row.dark { background: var(--ink); color: var(--paper); }
+
+.type-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+  line-height: 1.7;
+}
+.type-row.dark .type-meta { color: rgba(244,242,236,0.5); }
+
+.type-meta strong {
+  display: block;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--ink);
+  margin-bottom: 4px;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+.type-row.dark .type-meta strong { color: var(--signal); }
+
+.type-sample {
+  display: flex;
+  align-items: center;
+}
+
+.type-display {
+  font-family: var(--serif);
+  font-size: 80px;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+}
+.type-display em {
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.type-h1 {
+  font-family: var(--serif);
+  font-size: 48px;
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+}
+.type-h1 em { font-style: italic; font-weight: 400; }
+
+.type-h2 {
+  font-family: var(--sans);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.type-body {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 580px;
+}
+.type-row.dark .type-body { color: rgba(244,242,236,0.75); }
+
+.type-mono {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+}
+
+.type-caption {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* SYSTEM ARCHITECTURE — mãe e filhos */
+.system-archive {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 64px 56px;
+  position: relative;
+}
+
+.system-archive-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: 24px;
+}
+
+.system-archive-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin-bottom: 12px;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.system-archive-sub {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--gray-deep);
+  margin-bottom: 56px;
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+.system-tree {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+  border-top: 1px solid var(--ink);
+  padding-top: 32px;
+}
+
+.tree-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 240px 100px;
+  align-items: center;
+  gap: 32px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.tree-row:last-child { border-bottom: none; }
+
+.tree-row.mother {
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 32px;
+  margin-bottom: 8px;
+}
+
+.tree-role {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+.tree-row.mother .tree-role { color: var(--signal); font-weight: 600; }
+
+.tree-mark {
+  display: flex;
+  align-items: baseline;
+}
+
+.tree-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--gray-deep);
+}
+
+.tree-status {
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.tree-status.live {
+  background: rgba(27,138,78,0.1);
+  color: #1B8A4E;
+  border: 1px solid rgba(27,138,78,0.2);
+}
+.tree-status.queued {
+  background: rgba(139,135,127,0.08);
+  color: var(--gray-deep);
+  border: 1px solid var(--rule);
+}
+
+/* RULES GRID */
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.rule {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 40px 36px;
+  position: relative;
+  min-height: 240px;
+}
+
+.rule-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 64px;
+  font-weight: 300;
+  color: rgba(14,13,11,0.06);
+  line-height: 1;
+  margin-bottom: 16px;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.rule-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.rule-body {
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.rule.warn .rule-num { color: rgba(21,184,134,0.12); }
+.rule.warn { background: rgba(21,184,134,0.025); }
+
+/* DO / DONT */
+.dodont {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.dodont-cell {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 48px 40px;
+  position: relative;
+  min-height: 240px;
+}
+
+.dodont-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.dodont-tag.yes {
+  background: rgba(27,138,78,0.08);
+  color: #1B8A4E;
+  border: 1px solid rgba(27,138,78,0.2);
+}
+.dodont-tag.no {
+  background: rgba(21,184,134,0.08);
+  color: var(--signal);
+  border: 1px solid rgba(21,184,134,0.2);
+}
+
+.dodont-mark-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 90px;
+  margin-bottom: 24px;
+}
+
+.dodont-explain {
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* APPLICATIONS */
+.app-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.app-cell {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 64px 56px;
+  min-height: 480px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.app-cell.dark { background: var(--ink); color: var(--paper); }
+
+.app-tag {
+  position: absolute;
+  top: 18px; left: 22px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+.app-cell.dark .app-tag { color: rgba(244,242,236,0.5); }
+
+/* Browser frame */
+.browser {
+  width: 100%;
+  max-width: 460px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  overflow: hidden;
+  font-family: var(--sans);
+  box-shadow: 0 16px 56px rgba(0,0,0,0.08);
+}
+.browser-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--rule);
+}
+.browser-bar .dots {
+  display: flex;
+  gap: 4px;
+}
+.browser-bar .dots span {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--rule);
+}
+.browser-bar .url {
+  margin-left: 14px;
+  flex: 1;
+  background: rgba(0,0,0,0.04);
+  border-radius: 4px;
+  padding: 5px 12px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--gray-deep);
+}
+.browser-content {
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--rule);
+}
+.browser-content .nav-mock {
+  display: flex;
+  gap: 18px;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--gray-deep);
+  font-weight: 500;
+}
+.browser-body {
+  padding: 36px 28px 44px;
+  font-family: var(--sans);
+}
+.browser-body h1 {
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: var(--ink);
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+}
+.browser-body h1 em {
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+.browser-body p {
+  font-size: 13px;
+  color: var(--gray-deep);
+  margin-top: 12px;
+  max-width: 360px;
+  line-height: 1.55;
+}
+.browser-body .btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 18px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 4px;
+}
+
+/* Business card */
+.bizcard {
+  width: 360px;
+  height: 220px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 26px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.05),
+    0 12px 32px rgba(0,0,0,0.08),
+    0 32px 64px rgba(0,0,0,0.04);
+  transform: rotate(-1.5deg);
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.app-cell:hover .bizcard { transform: rotate(0); }
+
+.bizcard-meta {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+  line-height: 1.7;
+}
+.bizcard-meta strong {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  text-transform: none;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 4px;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+.bizcard-corner {
+  position: absolute;
+  top: 26px;
+  right: 26px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+  text-align: right;
+}
+.bizcard-corner span { color: var(--signal); }
+
+/* Phone */
+.phone {
+  width: 240px;
+  height: 480px;
+  background: var(--ink);
+  border-radius: 32px;
+  padding: 14px;
+  border: 1px solid rgba(244,242,236,0.1);
+}
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: var(--paper);
+  border-radius: 22px;
+  padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.phone-status {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--gray-deep);
+  margin-bottom: 32px;
+}
+.phone-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+}
+.phone-content h2 {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+}
+.phone-content h2 em {
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+.phone-content p {
+  font-size: 12px;
+  color: var(--gray-deep);
+  line-height: 1.5;
+}
+.phone-cta {
+  margin-top: 12px;
+  background: var(--ink);
+  color: var(--paper);
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* MANIFESTO */
+.manifesto {
+  padding: 140px 0;
+  text-align: center;
+  border-bottom: 1px solid var(--ink);
+  background: var(--paper);
+  position: relative;
+  overflow: hidden;
+}
+
+.manifesto-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: 32px;
+}
+
+.manifesto-text {
+  font-family: var(--serif);
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+}
+.manifesto-text em {
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+.manifesto-text .strike {
+  text-decoration: line-through;
+  text-decoration-color: var(--signal);
+  text-decoration-thickness: 3px;
+  color: var(--gray);
+}
+.manifesto-text .underline {
+  background: linear-gradient(transparent 70%, rgba(21,184,134,0.18) 70%);
+  padding: 0 4px;
+}
+.manifesto-text .signal {
+  color: var(--signal);
+  font-style: italic;
+}
+
+/* VOICE */
+.voice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.voice-cell {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 48px 40px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.voice-cell.no { background: rgba(21,184,134,0.025); }
+
+.voice-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.voice-tag.yes { color: #1B8A4E; }
+.voice-tag.no { color: var(--signal); }
+
+.voice-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.voice-body {
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.voice-example {
+  margin-top: auto;
+  padding: 18px 20px;
+  background: var(--paper);
+  border-left: 2px solid var(--signal);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.5;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+}
+.voice-cell.no .voice-example {
+  border-left-color: var(--gray);
+  color: var(--gray-deep);
+}
+
+/* VOCAB */
+.vocab {
+  margin-top: 56px;
+  padding: 48px 48px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+
+.vocab-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+  margin-bottom: 24px;
+}
+
+.vocab-row {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 32px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+}
+.vocab-row:last-child { border-bottom: none; }
+
+.vocab-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.vocab-label.yes { color: #1B8A4E; }
+.vocab-label.no { color: var(--signal); }
+
+.vocab-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.vocab-word {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 100px;
+  letter-spacing: -0.005em;
+}
+.vocab-word.yes {
+  background: rgba(27,138,78,0.08);
+  color: #1B8A4E;
+  border: 1px solid rgba(27,138,78,0.18);
+}
+.vocab-word.no {
+  background: rgba(21,184,134,0.06);
+  color: var(--signal);
+  border: 1px solid rgba(21,184,134,0.18);
+  text-decoration: line-through;
+  text-decoration-color: rgba(21,184,134,0.4);
+}
+
+/* MOTION */
+.motion-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.motion-cell {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 56px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  text-align: center;
+  min-height: 280px;
+}
+
+.motion-orb {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 28px rgba(21,184,134,0.35);
+}
+.motion-orb.ease { animation: easeAnim 2.2s cubic-bezier(0.22,1,0.36,1) infinite; }
+.motion-orb.fade { animation: fadeAnim 2s ease-in-out infinite; }
+.motion-orb.scale { animation: scaleAnim 2s cubic-bezier(0.22,1,0.36,1) infinite; }
+
+@keyframes easeAnim {
+  0%, 100% { transform: translateX(-22px); opacity: 0.35; }
+  50% { transform: translateX(22px); opacity: 1; }
+}
+@keyframes fadeAnim {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 1; }
+}
+@keyframes scaleAnim {
+  0%, 100% { transform: scale(0.65); opacity: 0.35; }
+  50% { transform: scale(1); opacity: 1; }
+}
+
+.motion-name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+.motion-spec {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--gray-deep);
+  line-height: 1.6;
+}
+
+/* COMPONENTS UI */
+.components-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.comp-cell {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 48px 40px;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+}
+.comp-cell.dark { background: var(--ink); color: var(--paper); }
+
+.comp-tag {
+  position: absolute;
+  top: 14px; left: 18px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+.comp-cell.dark .comp-tag { color: rgba(244,242,236,0.5); }
+
+.btn-primary {
+  padding: 12px 24px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: 6px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.comp-cell.dark .btn-primary { background: var(--paper); color: var(--ink); }
+
+.btn-signal {
+  padding: 12px 24px;
+  background: var(--signal);
+  color: var(--paper);
+  border: none;
+  border-radius: 6px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  padding: 11px 23px;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.comp-cell.dark .btn-secondary { color: var(--paper); border-color: rgba(244,242,236,0.3); }
+
+.input-mock {
+  padding: 11px 16px;
+  background: rgba(14,13,11,0.04);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--gray-deep);
+  width: 100%;
+  max-width: 280px;
+}
+.comp-cell.dark .input-mock {
+  background: rgba(244,242,236,0.06);
+  border-color: rgba(244,242,236,0.15);
+  color: rgba(244,242,236,0.5);
+}
+
+.tag-mock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tag-mock.live {
+  background: rgba(27,138,78,0.1);
+  color: #1B8A4E;
+  border: 1px solid rgba(27,138,78,0.2);
+}
+.tag-mock.live::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: #1B8A4E;
+  border-radius: 50%;
+}
+.tag-mock.signal {
+  background: rgba(21,184,134,0.08);
+  color: var(--signal);
+  border: 1px solid rgba(21,184,134,0.2);
+}
+
+
+.footer-mark .footer-caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 0.32em solid transparent;
+  border-bottom: 0.32em solid transparent;
+  border-left: 0.42em solid var(--signal);
+  margin-right: 0.12em;
+  vertical-align: 0.1em;
+}
+
+/* FOOTER */
+.footer {
+  padding: 140px 0 80px;
+}
+
+.footer-mark {
+  font-family: var(--serif);
+  font-size: clamp(140px, 22vw, 320px);
+  font-weight: 300;
+  line-height: 0.85;
+  letter-spacing: -0.06em;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  margin-bottom: 60px;
+}
+.footer-mark em {
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+.footer-mark .signal { color: var(--signal); font-style: italic; font-weight: 300; }
+
+.footer-meta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--ink);
+  padding-top: 32px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-deep);
+}
+.footer-meta strong {
+  display: block;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-transform: none;
+  margin-bottom: 6px;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+}
+
+@media (max-width: 900px) {
+  .wrap { padding: 0 24px; }
+  .nav { padding: 14px 24px; }
+  .nav-links { display: none; }
+  .topbar { grid-template-columns: 1fr; gap: 8px; text-align: center; }
+  .topbar-right { text-align: center; }
+  .hero-title { font-size: 56px; }
+  .hero-meta { grid-template-columns: 1fr 1fr; }
+  .toc-item { grid-template-columns: 40px 1fr; gap: 16px; }
+  .toc-meta { display: none; }
+  .toc-name { font-size: 22px; }
+  .section-head { grid-template-columns: 1fr; gap: 24px; }
+  .section-num { font-size: 64px; }
+  .section-title { font-size: 36px; }
+  .specimen-grid { grid-template-columns: 1fr; }
+  .scale-block { grid-template-columns: 1fr; }
+  .palette { grid-template-columns: 1fr 1fr; }
+  .palette-cell { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.08); }
+  .construction-row { grid-template-columns: 1fr; }
+  .type-row { grid-template-columns: 1fr; gap: 16px; }
+  .type-display { font-size: 48px; }
+  .type-h1 { font-size: 32px; }
+  .markB.xl { font-size: 64px; }
+  .markB.lg { font-size: 48px; }
+  .tree-row { grid-template-columns: 100px 1fr; gap: 16px; }
+  .tree-tag, .tree-status { display: none; }
+  .rules-grid { grid-template-columns: 1fr; }
+  .dodont { grid-template-columns: 1fr; }
+  .app-grid { grid-template-columns: 1fr; }
+  .voice-grid { grid-template-columns: 1fr; }
+  .motion-grid { grid-template-columns: 1fr; }
+  .components-grid { grid-template-columns: 1fr; }
+  .footer-meta { grid-template-columns: 1fr 1fr; gap: 16px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">
+    <span class="nav-caret"></span>agente <span class="lab">lab</span>
+  </div>
+  <div class="nav-links">
+    <a href="#mark">Mark</a>
+    <a href="#system">Sistema</a>
+    <a href="#palette">Cores</a>
+    <a href="#type">Tipografia</a>
+    <a href="#voice">Voz</a>
+    <a href="#applications">Aplicações</a>
+  </div>
+  <div class="nav-version">v1 · Draft</div>
+</nav>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <div>Brand Manual · v1 (Draft)</div>
+    <div class="topbar-mid">— Caret + Emerald direction —</div>
+    <div class="topbar-right">Para revisão <span class="signal">●</span> não-final</div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">Brand Manual · Vol. 01</div>
+    <div class="hero-title">
+      <span class="hero-caret"></span>Agente <em>lab</em>.
+    </div>
+    <div class="hero-pitch">
+      A casa de produtos onde agentes de IA são <em>desenhados, treinados e despachados</em>. Esta é a primeira versão do sistema. Não é definitivo — é direção.
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-cell"><strong>Discipline</strong>Brand · System · Editorial</div>
+      <div class="hero-meta-cell"><strong>Architecture</strong>Mother + sub-products</div>
+      <div class="hero-meta-cell"><strong>Voice</strong>Direct · Confident · Quiet</div>
+      <div class="hero-meta-cell"><strong>Status</strong>Draft for review</div>
+    </div>
+  </section>
+
+  <!-- TOC -->
+  <section class="toc">
+    <div class="toc-title">— Índice</div>
+    <div class="toc-list">
+      <a href="#mark" class="toc-item">
+        <div class="toc-num">i.</div>
+        <div class="toc-name">A <em>marca</em></div>
+        <div class="toc-meta">Mark · Lockup · Construction</div>
+      </a>
+      <a href="#system" class="toc-item">
+        <div class="toc-num">ii.</div>
+        <div class="toc-name">O <em>sistema</em></div>
+        <div class="toc-meta">Mãe + Filhos</div>
+      </a>
+      <a href="#palette" class="toc-item">
+        <div class="toc-num">iii.</div>
+        <div class="toc-name">A <em>paleta</em></div>
+        <div class="toc-meta">5 pigments + Signal</div>
+      </a>
+      <a href="#type" class="toc-item">
+        <div class="toc-num">iv.</div>
+        <div class="toc-name">A <em>tipografia</em></div>
+        <div class="toc-meta">3 vozes · 1 postura</div>
+      </a>
+      <a href="#voice" class="toc-item">
+        <div class="toc-num">v.</div>
+        <div class="toc-name">A <em>voz</em></div>
+        <div class="toc-meta">Tom · Vocabulário · Princípios</div>
+      </a>
+      <a href="#rules" class="toc-item">
+        <div class="toc-num">vi.</div>
+        <div class="toc-name">As <em>regras</em></div>
+        <div class="toc-meta">Do · Don't · Hard limits</div>
+      </a>
+      <a href="#components" class="toc-item">
+        <div class="toc-num">vii.</div>
+        <div class="toc-name">Os <em>componentes</em></div>
+        <div class="toc-meta">UI Kit foundation</div>
+      </a>
+      <a href="#motion" class="toc-item">
+        <div class="toc-num">viii.</div>
+        <div class="toc-name">O <em>movimento</em></div>
+        <div class="toc-meta">Motion principles</div>
+      </a>
+      <a href="#applications" class="toc-item">
+        <div class="toc-num">ix.</div>
+        <div class="toc-name">As <em>aplicações</em></div>
+        <div class="toc-meta">Web · Mobile · Print</div>
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ============ 01 — A MARCA ============ -->
+  <section class="section" id="mark">
+    <div class="section-head">
+      <div class="section-num">i.<small>The Mark</small></div>
+      <div>
+        <div class="section-title">Um <em>play</em>.<br>A marca em <em class="signal">execução</em>.</div>
+        <div class="section-lead">
+          Sem ícone tradicional. Sem suporte. Sem moldura. Apenas um triângulo de play (▶) ao lado do nome. Universal. Direto. <em>Significa: o agente está rodando agora</em>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Monolith -->
+    <div class="monolith">
+      <div class="monolith-inner">
+        <div class="markB xl"><span class="caret"></span>agente <span class="lab">lab</span></div>
+      </div>
+      <div class="monolith-meta">
+        <span><strong>Mark</strong> · Inter custom-tuned</span>
+        <span>Construction grid · 8pt baseline</span>
+        <span><strong>Caret</strong> · Solid triangle, color: Emerald</span>
+      </div>
+    </div>
+
+    <!-- 3-up -->
+    <div class="specimen-grid">
+      <div class="specimen bg-paper">
+        <div class="specimen-tag">— Primary · Paper</div>
+        <div class="markB lg"><span class="caret"></span>agente <span class="lab">lab</span></div>
+        <div class="specimen-id">001 · paper</div>
+      </div>
+      <div class="specimen bg-ink">
+        <div class="specimen-tag">— Inverted · Ink</div>
+        <div class="markB lg"><span class="caret"></span>agente <span class="lab">lab</span></div>
+        <div class="specimen-id">002 · ink</div>
+      </div>
+      <div class="specimen bg-signal">
+        <div class="specimen-tag">— Saturated · Signal</div>
+        <div class="markB lg"><span class="caret"></span>agente <span class="lab">lab</span></div>
+        <div class="specimen-id">003 · signal</div>
+      </div>
+    </div>
+
+    <!-- Construction -->
+    <div class="construction-row">
+      <div class="construction">
+        <div>
+          <div class="construction-tag">a · ANATOMY</div>
+          <div class="construction-title">O caret como ação.</div>
+          <div class="construction-body">
+            <strong>Inter</strong> em peso 500 (regular weight) para <em>"agente"</em>, peso 300 (light) para <em>"lab"</em>. A diferença de peso cria hierarquia: agente é o sistema, lab é a função.<br><br>
+            O caret é um triângulo isósceles com proporção <strong>0.42:0.64</strong> (largura:altura), na cor Emerald. Ele é o <strong>único elemento gráfico</strong> da marca — e carrega significado universal: executar, iniciar, rodar.
+          </div>
+        </div>
+        <div class="markB lg" style="align-self: flex-end;"><span class="caret"></span>agente <span class="lab">lab</span></div>
+      </div>
+
+      <div class="construction" style="background: var(--paper-deep);">
+        <div>
+          <div class="construction-tag">b · WHY THE CARET</div>
+          <div class="construction-title">Um play resolve dois problemas.</div>
+          <div class="construction-body">
+            <strong>1. O problema da marca.</strong> Logo precisa de um símbolo memorável. O caret é universalmente reconhecível — todo mundo sabe o que significa "play".<br><br>
+            <strong>2. O problema da categoria.</strong> Em IA, todo agente é uma função executável. O caret comunica isso instantaneamente: aqui dentro, coisas <em>rodam</em>. Quando Agente.School nasce, herda o caret e vira <em>▶ agente school</em>.
+          </div>
+        </div>
+        <div style="font-family: var(--mono); font-size: 18px; color: var(--ink-soft); align-self: flex-end; line-height: 2;">
+          <span style="color: var(--signal);">▶</span> lab<br>
+          <span style="color: var(--signal);">▶</span> school<br>
+          <span style="color: var(--signal);">▶</span> finance<br>
+          <span style="color: var(--signal);">▶</span> ...
+        </div>
+      </div>
+    </div>
+
+    <!-- SCALE TEST -->
+    <div style="margin-top: 64px;">
+      <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray-deep); margin-bottom: 16px;">— Teste de escala</div>
+      <div class="scale-block">
+        <div class="scale-cell">
+          <div class="scale-cell-tag">— XL Display</div>
+          <div class="markB lg"><span class="caret"></span>agente <span class="lab">lab</span></div>
+          <div class="scale-cell-px">80px · brand</div>
+        </div>
+        <div class="scale-cell">
+          <div class="scale-cell-tag">— Header</div>
+          <div class="markB md"><span class="caret"></span>agente <span class="lab">lab</span></div>
+          <div class="scale-cell-px">36px · web</div>
+        </div>
+        <div class="scale-cell">
+          <div class="scale-cell-tag">— UI nav</div>
+          <div class="markB sm"><span class="caret"></span>agente <span class="lab">lab</span></div>
+          <div class="scale-cell-px">18px · ui</div>
+        </div>
+        <div class="scale-cell">
+          <div class="scale-cell-tag">— Favicon</div>
+          <div class="markB xs"><span class="caret"></span>agente <span class="lab">lab</span></div>
+          <div class="scale-cell-px">14px · min</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ 02 — O SISTEMA ============ -->
+  <section class="section" id="system">
+    <div class="section-head">
+      <div class="section-num">ii.<small>The System</small></div>
+      <div>
+        <div class="section-title">Uma <em>casa</em>.<br>Vários <em class="signal">filhos</em>.</div>
+        <div class="section-lead">
+          Agente Lab é a marca-mãe. Cada produto vertical é um filho que herda a estrutura — mas tem nome próprio. A barra é o que une todos.
+        </div>
+      </div>
+    </div>
+
+    <div class="system-archive">
+      <div class="system-archive-tag">— Architecture · Mother + Children</div>
+      <div class="system-archive-title">Como a família se organiza.</div>
+      <div class="system-archive-sub">
+        A marca-mãe sempre aparece em paper ou ink. Cada filho ganha autonomia visual mantendo a estrutura "agente/[nome]". A barra Signal é o ponto de unidade.
+      </div>
+
+      <div class="system-tree">
+        <div class="tree-row mother">
+          <div class="tree-role">— Mãe</div>
+          <div class="tree-mark">
+            <div class="markB md"><span class="caret"></span>agente <span class="lab">lab</span></div>
+          </div>
+          <div class="tree-tag">Plataforma de agentes IA</div>
+          <div class="tree-status live">● Live</div>
+        </div>
+        <div class="tree-row">
+          <div class="tree-role">— Filho 01</div>
+          <div class="tree-mark">
+            <div class="markB md"><span class="caret"></span>agente <span class="lab">school</span></div>
+          </div>
+          <div class="tree-tag">SaaS para escolas</div>
+          <div class="tree-status queued">Em planejamento</div>
+        </div>
+        <div class="tree-row">
+          <div class="tree-role">— Filho 02</div>
+          <div class="tree-mark">
+            <div class="markB md"><span class="caret"></span>agente <span class="lab">finance</span></div>
+          </div>
+          <div class="tree-tag">Agentes financeiros</div>
+          <div class="tree-status queued">Hipótese</div>
+        </div>
+        <div class="tree-row">
+          <div class="tree-role">— Filho 03</div>
+          <div class="tree-mark">
+            <div class="markB md"><span class="caret"></span>agente <span class="lab">health</span></div>
+          </div>
+          <div class="tree-tag">Saúde e clínicas</div>
+          <div class="tree-status queued">Hipótese</div>
+        </div>
+        <div class="tree-row">
+          <div class="tree-role">— Filho N</div>
+          <div class="tree-mark">
+            <div class="markB md"><span class="caret"></span>agente <span class="lab">[product]</span></div>
+          </div>
+          <div class="tree-tag">Vertical futura</div>
+          <div class="tree-status queued">Reservado</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SISTEMA RULES -->
+    <div class="construction-row" style="margin-top: 64px;">
+      <div class="construction">
+        <div>
+          <div class="construction-tag">a · NAMING</div>
+          <div class="construction-title">A regra do nome.</div>
+          <div class="construction-body">
+            Todo filho leva o caret Emerald à esquerda, seguido de <em>"agente"</em> e o nome da vertical em peso light. Verticais são <strong>sempre uma palavra</strong> em minúscula. Sem hyphens.<br><br>
+            Domínios espelham a marca: <em>agente.school</em>, <em>agente.finance</em>. Quando "agente.X" não estiver disponível, a alternativa é <em>X.agente.lab</em>.
+          </div>
+        </div>
+      </div>
+
+      <div class="construction" style="background: var(--paper-deep);">
+        <div>
+          <div class="construction-tag">b · AUTONOMY</div>
+          <div class="construction-title">Cada filho pode ter cor própria.</div>
+          <div class="construction-body">
+            A marca-mãe usa <strong>Signal (#15B886)</strong>. Cada filho pode adotar uma cor secundária para identificar a vertical (school = violeta, finance = verde, etc.) — mas sempre mantendo a barra como elemento ancorador.<br><br>
+            Em compras, marketing e site da mãe, todos os filhos aparecem em Signal. Quando o filho está sozinho, pode usar sua cor própria.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ 03 — PALETA ============ -->
+  <section class="section" id="palette">
+    <div class="section-head">
+      <div class="section-num">iii.<small>Palette</small></div>
+      <div>
+        <div class="section-title">Cinco pigmentos.<br>Um <em class="signal">acento</em>.</div>
+        <div class="section-lead">
+          Quase monocromática. Dominada por neutros quentes. O Signal aparece <em>uma vez por composição</em> — sempre na barra, no status, ou no acento. Nunca dilui.
+        </div>
+      </div>
+    </div>
+
+    <div class="palette">
+      <div class="palette-cell paper">
+        <div>
+          <div class="palette-name">Paper</div>
+          <div class="palette-hex">#F4F2EC</div>
+          <div class="palette-usage">Off-white quente, levemente bege.</div>
+        </div>
+        <div class="palette-meta">
+          <div>— Primary surface</div>
+          <div>USE: 60% of system</div>
+        </div>
+      </div>
+
+      <div class="palette-cell dark">
+        <div>
+          <div class="palette-name" style="color: var(--paper);">Ink</div>
+          <div class="palette-hex" style="color: rgba(244,242,236,0.7);">#0E0D0B</div>
+          <div class="palette-usage">Quase-preto, com viés quente.</div>
+        </div>
+        <div class="palette-meta">
+          <div>— Type · Marks</div>
+          <div>USE: 25%</div>
+        </div>
+      </div>
+
+      <div class="palette-cell deep">
+        <div>
+          <div class="palette-name">Deep</div>
+          <div class="palette-hex">#E5E2D8</div>
+          <div class="palette-usage">Variação tonal do Paper.</div>
+        </div>
+        <div class="palette-meta">
+          <div>— Secondary</div>
+          <div>USE: 8%</div>
+        </div>
+      </div>
+
+      <div class="palette-cell gray">
+        <div>
+          <div class="palette-name" style="color: var(--paper);">Stone</div>
+          <div class="palette-hex" style="color: rgba(244,242,236,0.7);">#5C5A54</div>
+          <div class="palette-usage">Cinza médio para meta-info.</div>
+        </div>
+        <div class="palette-meta">
+          <div>— Captions</div>
+          <div>USE: 5%</div>
+        </div>
+      </div>
+
+      <div class="palette-cell signal">
+        <div>
+          <div class="palette-name" style="color: var(--paper);">Emerald</div>
+          <div class="palette-hex" style="color: rgba(244,242,236,0.85);">#15B886</div>
+          <div class="palette-usage" style="color: rgba(244,242,236,0.85);">Verde elétrico. Vivo.</div>
+        </div>
+        <div class="palette-meta">
+          <div>— The accent</div>
+          <div>USE: max 2%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Usage rule -->
+    <div class="construction-row" style="margin-top: 56px;">
+      <div class="construction" style="background: var(--ink); color: var(--paper);">
+        <div>
+          <div class="construction-tag">— RATIO LAW</div>
+          <div class="construction-title" style="color: var(--paper);">A lei do 90/10.</div>
+          <div class="construction-body" style="color: rgba(244,242,236,0.75);">
+            <strong style="color: var(--paper);">90% da composição</strong> vive em neutros (Paper, Ink, Deep, Stone). <strong style="color: var(--paper);">10% restante</strong> é onde Signal pode aparecer — e sempre como <em>uma única intervenção</em>.<br><br>
+            Quando você duplicar o Signal, dilui o impacto. Quando você o restringir, ele grita.
+          </div>
+        </div>
+        <div style="font-family: 'Fraunces', serif; font-style: italic; font-size: 96px; font-weight: 300; letter-spacing: -0.04em; align-self: flex-end; font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; line-height: 0.85;">
+          90<span style="color: var(--signal);"> / </span>10
+        </div>
+      </div>
+
+      <div class="construction">
+        <div>
+          <div class="construction-tag">— WHEN EMERALD APPEARS</div>
+          <div class="construction-title">Onde o verde é permitido.</div>
+          <div class="construction-body">
+            <strong>Sim:</strong> o caret do logo, status ativo, link no hover, indicador de execução, ponto de live, separador de breadcrumb.<br><br>
+            <strong>Não:</strong> backgrounds inteiros (exceto saturated cards isolados), botões primários, ícones decorativos, gradientes, ilustrações.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ 04 — TIPOGRAFIA ============ -->
+  <section class="section" id="type">
+    <div class="section-head">
+      <div class="section-num">iv.<small>Typography</small></div>
+      <div>
+        <div class="section-title">Três vozes.<br>Uma <em>postura</em>.</div>
+        <div class="section-lead">
+          Fraunces para autoridade editorial. Inter para clareza operacional. Geist Mono para precisão técnica. Cada uma tem domínio claro — nunca competem.
+        </div>
+      </div>
+    </div>
+
+    <div class="type-showcase">
+      <div class="type-row">
+        <div class="type-meta">
+          <strong>Display</strong>
+          Fraunces 300<br>
+          opsz 144<br>
+          SOFT 50 / WONK 1
+        </div>
+        <div class="type-sample">
+          <div class="type-display">Agentes que <em>operam</em>.</div>
+        </div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <strong>H1 · Section</strong>
+          Fraunces 300<br>
+          48px / line 1.0<br>
+          tracking -0.035em
+        </div>
+        <div class="type-sample">
+          <div class="type-h1">A casa de produtos onde IA vira <em>operação</em>.</div>
+        </div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <strong>H2 · Heading</strong>
+          Inter 600<br>
+          28px / line 1.1<br>
+          tracking -0.03em
+        </div>
+        <div class="type-sample">
+          <div class="type-h2">Construa, treine e faça deploy de agentes em minutos.</div>
+        </div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <strong>Body</strong>
+          Inter 400<br>
+          14px / line 1.65<br>
+          neutral
+        </div>
+        <div class="type-sample">
+          <div class="type-body">
+            A Agente Lab é uma plataforma onde times constroem agentes de IA que automatizam processos de negócio. Sem código complexo. Sem fricção. Cada agente entra em produção em minutos — não em semanas.
+          </div>
+        </div>
+      </div>
+
+      <div class="type-row dark">
+        <div class="type-meta">
+          <strong style="color: var(--signal);">Mono · Operational</strong>
+          Geist Mono 400<br>
+          14px<br>
+          tracking 0
+        </div>
+        <div class="type-sample">
+          <div class="type-mono">
+            $ agent.deploy("classifier")<br>
+            <span style="color: var(--signal);">›</span> status: <span style="color: #1B8A4E;">●</span> live<br>
+            <span style="color: var(--signal);">›</span> latency: 184ms
+          </div>
+        </div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">
+          <strong>Caption</strong>
+          Geist Mono 500<br>
+          11px<br>
+          tracking 0.16em
+        </div>
+        <div class="type-sample">
+          <div class="type-caption">— AI Agent Platform · MMXXVI</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ 05 — VOZ ============ -->
+  <section class="section" id="voice">
+    <div class="section-head">
+      <div class="section-num">v.<small>Voice</small></div>
+      <div>
+        <div class="section-title">Como a <span class="title-caret"></span>Agente lab <em>fala</em>.</div>
+        <div class="section-lead">
+          Direta. Confiante. Quieta. Não vende sonho — mostra resultado. Usa verbos no imperativo, frases curtas, dados quando importam. Nunca floreia.
+        </div>
+      </div>
+    </div>
+
+    <div class="voice-grid">
+      <div class="voice-cell">
+        <div class="voice-tag yes">✓ É assim</div>
+        <div class="voice-title">Preciso e direto.</div>
+        <div class="voice-body">
+          Cada palavra carrega peso. Frases curtas. Verbos no imperativo. Confiança sem arrogância. Fala como quem sabe o que está fazendo — porque sabe.
+        </div>
+        <div class="voice-example">
+          "Seu agente entrou em produção em 4 minutos. Sem código. Sem espera."
+        </div>
+      </div>
+
+      <div class="voice-cell no">
+        <div class="voice-tag no">✗ Nunca assim</div>
+        <div class="voice-title">Hype e abstrações.</div>
+        <div class="voice-body">
+          Evite "revolucionário", "disruptivo", "game-changer". Evite promessas vagas. A Agente Lab entrega — não promete. Não existe futuro aqui: existe execução agora.
+        </div>
+        <div class="voice-example">
+          "Nossa plataforma revolucionária vai transformar completamente o futuro do seu negócio com IA de ponta!"
+        </div>
+      </div>
+
+      <div class="voice-cell">
+        <div class="voice-tag yes">✓ É assim</div>
+        <div class="voice-title">Técnico, mas humano.</div>
+        <div class="voice-body">
+          Usa termos corretos sem intimidar. Explica o complexo com elegância. Respeita a inteligência do leitor sem excluir quem está começando. Nomes de coisas técnicas em mono, narrativa em sans.
+        </div>
+        <div class="voice-example">
+          "Conecte sua API em segundos. O agente cuida do resto — incluindo os erros."
+        </div>
+      </div>
+
+      <div class="voice-cell no">
+        <div class="voice-tag no">✗ Nunca assim</div>
+        <div class="voice-title">Genérico e sem alma.</div>
+        <div class="voice-body">
+          A Agente Lab não soa como mais um SaaS. Evite frases de template, CTAs genéricos ("Saiba mais!"), tom corporativo sem personalidade.
+        </div>
+        <div class="voice-example">
+          "Descubra como nossa solução pode ajudar sua empresa a crescer no mundo digital!"
+        </div>
+      </div>
+    </div>
+
+    <!-- VOCAB -->
+    <div class="vocab">
+      <div class="vocab-tag">— Vocabulário oficial</div>
+      <div class="vocab-row">
+        <div class="vocab-label yes">— Use</div>
+        <div class="vocab-words">
+          <span class="vocab-word yes">Executar</span>
+          <span class="vocab-word yes">Operar</span>
+          <span class="vocab-word yes">Despachar</span>
+          <span class="vocab-word yes">Deploy</span>
+          <span class="vocab-word yes">Agente</span>
+          <span class="vocab-word yes">Fluxo</span>
+          <span class="vocab-word yes">Produção</span>
+          <span class="vocab-word yes">Conectar</span>
+          <span class="vocab-word yes">Precisão</span>
+          <span class="vocab-word yes">Resultado</span>
+        </div>
+      </div>
+      <div class="vocab-row">
+        <div class="vocab-label no">— Evite</div>
+        <div class="vocab-words">
+          <span class="vocab-word no">Revolucionário</span>
+          <span class="vocab-word no">Disruptivo</span>
+          <span class="vocab-word no">Game-changer</span>
+          <span class="vocab-word no">Solução</span>
+          <span class="vocab-word no">Transformação digital</span>
+          <span class="vocab-word no">Inovador</span>
+          <span class="vocab-word no">Estado da arte</span>
+          <span class="vocab-word no">Empoderar</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- MANIFESTO -->
+  <section class="manifesto">
+    <div class="manifesto-num">— Manifesto · I —</div>
+    <div class="manifesto-text">
+      Toda marca de IA quer parecer <span class="strike">o futuro</span>.<br>
+      A nossa quer parecer <em>presente</em>.<br>
+      Limpa. <span class="underline">Direta.</span> Editorial.<br>
+      Construída para <em class="signal">operar</em>.
+    </div>
+  </section>
+
+
+  <!-- ============ 06 — REGRAS ============ -->
+  <section class="section" id="rules">
+    <div class="section-head">
+      <div class="section-num">vi.<small>Rules</small></div>
+      <div>
+        <div class="section-title">O que <em>não</em> se<br><em class="signal">negocia</em>.</div>
+        <div class="section-lead">
+          Estas regras não existem para limitar criatividade. Existem para proteger consistência. A marca tem 6 verticais para coordenar — disciplina é o que permite escala.
+        </div>
+      </div>
+    </div>
+
+    <!-- Hard rules -->
+    <div class="rules-grid">
+      <div class="rule">
+        <div class="rule-num">01</div>
+        <div class="rule-title">A barra é sempre Signal.</div>
+        <div class="rule-body">A "/" entre <em>agente</em> e o nome do produto sempre aparece em <strong>#15B886</strong>. Nunca em ink, nunca em outra cor. Mesmo em backgrounds Signal, ela vira Paper para manter contraste.</div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">02</div>
+        <div class="rule-title">Tipografia trava.</div>
+        <div class="rule-body">"agente" em Inter 500 (medium). Nome do produto em Inter 300 (light). Nunca inverter os pesos. Tracking <strong>-0.05em</strong> sempre.</div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">03</div>
+        <div class="rule-title">Sempre minúsculo.</div>
+        <div class="rule-body">A marca não capitaliza. Nem em logo, nem em títulos, nem em URL. <em>agente/lab</em>, não <em>Agente/Lab</em>. Isso é parte da postura técnica.</div>
+      </div>
+      <div class="rule">
+        <div class="rule-num">04</div>
+        <div class="rule-title">Espaço de respiro.</div>
+        <div class="rule-body">A marca sempre tem <strong>0.5x da altura do x-height</strong> de margem em todos os lados. Em layouts apertados, não comprima — reduza o tamanho.</div>
+      </div>
+      <div class="rule warn">
+        <div class="rule-num">05</div>
+        <div class="rule-title">Tamanho mínimo.</div>
+        <div class="rule-body">A marca completa nunca aparece menor que <strong>14px</strong> em digital ou <strong>4mm</strong> em impresso. Abaixo disso, o caret perde definição.</div>
+      </div>
+      <div class="rule warn">
+        <div class="rule-num">06</div>
+        <div class="rule-title">Não distorça.</div>
+        <div class="rule-body">A marca nunca é esticada, comprimida, rotacionada, italicizada, sublinhada ou tratada com sombras. Ela é tipografia pura — qualquer modificação é uma quebra.</div>
+      </div>
+    </div>
+
+    <!-- DO / DON'T visual -->
+    <div style="margin-top: 64px;">
+      <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray-deep); margin-bottom: 16px;">— Do · Don't</div>
+      <div class="dodont">
+        <div class="dodont-cell">
+          <div class="dodont-tag yes">✓ Faça</div>
+          <div class="dodont-mark-area">
+            <div class="markB md"><span class="caret"></span>agente <span class="lab">lab</span></div>
+          </div>
+          <div class="dodont-explain">
+            Marca em peso correto, barra Signal, lab em light. Esta é a única forma autorizada.
+          </div>
+        </div>
+        <div class="dodont-cell">
+          <div class="dodont-tag no">✗ Nunca</div>
+          <div class="dodont-mark-area">
+            <div style="font-family: var(--sans); font-size: 36px; font-weight: 700; letter-spacing: 0; color: var(--ink); display: inline-flex; align-items: center; gap: 10px;">
+              <span style="display: inline-block; width: 0; height: 0; border-top: 16px solid transparent; border-bottom: 16px solid transparent; border-left: 24px solid var(--signal);"></span>
+              AGENTE LAB
+            </div>
+          </div>
+          <div class="dodont-explain">
+            Caps lock + pesos errados + caret super grosso. Quebra todas as regras de uma vez.
+          </div>
+        </div>
+        <div class="dodont-cell">
+          <div class="dodont-tag yes">✓ Faça</div>
+          <div class="dodont-mark-area">
+            <div class="markB md"><span class="caret"></span>agente <span class="lab">school</span></div>
+          </div>
+          <div class="dodont-explain">
+            Filhos seguem exatamente a mesma estrutura, só trocando o nome.
+          </div>
+        </div>
+        <div class="dodont-cell">
+          <div class="dodont-tag no">✗ Nunca</div>
+          <div class="dodont-mark-area">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="width: 32px; height: 32px; background: var(--signal); border-radius: 8px;"></div>
+              <div class="markB md"><span class="caret"></span>agente <span class="lab">lab</span></div>
+            </div>
+          </div>
+          <div class="dodont-explain">
+            Nunca adicione ícones ou suportes externos à marca. Ela é tipográfica e basta.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ 07 — COMPONENTES ============ -->
+  <section class="section" id="components">
+    <div class="section-head">
+      <div class="section-num">vii.<small>Components</small></div>
+      <div>
+        <div class="section-title">A interface da<br><em>plataforma</em>.</div>
+        <div class="section-lead">
+          Componentes construídos sobre os mesmos princípios da marca: precisão, clareza, propósito. Sem ornamento sem função.
+        </div>
+      </div>
+    </div>
+
+    <div class="components-grid">
+      <div class="comp-cell">
+        <div class="comp-tag">— Buttons · Light</div>
+        <button class="btn-primary">Criar agente →</button>
+        <button class="btn-secondary">Ver documentação</button>
+        <button class="btn-signal">Deploy</button>
+      </div>
+      <div class="comp-cell dark">
+        <div class="comp-tag">— Buttons · Dark</div>
+        <button class="btn-primary">Criar agente →</button>
+        <button class="btn-secondary">Ver documentação</button>
+        <button class="btn-signal">Deploy</button>
+      </div>
+      <div class="comp-cell">
+        <div class="comp-tag">— Inputs</div>
+        <input class="input-mock" placeholder="Nome do agente" />
+        <input class="input-mock" placeholder="https://api.exemplo.com" />
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+          <span class="tag-mock live">Live</span>
+          <span class="tag-mock signal">Pendente</span>
+        </div>
+      </div>
+      <div class="comp-cell dark">
+        <div class="comp-tag">— Inputs · Dark</div>
+        <input class="input-mock" placeholder="Nome do agente" />
+        <input class="input-mock" placeholder="https://api.exemplo.com" />
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+          <span class="tag-mock live">Live</span>
+          <span class="tag-mock signal">Pendente</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ 08 — MOTION ============ -->
+  <section class="section" id="motion">
+    <div class="section-head">
+      <div class="section-num">viii.<small>Motion</small></div>
+      <div>
+        <div class="section-title">Movimento com<br><em>propósito</em>.</div>
+        <div class="section-lead">
+          Animações não existem para enfeitar — existem para comunicar estado. Cada movimento tem intenção técnica e semântica clara.
+        </div>
+      </div>
+    </div>
+
+    <div class="motion-grid">
+      <div class="motion-cell">
+        <div class="motion-orb ease"></div>
+        <div class="motion-name">Ease — Entradas</div>
+        <div class="motion-spec">
+          400–600ms<br>
+          cubic-bezier(0.22, 1, 0.36, 1)<br><br>
+          Modais · Tooltips · Drawer
+        </div>
+      </div>
+      <div class="motion-cell">
+        <div class="motion-orb fade"></div>
+        <div class="motion-name">Fade — Estado</div>
+        <div class="motion-spec">
+          200–300ms<br>
+          ease-in-out<br><br>
+          Loading · Hover · Transição
+        </div>
+      </div>
+      <div class="motion-cell">
+        <div class="motion-orb scale"></div>
+        <div class="motion-name">Scale — Feedback</div>
+        <div class="motion-spec">
+          150–250ms<br>
+          cubic-bezier(0.22, 1, 0.36, 1)<br><br>
+          Click · Confirmação · Toast
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 2px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;">
+      <div style="background: var(--paper); border: 1px solid var(--ink); padding: 28px 32px;">
+        <div style="font-family: var(--serif); font-style: italic; font-size: 30px; font-weight: 400; color: var(--signal); letter-spacing: -0.02em; line-height: 1; font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">100ms</div>
+        <div style="font-family: var(--mono); font-size: 10px; color: var(--gray-deep); margin-top: 6px; letter-spacing: 0.12em; text-transform: uppercase;">Instant</div>
+      </div>
+      <div style="background: var(--paper); border: 1px solid var(--ink); padding: 28px 32px;">
+        <div style="font-family: var(--serif); font-style: italic; font-size: 30px; font-weight: 400; color: var(--signal); letter-spacing: -0.02em; line-height: 1; font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">250ms</div>
+        <div style="font-family: var(--mono); font-size: 10px; color: var(--gray-deep); margin-top: 6px; letter-spacing: 0.12em; text-transform: uppercase;">Fast</div>
+      </div>
+      <div style="background: var(--paper); border: 1px solid var(--ink); padding: 28px 32px;">
+        <div style="font-family: var(--serif); font-style: italic; font-size: 30px; font-weight: 400; color: var(--signal); letter-spacing: -0.02em; line-height: 1; font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">450ms</div>
+        <div style="font-family: var(--mono); font-size: 10px; color: var(--gray-deep); margin-top: 6px; letter-spacing: 0.12em; text-transform: uppercase;">Normal</div>
+      </div>
+      <div style="background: var(--paper); border: 1px solid var(--ink); padding: 28px 32px;">
+        <div style="font-family: var(--serif); font-style: italic; font-size: 30px; font-weight: 400; color: var(--signal); letter-spacing: -0.02em; line-height: 1; font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">700ms</div>
+        <div style="font-family: var(--mono); font-size: 10px; color: var(--gray-deep); margin-top: 6px; letter-spacing: 0.12em; text-transform: uppercase;">Slow</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ 09 — APLICAÇÕES ============ -->
+  <section class="section" id="applications">
+    <div class="section-head">
+      <div class="section-num">ix.<small>Applications</small></div>
+      <div>
+        <div class="section-title">A marca<br><em>em operação</em>.</div>
+        <div class="section-lead">
+          Como a identidade vive em web, mobile, e impresso. Estes são exemplos — não exaustivos, mas representativos do tom geral do sistema.
+        </div>
+      </div>
+    </div>
+
+    <div class="app-grid">
+      <!-- Web -->
+      <div class="app-cell">
+        <div class="app-tag">— Web header</div>
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <div class="url">agente.lab</div>
+          </div>
+          <div class="browser-content">
+            <div class="markB sm"><span class="caret"></span>agente <span class="lab">lab</span></div>
+            <div class="nav-mock">
+              <span>Plataforma</span>
+              <span>Pricing</span>
+              <span>Login →</span>
+            </div>
+          </div>
+          <div class="browser-body">
+            <h1>Agentes que <em>operam</em>.</h1>
+            <p>Construa, treine e faça deploy de agentes de IA sem código complexo. Tudo em uma plataforma.</p>
+            <div class="btn">Começar →</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile -->
+      <div class="app-cell dark">
+        <div class="app-tag">— Mobile · Dark</div>
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-status">
+              <span>9:41</span>
+              <span>● ● ●</span>
+            </div>
+            <div class="markB sm" style="margin-bottom: 32px;"><span class="caret"></span>agente <span class="lab">lab</span></div>
+            <div class="phone-content">
+              <h2>Agentes que <em>operam</em>.</h2>
+              <p>Sem código. Sem fricção. Em produção em minutos.</p>
+              <div class="phone-cta">Começar →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business card -->
+      <div class="app-cell" style="background: rgba(14,13,11,0.04);">
+        <div class="app-tag">— Business card</div>
+        <div class="bizcard">
+          <div class="bizcard-corner">
+            No. 0001<br>
+            <span>● live</span>
+          </div>
+          <div class="markB md"><span class="caret"></span>agente <span class="lab">lab</span></div>
+          <div class="bizcard-meta">
+            <strong>Founder &amp; Operator</strong>
+            agente@lab.ai<br>
+            +55 21 ····-····<br>
+            Rio de Janeiro, BR
+          </div>
+        </div>
+      </div>
+
+      <!-- Children showcase -->
+      <div class="app-cell dark">
+        <div class="app-tag">— Family roll-call</div>
+        <div style="display: flex; flex-direction: column; gap: 24px; width: 100%;">
+          <div class="markB md" style="opacity: 1;"><span class="caret"></span>agente <span class="lab">lab</span></div>
+          <div class="markB md" style="opacity: 0.55;"><span class="caret"></span>agente <span class="lab">school</span></div>
+          <div class="markB md" style="opacity: 0.4;"><span class="caret"></span>agente <span class="lab">finance</span></div>
+          <div class="markB md" style="opacity: 0.25;"><span class="caret"></span>agente <span class="lab">health</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-mark">
+      <span class="footer-caret"></span>agente <em>lab.</em>
+    </div>
+    <div class="footer-meta">
+      <div><strong>Vol. 01</strong>Brand Manual</div>
+      <div><strong>Status</strong>Draft v1 · não-final</div>
+      <div><strong>Direction</strong>Caret + Emerald</div>
+      <div><strong>—</strong>Built to operate.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
