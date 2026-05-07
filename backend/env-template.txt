@@ -6,9 +6,6 @@ DATABASE_URL="postgresql://user:password@localhost:5432/school_lab"
 # Redis
 REDIS_URL="redis://localhost:6379"
 
-# OpenAI
-OPENAI_API_KEY="your_openai_api_key"
-
 # Supabase
 SUPABASE_URL="https://your-project.supabase.co"
 SUPABASE_KEY="your_supabase_anon_key"

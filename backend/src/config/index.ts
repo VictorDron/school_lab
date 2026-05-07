@@ -27,11 +27,6 @@ export const config = {
     bucket: process.env.SUPABASE_BUCKET || 'school-lab',
   },
 
-  // OpenAI
-  openai: {
-    apiKey: process.env.OPENAI_API_KEY!,
-  },
-
   // Resend
   resend: {
     apiKey: process.env.RESEND_API_KEY!,

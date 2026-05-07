@@ -1,7 +1,6 @@
 const defaults: Record<string, string> = {
   DATABASE_URL: 'postgresql://test:test@localhost:5432/school_lab_test',
   REDIS_URL: 'redis://localhost:6379',
-  OPENAI_API_KEY: 'test-openai-key',
   SUPABASE_URL: 'https://example.supabase.co',
   SUPABASE_KEY: 'test-supabase-key',
   SUPABASE_SERVICE_KEY: 'test-supabase-service-key',

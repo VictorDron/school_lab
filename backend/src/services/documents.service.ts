@@ -3,12 +3,6 @@ import { requireTenantId } from '../lib/tenant-context.js';
 import { uploadFile, deleteFile } from '../config/supabase.js';
 import { createAuditLog } from './audit.service.js';
 import { DocumentSecurityLevel, AppModule } from '@prisma/client';
-import OpenAI from 'openai';
-import { config } from '../config/index.js';
-import logger from '../utils/logger.js';
-
-const openai = new OpenAI({ apiKey: config.openai.apiKey });
-
 // ==================== TYPES ====================
 
 export interface DocumentFilters {
@@ -126,35 +120,6 @@ export async function getDocumentById(
   return { data: document };
 }
 
-// ==================== AI ANALYSIS ====================
-
-async function analyzeDocumentWithAI(buffer: Buffer, mimetype: string) {
-  if (!['application/pdf', 'text/plain'].includes(mimetype)) return null;
-
-  try {
-    const content = buffer.toString('utf-8').substring(0, 4000);
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content:
-            'Analyze this document and provide: 1) A suggested title 2) A brief description 3) Suggested tags (comma-separated) 4) Suggested security level (PUBLIC, INTERNAL, SENSITIVE, RESTRICTED, or CONFIDENTIAL). Respond in JSON format.',
-        },
-        { role: 'user', content },
-      ],
-      max_tokens: 500,
-    });
-
-    const aiContent = response.choices[0]?.message?.content;
-    if (aiContent) return JSON.parse(aiContent);
-  } catch (aiError) {
-    logger.error('AI analysis error:', aiError);
-  }
-
-  return null;
-}
-
 // ==================== MUTATIONS ====================
 
 export async function uploadDocument(
@@ -171,26 +136,18 @@ export async function uploadDocument(
 
   if (!fileUrl) return { error: 'UPLOAD_FAILED' as const };
 
-  // AI analysis for supported file types
-  const aiAnalysis = await analyzeDocumentWithAI(file.buffer, file.mimetype);
-
   const document = await prisma.document.create({
     data: {
       tenantId: requireTenantId(),
-      title: body.title || aiAnalysis?.title || file.originalname,
-      description: body.description || aiAnalysis?.description,
+      title: body.title || file.originalname,
+      description: body.description,
       fileName: file.originalname,
       fileUrl,
       fileSize: file.size,
       mimeType: file.mimetype,
       module: (body.module as AppModule) || undefined,
-      securityLevel:
-        (body.securityLevel as DocumentSecurityLevel) || aiAnalysis?.securityLevel || 'INTERNAL',
-      tags:
-        parsedTags.length > 0
-          ? parsedTags
-          : aiAnalysis?.tags?.split(',').map((t: string) => t.trim()) || [],
-      aiAnalysis,
+      securityLevel: (body.securityLevel as DocumentSecurityLevel) || 'INTERNAL',
+      tags: parsedTags,
       uploadedById: actorId,
     },
     include: {
