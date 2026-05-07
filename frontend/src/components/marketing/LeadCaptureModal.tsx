@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Loader2, ArrowUpRight, CheckCircle2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { post, getErrorMessage } from '@/lib/api';
 
 export type LeadIntent = 'pequeno' | 'medio' | 'grande' | 'sobmedida' | 'demo';
 
@@ -71,17 +72,29 @@ export default function LeadCaptureModal({ open, intent, onClose }: Props) {
   const onSubmit = async (data: LeadForm) => {
     setSubmitting(true);
     try {
-      // TODO: POST /api/marketing/leads when backend endpoint lands.
-      const lead = { ...data, intent, capturedAt: new Date().toISOString() };
-      const queue = JSON.parse(localStorage.getItem('leads:queue') || '[]');
-      queue.push(lead);
-      localStorage.setItem('leads:queue', JSON.stringify(queue));
+      const payload = {
+        ...data,
+        intent,
+        source: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      };
 
-      await new Promise((r) => setTimeout(r, 600));
+      const res = await post<{ id: string; createdAt: string }>('/marketing/leads', payload);
+      if (!res.success) throw new Error(res.error || 'Falha ao registrar.');
+
       setDone(true);
       toast.success('Recebemos. Vamos retornar em até 1 dia útil.');
-    } catch {
-      toast.error('Não foi possível enviar agora.');
+    } catch (err) {
+      // Offline/transient failure: queue locally so we don't lose the lead.
+      // A future flush hook can drain this queue when the API is reachable.
+      try {
+        const queued = { ...data, intent, capturedAt: new Date().toISOString() };
+        const queue = JSON.parse(localStorage.getItem('leads:queue') || '[]');
+        queue.push(queued);
+        localStorage.setItem('leads:queue', JSON.stringify(queue));
+      } catch {
+        /* storage may be unavailable — best effort */
+      }
+      toast.error(getErrorMessage(err) || 'Não foi possível enviar agora.');
     } finally {
       setSubmitting(false);
     }

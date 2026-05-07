@@ -13,6 +13,7 @@ import settingsRoutes from './settings.routes.js';
 import notificationsRoutes from './notifications.routes.js';
 import auditRoutes from './audit.routes.js';
 import publicRoutes from './public.routes.js';
+import marketingRoutes from './marketing.routes.js';
 import platformRoutes from './platform.routes.js';
 import crmEventsRoutes from './crm-events.routes.js';
 import evaluationsRoutes from './evaluations.routes.js';
@@ -47,6 +48,7 @@ router.get('/health', (req, res) => {
 
 // Public routes (no authentication required)
 router.use('/public', publicRoutes);
+router.use('/marketing', marketingRoutes);
 
 // Platform-admin only — cross-tenant onboarding/management.
 router.use('/platform', platformRoutes);

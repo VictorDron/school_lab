@@ -3508,3 +3508,46 @@ model EnrollmentFeePayment {
 
   @@index([inviteId])
 }
+
+// Marketing inbound leads (NOT tenant-scoped). Captured by the public
+// landing pages / pricing modal — these are prospects evaluating the
+// SaaS, before any tenant exists for them. Distinct from `Lead`, which
+// is the tenant-scoped CRM entity for prospective families inside a
+// school's pipeline.
+enum MarketingLeadIntent {
+  PEQUENO
+  MEDIO
+  GRANDE
+  SOBMEDIDA
+  DEMO
+}
+
+enum MarketingLeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  CONVERTED
+  DISCARDED
+}
+
+model MarketingLead {
+  id           String              @id @default(uuid())
+  name         String
+  schoolName   String
+  email        String
+  phone        String
+  studentCount String
+  notes        String?
+  intent       MarketingLeadIntent
+  status       MarketingLeadStatus @default(NEW)
+  source       String? // landing page slug, e.g. "agente_school_pricing_final"
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([email])
+  @@index([intent])
+  @@index([status])
+  @@index([createdAt])
+}

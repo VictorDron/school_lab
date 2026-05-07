@@ -1,0 +1,722 @@
+[
+  {
+    "id": "6cd0a24d-a84f-449d-b8e7-b98da523127c",
+    "checksum": "0ffa653aa23cf77966a9d80702f1495c0fc094363823a5e54e9a9d4fe8427205",
+    "finished_at": "2026-05-07T04:06:51.397Z",
+    "migration_name": "20260118002708_init",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:06:51.397Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "e28c3dbc-f853-4ffa-9abb-5007274f7734",
+    "checksum": "3f8e4110bd41674217ceb0bb7f52f936a2f7cca6e098a10f0e97e9d6aea67bea",
+    "finished_at": "2026-05-07T04:06:56.350Z",
+    "migration_name": "20260123213907_add_require_password_change",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:06:56.350Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "56a8f040-a50f-49a8-9ddb-b326fa320bdf",
+    "checksum": "58dce0327a510949f00fe5e6f44cb163a564a185a81f150c6d30dd2dbb65fd95",
+    "finished_at": "2026-05-07T04:07:01.536Z",
+    "migration_name": "20260123220609_add_user_deleted_audit_action",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:07:01.536Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "cc76ae66-90b2-475e-98db-9e3ca4f41e44",
+    "checksum": "71c70292809f3a3b0cc24523e7fa7791db7c739cdc0f52b285f96d2ccc59add2",
+    "finished_at": "2026-05-07T04:07:07.124Z",
+    "migration_name": "20260123220808_add_password_change_failure_audit_action",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:07:07.124Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "8c7c757b-f4b0-4762-979a-f09755d61172",
+    "checksum": "cb41bd43018758bf4afab325c40c0d9389c7b614bdbd6d20b752700011b8534b",
+    "finished_at": "2026-05-07T04:07:12.259Z",
+    "migration_name": "20260125000000_add_kanban_columns",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:07:12.259Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "ccb98e59-60b6-43a6-ae57-4d1c65bdb8ef",
+    "checksum": "f3a26da418f86099421149d9738d095511137d9f07254fccdc057760d6c12d2a",
+    "finished_at": "2026-05-07T04:07:17.142Z",
+    "migration_name": "20260126_add_hybrid_workflow_fields",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:07:17.142Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "09dfc9e7-a0bb-4a84-8cc2-b28ed5b0f047",
+    "checksum": "d9695929667bf26cc7d468365dbb51cd0f69a30fd526a83b686d37e5e77656cc",
+    "finished_at": "2026-05-07T04:07:23.248Z",
+    "migration_name": "20260126_optimize_unviewed_query",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:07:23.248Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "e4d518ad-4a6e-4a8e-be79-1faef9b92699",
+    "checksum": "a9e4ae553bec560f4e1e339d739da9125162c01741eb59d8194941f8c9ce9a17",
+    "finished_at": "2026-05-07T04:07:28.997Z",
+    "migration_name": "20260202_add_cpf_to_lead_child",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:07:28.997Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "c638f9e5-5d49-464a-9859-ae247b049af8",
+    "checksum": "ddea1bf87c44792f25b6f09dac0fc06437de8d4d8c9ca442e19c1f175bea96e6",
+    "finished_at": "2026-05-07T04:07:33.950Z",
+    "migration_name": "20260203_add_form_draft",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:07:33.950Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "a665bf38-84af-44e7-9980-e7cc9c4d9f8c",
+    "checksum": "33e9377fa6836022be3d3d00346ebcad2c7ef2d4c9348604be61f33cbe7cb6fd",
+    "finished_at": "2026-05-07T04:07:39.192Z",
+    "migration_name": "20260206103311_update_transport_fields",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:07:39.192Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "1e32aeec-cef2-412b-8867-c109ee146910",
+    "checksum": "a60891a4fc3ef91fc015981f50db9c0174d03f32455bb9a8e12f51cbcd95b9b7",
+    "finished_at": "2026-05-07T04:07:44.815Z",
+    "migration_name": "20260206_add_parent_extended_data",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:07:44.815Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "d90d7682-c940-4ac8-9fe6-ef3a85052f00",
+    "checksum": "beca187df00e8350f5dbaefbdff121f2783129db215b2f194f5d147b29669dc9",
+    "finished_at": "2026-05-07T04:07:50.218Z",
+    "migration_name": "20260213_multi_child_support",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:07:50.218Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "6062e795-3f23-4399-b95a-c0d1ac1b84dc",
+    "checksum": "42bc4928a3c3272381e485e0bea5c7f43e53ae3012cc85b65d9e93ba4ed533f7",
+    "finished_at": "2026-05-07T04:07:55.488Z",
+    "migration_name": "20260215_add_childid_to_enrollment_documents",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:07:55.488Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "ace9de92-7cef-4378-8bf7-5aff753764c8",
+    "checksum": "776b72cdfd062d2f58a967bf63fddd7ee9d7a16e2a55d20c5abd256a3f99c056",
+    "finished_at": "2026-05-07T04:08:00.818Z",
+    "migration_name": "20260301_add_child_transport",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:08:00.818Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "3b31d370-8a07-40e7-b36a-a1a21e6b2001",
+    "checksum": "a4d2f449df1e738fba516b40e982962b24bb274d6a0fd660759a1f3e97261659",
+    "finished_at": "2026-05-07T04:08:06.938Z",
+    "migration_name": "20260318_add_enrolled_column",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:08:06.938Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "89977753-badf-443e-91bd-34ed262f4f1c",
+    "checksum": "2bcce9d358f60b52ca6926cae8c6a531c80be58380a0e898df9a30bdc4b6f62a",
+    "finished_at": "2026-05-07T04:08:12.118Z",
+    "migration_name": "20260318_add_parent_contract_fields",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:08:12.118Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "c6909f5d-d2d0-4322-b072-bd1eb7e91cf0",
+    "checksum": "fac9dc47d872cfdffbb94f8629902963e9eda8b23f64b5e2461614d8b1d7e08a",
+    "finished_at": "2026-05-07T04:08:17.239Z",
+    "migration_name": "20260318_admission_gates_contracts_clicksign",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:08:17.239Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "6a3e0339-588a-4bc2-9ad6-8ba1583d8b08",
+    "checksum": "5f8fc56805986abb3ce982bd1ab4cc76b699b784113a9313757b6c8b7c280734",
+    "finished_at": "2026-05-07T04:08:23.598Z",
+    "migration_name": "20260323_approval_task_link",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:08:23.598Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "319608ee-aa98-4be7-82cb-7e08106a7458",
+    "checksum": "4bc73bc8fce633c484a4d33c5bd1ba49a0e9102abce466fe66056f2bba70f082",
+    "finished_at": "2026-05-07T04:08:29.156Z",
+    "migration_name": "20260325110000_add_notification_preference",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:08:29.156Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "cc766434-34b7-45db-ac4d-9874e65531b8",
+    "checksum": "15bd68399fb44efd3d50f44bd524996725c83741ec3c89545cffedd0acfb2649",
+    "finished_at": "2026-05-07T04:08:34.168Z",
+    "migration_name": "20260325120000_add_evaluation_edit_tracking",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:08:34.168Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "8cacf7af-3d1f-4e6c-9b66-b231ba1cd7be",
+    "checksum": "7099cd673bdab28cca9a0430bd4984e2f1895ea073811cfa6d0c5f114f5fbe13",
+    "finished_at": "2026-05-07T04:08:39.460Z",
+    "migration_name": "20260325130000_add_vivencia_kanban_column",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:08:39.460Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "c9667251-15ad-4906-9991-8da0fb7960f6",
+    "checksum": "328a5f518728da8248ed4da70e9024909d301eebb25e8fb19891004d8035985d",
+    "finished_at": "2026-05-07T04:08:45.786Z",
+    "migration_name": "20260326100000_add_uniqueness_constraints",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:08:45.786Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "a4529536-34be-4c3a-821b-fb2e2a1f24f7",
+    "checksum": "a5f870da8b82bc9c445e1c899c04d0aa7d000e4c9fc735009d37300021f96095",
+    "finished_at": "2026-05-07T04:08:54.791Z",
+    "migration_name": "20260326140000_add_email_notifications_enabled",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:08:54.791Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "042d724d-08ea-47f0-8c18-1be45576f8ac",
+    "checksum": "6de6140182b2c85462ea4df7757366918e063fd9a60d0f29fbfc7ef1fb823356",
+    "finished_at": "2026-05-07T04:09:00.942Z",
+    "migration_name": "20260326160000_add_witness_signer_role",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:09:00.942Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "525e7db0-bde2-4dd6-8f06-63096754f979",
+    "checksum": "866798e731bd94d3a0342fec62a96ca81625c6eb81c79e8905d7b4b636667f44",
+    "finished_at": "2026-05-07T04:09:06.604Z",
+    "migration_name": "20260326180000_add_athlete_notes",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:09:06.604Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "a8125f2f-b43f-402b-9d73-949643b5f60c",
+    "checksum": "9358dba85ff96c793d1a646a6ae88106c641665b7a4a91d830fdaf6a1f8d1191",
+    "finished_at": "2026-05-07T04:09:12.670Z",
+    "migration_name": "20260327100000_add_fee_table_settings",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:09:12.670Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "05c89a65-22f6-4bdc-97e1-877126f444ea",
+    "checksum": "80019bcab05a6280bf74f130c9df4dcb62cfd159f57863623887f79ca6f65679",
+    "finished_at": "2026-05-07T04:12:22.870Z",
+    "migration_name": "20260327200000_add_contract_audit_actions",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:12:22.870Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "c4ad7c66-31ab-465f-aaf4-150d727dee0a",
+    "checksum": "07990af99b63af8bc7c436cb6ee9c0d04cae930c02a94f4fd74f043e144c0360",
+    "finished_at": "2026-05-07T04:12:28.443Z",
+    "migration_name": "20260330100000_add_parental_consent",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:12:28.443Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "fdf9ec7a-d726-4aa7-aaf3-aa3024dacf08",
+    "checksum": "57e5ef11d05793d25ed7bc8d8b57aaf90f99fa3187392c8a5d91a31ea5fbfd97",
+    "finished_at": "2026-05-07T04:12:34.040Z",
+    "migration_name": "20260330200000_add_contract_active_unique_index",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:12:34.040Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "b6f7857c-7f54-46d5-ab1f-4c01a7dd373e",
+    "checksum": "896751bdcc4d48f5e04d1929531625228f30a13c6ffd1ab2b2a817673add5b50",
+    "finished_at": "2026-05-07T04:15:45.569Z",
+    "migration_name": "20260330300000_add_lead_history_composite_index",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:15:45.569Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "fb6c11f9-d67c-4657-bf10-22ccd104d48b",
+    "checksum": "756db96a35bc7ddc23e3d7cf4c3473d24546d1f266a6b5f1f015e0653d8f8457",
+    "finished_at": "2026-05-07T04:15:50.842Z",
+    "migration_name": "20260331000000_add_import_history_and_enums",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:15:50.842Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "3c00ef54-2bdb-48d1-a739-84ec101e1133",
+    "checksum": "154b812549c4444feecde8a98c00e29d4d17f6505e5bec0a1259ea3911fd55c2",
+    "finished_at": "2026-05-07T04:15:56.153Z",
+    "migration_name": "20260331000000_normalize_kinder_grade",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:15:56.153Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "68b13484-6351-4bdb-8fcb-c864ea34958b",
+    "checksum": "c1209ce6f6d5964f0acdd07a6fb56c0191da2c66c085a4ce6b267cb86af5acf2",
+    "finished_at": "2026-05-07T04:16:03.047Z",
+    "migration_name": "20260331103300_add_discount_options",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:16:03.047Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "1dfc2677-bdae-45bd-9970-6d3b622d5f70",
+    "checksum": "fb5633442de1fd3e6d7e2842e93583a7397a61a963fafc1753b90922bf1c9a50",
+    "finished_at": "2026-05-07T04:16:08.800Z",
+    "migration_name": "20260401000000_add_reenrollment_infrastructure",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:16:08.800Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "f4ede7a1-6435-4949-9d8f-0c5a574c47d6",
+    "checksum": "0ff0301f8c844ea06a8e4e7729869fadba8d1ed3ecad7b529fac1b6f3a59ffb6",
+    "finished_at": "2026-05-07T04:16:14.266Z",
+    "migration_name": "20260401100000_add_student_updated_audit_action",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:16:14.266Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "1b7cc5f9-4589-4a61-a912-f0ad5292f38b",
+    "checksum": "990ebb4523469acafdecd01e4efacf76924f62557e6870def3848187c84ef30a",
+    "finished_at": "2026-05-07T04:16:19.705Z",
+    "migration_name": "20260402000000_add_reenrollment_audit_actions",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:16:19.705Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "f3f66524-241e-4a81-b8b4-9552bfa8c3ca",
+    "checksum": "6b577606a5bee5d026fa6dcc3e8bf3728ade22695380670567abd5d92500bcb4",
+    "finished_at": "2026-05-07T04:16:26.328Z",
+    "migration_name": "20260402100000_modify_contract_unique_and_student_child_for_renewal",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:16:26.328Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "14a96f56-bc4d-4b17-a8bb-e1c282eeba1a",
+    "checksum": "e1d1450798bc6e710c825acc552a20536c7366b257d355158803300187b73dc4",
+    "finished_at": "2026-05-07T04:16:31.780Z",
+    "migration_name": "20260402200000_add_invite_optout_extended_deadline",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:16:31.780Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "ff29f1fe-79c6-4b27-8748-6f54a9e28b36",
+    "checksum": "9308f67d4939001250e41ec94790459ef078cec658ed1bc82209f37ec0736d51",
+    "finished_at": "2026-05-07T04:16:36.969Z",
+    "migration_name": "20260402210000_add_student_avatar_url",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:16:36.969Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "ba1e5fee-01e5-4a53-81b7-2547bca0ed05",
+    "checksum": "ace3db84de6edf59e597855c97a292ba2059bf537c6719f28cf26bd43ce843a1",
+    "finished_at": "2026-05-07T04:16:43.327Z",
+    "migration_name": "20260403000000_add_pre_reenrollment_pricing",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:16:43.327Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "a0c282e1-a70b-4be2-8a15-234746e8478e",
+    "checksum": "237df87816c43935eb275066a5648e0d10785d419833c6ea67070c3f5571986b",
+    "finished_at": "2026-05-07T04:16:50.471Z",
+    "migration_name": "20260403173951_add_taxa_paga_state",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:16:50.471Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "5eaab748-2719-47d1-b20f-acee6c3c097a",
+    "checksum": "b743ad0ca63262d81a11561614ec131082a83fe9bdc22800e56d74b64265461e",
+    "finished_at": "2026-05-07T04:16:57.324Z",
+    "migration_name": "20260403200000_add_pre_reenrollment_response",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:16:57.324Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "ff429a8a-1321-40ab-aa36-150e9ce5c01b",
+    "checksum": "148f83ee375282a3b2860ad7d7992399ef5fda2c947d4c01aff933026344a83d",
+    "finished_at": "2026-05-07T04:17:04.031Z",
+    "migration_name": "20260406000000_add_discount_options",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:17:04.031Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "61aea7ba-54c2-42b8-a299-a387de99fb9d",
+    "checksum": "b64de4a17f7087dce8cb344d0ebd3af569d84f0f15ad2335ea85f4062195f557",
+    "finished_at": "2026-05-07T04:17:10.494Z",
+    "migration_name": "20260407000000_add_exception_approval",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:17:10.494Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "178e4a3d-bfea-4e2a-9d37-e81a9ec92bf6",
+    "checksum": "10846ae0eefaacc24fc37de23c5d5f4ecf9cfe2158832ea7122184e13ba95b5d",
+    "finished_at": "2026-05-07T04:17:17.261Z",
+    "migration_name": "20260407100000_add_document_expiry_date",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:17:17.261Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "695d891d-3836-4295-b185-2a00c972dc6f",
+    "checksum": "f9a30af35653285727ff7bc68b1aa4b8cdfb3197e6480466fd82b651b78b7af5",
+    "finished_at": "2026-05-07T04:17:23.217Z",
+    "migration_name": "20260407200000_add_docs_aprovados_gate",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T04:17:23.217Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "446b68c5-0128-42a8-9bf3-ee19d42efff3",
+    "checksum": "dfd6aa092528a4b4cda57f8cd0f65ea079395359d7983fe2fe5c5b25ee7fbd33",
+    "finished_at": null,
+    "migration_name": "20260407300000_add_early_bird_fields",
+    "logs": "A migration failed to apply. New migrations cannot be applied before the error is recovered from. Read more about how to resolve migration issues in a production database: https://pris.ly/d/migrate-resolve\n\nMigration name: 20260407300000_add_early_bird_fields\n\nDatabase error code: 42701\n\nDatabase error:\nERROR: column \"earlyBirdDeadline\" of relation \"ReEnrollmentPeriod\" already exists\n\nDbError { severity: \"ERROR\", parsed_severity: Some(Error), code: SqlState(E42701), message: \"column \\\"earlyBirdDeadline\\\" of relation \\\"ReEnrollmentPeriod\\\" already exists\", detail: None, hint: None, position: None, where_: None, schema: None, table: None, column: None, datatype: None, constraint: None, file: Some(\"tablecmds.c\"), line: Some(7686), routine: Some(\"check_for_column_name_collision\") }\n\n   0: sql_schema_connector::apply_migration::apply_script\n           with migration_name=\"20260407300000_add_early_bird_fields\"\n             at schema-engine/connectors/sql-schema-connector/src/apply_migration.rs:106\n   1: schema_core::commands::apply_migrations::Applying migration\n           with migration_name=\"20260407300000_add_early_bird_fields\"\n             at schema-engine/core/src/commands/apply_migrations.rs:91\n   2: schema_core::state::ApplyMigrations\n             at schema-engine/core/src/state.rs:226",
+    "rolled_back_at": "2026-05-07T06:09:10.248Z",
+    "started_at": "2026-05-07T06:01:52.101Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "ea877922-6659-425e-aa3b-daa95e196ba1",
+    "checksum": "dfd6aa092528a4b4cda57f8cd0f65ea079395359d7983fe2fe5c5b25ee7fbd33",
+    "finished_at": "2026-05-07T06:09:10.626Z",
+    "migration_name": "20260407300000_add_early_bird_fields",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T06:09:10.626Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "e9397472-7896-4f91-b1fa-b29eeb724fad",
+    "checksum": "e9d3f19576deb132e87c62fa9746567effb6ed5c99bfff5e9439a1c27078a230",
+    "finished_at": null,
+    "migration_name": "20260408000000_add_period_deleted_audit_action",
+    "logs": "A migration failed to apply. New migrations cannot be applied before the error is recovered from. Read more about how to resolve migration issues in a production database: https://pris.ly/d/migrate-resolve\n\nMigration name: 20260408000000_add_period_deleted_audit_action\n\nDatabase error code: 42710\n\nDatabase error:\nERROR: enum label \"RE_ENROLLMENT_PERIOD_DELETED\" already exists\n\nDbError { severity: \"ERROR\", parsed_severity: Some(Error), code: SqlState(E42710), message: \"enum label \\\"RE_ENROLLMENT_PERIOD_DELETED\\\" already exists\", detail: None, hint: None, position: None, where_: None, schema: None, table: None, column: None, datatype: None, constraint: None, file: Some(\"pg_enum.c\"), line: Some(348), routine: Some(\"AddEnumLabel\") }\n\n   0: sql_schema_connector::apply_migration::apply_script\n           with migration_name=\"20260408000000_add_period_deleted_audit_action\"\n             at schema-engine/connectors/sql-schema-connector/src/apply_migration.rs:106\n   1: schema_core::commands::apply_migrations::Applying migration\n           with migration_name=\"20260408000000_add_period_deleted_audit_action\"\n             at schema-engine/core/src/commands/apply_migrations.rs:91\n   2: schema_core::state::ApplyMigrations\n             at schema-engine/core/src/state.rs:226",
+    "rolled_back_at": "2026-05-07T06:12:30.262Z",
+    "started_at": "2026-05-07T06:09:55.365Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "584f040f-5b0a-4518-ab13-fb801e310268",
+    "checksum": "e9d3f19576deb132e87c62fa9746567effb6ed5c99bfff5e9439a1c27078a230",
+    "finished_at": "2026-05-07T06:12:30.619Z",
+    "migration_name": "20260408000000_add_period_deleted_audit_action",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T06:12:30.619Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "10a18f7b-f5f6-4f98-9ff1-511dda63750d",
+    "checksum": "21ddde1521ac8130820820c554e713fc4f41af7f5dde72e44b62612d812e3ec7",
+    "finished_at": null,
+    "migration_name": "20260410000000_add_created_student_ids_to_import_history",
+    "logs": "A migration failed to apply. New migrations cannot be applied before the error is recovered from. Read more about how to resolve migration issues in a production database: https://pris.ly/d/migrate-resolve\n\nMigration name: 20260410000000_add_created_student_ids_to_import_history\n\nDatabase error code: 42701\n\nDatabase error:\nERROR: column \"createdStudentIds\" of relation \"ImportHistory\" already exists\n\nDbError { severity: \"ERROR\", parsed_severity: Some(Error), code: SqlState(E42701), message: \"column \\\"createdStudentIds\\\" of relation \\\"ImportHistory\\\" already exists\", detail: None, hint: None, position: None, where_: None, schema: None, table: None, column: None, datatype: None, constraint: None, file: Some(\"tablecmds.c\"), line: Some(7686), routine: Some(\"check_for_column_name_collision\") }\n\n   0: sql_schema_connector::apply_migration::apply_script\n           with migration_name=\"20260410000000_add_created_student_ids_to_import_history\"\n             at schema-engine/connectors/sql-schema-connector/src/apply_migration.rs:106\n   1: schema_core::commands::apply_migrations::Applying migration\n           with migration_name=\"20260410000000_add_created_student_ids_to_import_history\"\n             at schema-engine/core/src/commands/apply_migrations.rs:91\n   2: schema_core::state::ApplyMigrations\n             at schema-engine/core/src/state.rs:226",
+    "rolled_back_at": "2026-05-07T09:41:20.237Z",
+    "started_at": "2026-05-07T06:13:02.052Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "1be3b89e-17b2-4d46-8c6c-87b8ad80de67",
+    "checksum": "766681abaa90c404e939a1281a9010166f4b16d583957ba57f24f8d3fcae535c",
+    "finished_at": "2026-05-07T09:38:55.040Z",
+    "migration_name": "20260413000000_add_contract_default_signers_remove_financial_responsible",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:38:55.040Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "6d2fa4e3-2a7e-41ad-b356-f77be9471793",
+    "checksum": "0eee1ecc4b5345b21e86675084d1b876c3f37f08c28ec42fdfc6b67ff167c06c",
+    "finished_at": "2026-05-07T09:39:00.435Z",
+    "migration_name": "20260413010000_remove_unique_constraint_default_signers",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:39:00.435Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "8345dd77-d844-4902-aaf4-3df86b276eea",
+    "checksum": "3b2909cd314b363ea617ba993d3b30e0cb5fb86573386d245122e316032c26d7",
+    "finished_at": "2026-05-07T09:39:05.916Z",
+    "migration_name": "20260413100000_add_student_reference_to_contract",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:39:05.916Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "b9ab0fab-7ceb-48dc-af44-3b7cd706afb4",
+    "checksum": "35ed7c0c7df1da4371a98c27bd0d3b24c0c1293a09fd778589ffc84dbb75cd65",
+    "finished_at": "2026-05-07T09:39:12.549Z",
+    "migration_name": "20260422100000_add_reenrollment_invite_rematriculadoat_and_kanban_index",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:39:12.549Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "6dd73d74-1e13-4cc9-ad3a-618df0eaafc4",
+    "checksum": "6b6d7a28c39c8f05c8f55e160c53de3e6ef048190c1b7cc012dc8d5827af37c4",
+    "finished_at": "2026-05-07T09:39:17.801Z",
+    "migration_name": "20260501000000_add_reenrollment_period_open_unique_index",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:39:17.801Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "57a1f9d5-9501-4042-8caf-4364fb53d10d",
+    "checksum": "9fb62d6daa8da7c6970a58e7000742a38e272e1917e179f5bf60b6cc71a79e5a",
+    "finished_at": "2026-05-07T09:39:24.047Z",
+    "migration_name": "20260505000000_add_legal_entity_to_settings",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:39:24.047Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "2084f96e-6f77-4d42-a763-15e71cbd1f44",
+    "checksum": "009251458c9aed1c44d343322326cce892cdb646c7ab8f34bf47abee88cdd716",
+    "finished_at": "2026-05-07T09:39:30.421Z",
+    "migration_name": "20260505010000_add_legal_rep_jurisdiction_material_fee",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:39:30.421Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "c71908e6-9dc6-4f85-937a-ca3fd0d52b14",
+    "checksum": "c1d5d3809b5cb2cb2db577d65a5feca1b84ee3900d7ddaf8aa15d41aaaa71bfa",
+    "finished_at": "2026-05-07T09:39:36.437Z",
+    "migration_name": "20260505020000_add_grade_progression_to_settings",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:39:36.437Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "0f33a81a-b414-4403-a4d0-6b62d7a05545",
+    "checksum": "72c9f6e8cb977b78cdfe12440d49f7128e791fef860778a1bc152901c1ad351e",
+    "finished_at": "2026-05-07T09:39:42.948Z",
+    "migration_name": "20260505030000_add_lgpd_contact_email",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:39:42.948Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "a133997b-0952-4db2-a5fb-7c093570d7d1",
+    "checksum": "ceab484dc2ffb578efd49bca0fd64f084dfc728645e66be34930c9328e9802f3",
+    "finished_at": "2026-05-07T09:39:48.459Z",
+    "migration_name": "20260505040000_add_tenant_foundation",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:39:48.459Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "6e90729c-f65a-4258-8c6f-ee125619c489",
+    "checksum": "2dc06410d13fb797a11d0d41dc1d88daf9e902f9c972ae4b945866e1df49db0c",
+    "finished_at": "2026-05-07T09:39:56.001Z",
+    "migration_name": "20260505050000_phase_2a_user_invite_tenant",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:39:56.001Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "b949d0fc-13d1-4d57-8e99-3c148080ad67",
+    "checksum": "f6d482c7bf77dbd0059bd9a9004feb090773129fcbcb19cdb3605b7ef674a20b",
+    "finished_at": "2026-05-07T09:40:02.928Z",
+    "migration_name": "20260505060000_phase_2b_lead_tenant",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:40:02.928Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "e38f6df4-97d2-4b2b-bd6e-dddd108f59da",
+    "checksum": "f40b267fe265cb9a0494c9b64b3309eb26ff598332034d84fc95da5690166a87",
+    "finished_at": "2026-05-07T09:40:10.101Z",
+    "migration_name": "20260505070000_phase_2d_contract_tenant",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:40:10.101Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "9dd588cd-d608-43d6-b932-a57df1d1eb8d",
+    "checksum": "b2a3a942101ae9224083cac8e2771ab1e8a730c2d79cfe75094f878b420be6a8",
+    "finished_at": "2026-05-07T09:40:16.027Z",
+    "migration_name": "20260505080000_phase_2c_crm_tenant",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:40:16.027Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "1c7c0978-8c1f-41d8-9ac3-a3262865f1e5",
+    "checksum": "285a8d357da4faa1a69700faddd0cf8123054002fdd7819b88e9648fc5e1b595",
+    "finished_at": "2026-05-07T09:40:21.948Z",
+    "migration_name": "20260505090000_phase_2e_reenrollment_tenant",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:40:21.948Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "af0488a5-86b9-429c-b087-a5dea52358da",
+    "checksum": "ae14aa9f1d9225a41c8ed3b9fbdd26fbc2227584f2b865d77a8b1bc8dfbf18a0",
+    "finished_at": "2026-05-07T09:40:27.986Z",
+    "migration_name": "20260505100000_phase_2f_communication_tenant",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:40:27.986Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "fc5759b8-9dc6-4037-8ee3-c890ac673f4a",
+    "checksum": "c43ee682d58943e0c3181d0b37c13e0ae70b46a1c937973a2d101e471ee3ffd2",
+    "finished_at": "2026-05-07T09:40:34.303Z",
+    "migration_name": "20260505110000_phase_2g_remaining_roots",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:40:34.303Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "7f2cfbe4-fc0f-4efc-8a7e-159ab4a71604",
+    "checksum": "41bb79cef245aef26f535669c786dedaffce9e2af64f95758b0b77c46793bb57",
+    "finished_at": "2026-05-07T09:40:40.309Z",
+    "migration_name": "20260505120000_phase_5_rls",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:40:40.309Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "89644a5f-c1c2-47bc-bc8e-ccd0ff437fef",
+    "checksum": "3a415e9f70616dce0c3ed7686659ef428f3ca6fcc818afb879eabc80306ea55c",
+    "finished_at": "2026-05-07T09:40:46.432Z",
+    "migration_name": "manual_add_student_models",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:40:46.432Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "ff4895c1-77b4-4d70-8aa2-1d9b5481e668",
+    "checksum": "21ddde1521ac8130820820c554e713fc4f41af7f5dde72e44b62612d812e3ec7",
+    "finished_at": "2026-05-07T09:41:21.598Z",
+    "migration_name": "20260410000000_add_created_student_ids_to_import_history",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T09:41:21.598Z",
+    "applied_steps_count": 0
+  },
+  {
+    "id": "84094e49-d446-437d-8b64-f941f13de561",
+    "checksum": "41f3601abbd65c7b29e444148ad6329e407beb4bd5f2d5e3d894859db8429975",
+    "finished_at": "2026-05-07T10:40:02.049Z",
+    "migration_name": "20260507100000_add_marketing_lead",
+    "logs": "",
+    "rolled_back_at": null,
+    "started_at": "2026-05-07T10:40:02.049Z",
+    "applied_steps_count": 0
+  }
+]
