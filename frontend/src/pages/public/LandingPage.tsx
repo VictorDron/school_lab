@@ -377,30 +377,6 @@ export default function LandingPage() {
             </button>
             <a href="#planos" className="btn btn-outline btn-xl">Ver planos</a>
           </div>
-
-          {/* Hero meta — manifesto grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 mt-20 border-t border-ink">
-            {[
-              { label: 'Disciplina', value: 'Plataforma única' },
-              { label: 'Arquitetura', value: 'Multi-tenant + RLS' },
-              { label: 'Voz',         value: 'Direto · Confiante · Quieto' },
-              { label: 'Status',      value: 'Em operação · v1' },
-            ].map((m, i) => (
-              <div
-                key={m.label}
-                className={[
-                  'py-7 pr-6 font-mono text-[10px] uppercase tracking-[0.10em] text-stone-deep',
-                  i === 0 ? '' : 'md:pl-6',
-                  i < 3 ? 'md:border-r border-rule' : '',
-                ].join(' ')}
-              >
-                <strong className="serif-em block text-ink mb-1.5" style={{ fontSize: 22, fontWeight: 400, letterSpacing: '-0.02em', textTransform: 'none', fontVariationSettings: '"opsz" 144, "SOFT" 100, "WONK" 1' }}>
-                  {m.value}
-                </strong>
-                {m.label}
-              </div>
-            ))}
-          </div>
         </section>
 
         {/* ============ SISTEMA / PILLARS ============ */}
