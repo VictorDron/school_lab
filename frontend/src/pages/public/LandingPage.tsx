@@ -430,20 +430,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ============ MONOLITH (mark showcase) ============ */}
-        <section className="py-2 -mx-8 lg:-mx-14">
-          <div className="bg-ink monolith-grid relative overflow-hidden px-6 py-16 sm:px-12 sm:py-24 lg:px-20 lg:py-[120px]">
-            <div className="flex items-center justify-center">
-              <Mark size="xl" inverted pulse />
-            </div>
-            <div className="mt-10 sm:mt-0 sm:absolute sm:bottom-7 sm:left-12 sm:right-12 lg:left-20 lg:right-20 flex flex-col sm:flex-row gap-2 sm:gap-4 sm:justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.12em] text-center sm:text-left" style={{ color: 'rgba(244,242,236,0.5)' }}>
-              <span><strong className="text-paper font-medium">Mark</strong> · Inter custom-tuned</span>
-              <span className="hidden sm:inline">8pt baseline · grid 80px</span>
-              <span><strong className="text-paper font-medium">Dot</strong> · Iris #6B4FFF</span>
-            </div>
-          </div>
-        </section>
-
         {/* ============ PLANOS ============ */}
         <section id="planos" className="py-32 border-b border-ink">
           <div className="grid lg:grid-cols-[240px_1fr] gap-14 items-end mb-16">
