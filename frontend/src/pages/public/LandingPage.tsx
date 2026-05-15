@@ -5,6 +5,7 @@ import {
   ArrowUpRight,
   Archive,
   BarChart3,
+  BookOpen,
   Check,
   ClipboardCheck,
   DollarSign,
@@ -12,11 +13,14 @@ import {
   GraduationCap,
   MessageCircle,
   MessageSquare,
+  Package,
   Plus,
+  Shield,
   ShoppingCart,
   Smartphone,
   UserCog,
   Users,
+  Wallet,
   X,
   type LucideIcon,
 } from 'lucide-react';
@@ -599,6 +603,186 @@ function Calculadora({ onCta }: { onCta: (intent: LeadIntent) => void }) {
   );
 }
 
+const PREVIEW_MODULES: { num: string; icon: LucideIcon; label: string; desc: string }[] = [
+  { num: '01', icon: Users,         label: 'CRM',                desc: 'Gestão de leads e admissões' },
+  { num: '02', icon: GraduationCap, label: 'Gestão de Alunos',   desc: 'Gestão de alunos matriculados' },
+  { num: '03', icon: FileText,      label: 'Documentos',         desc: 'Gestão eletrônica de documentos' },
+  { num: '04', icon: BookOpen,      label: 'Pedagógico',         desc: 'Currículo, planos de aula e desempenho acadêmico' },
+  { num: '05', icon: UserCog,       label: 'Gestão de Time',     desc: 'Colaboradores, departamentos e estrutura organizacional' },
+  { num: '06', icon: Wallet,        label: 'Financeiro',         desc: 'Mensalidades, contas a pagar e fluxo de caixa' },
+  { num: '07', icon: Shield,        label: 'Admin',              desc: 'Administração de usuários e sistema' },
+  { num: '08', icon: MessageSquare, label: 'Comunicação',        desc: 'Chat, canais e tickets de suporte' },
+  { num: '09', icon: Package,       label: 'Gestão de Recursos', desc: 'Compras, patrimônio, manutenção e inventário' },
+];
+
+function LauncherPreview() {
+  const today = new Date().toLocaleDateString('pt-BR', {
+    weekday: 'long',
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+
+  return (
+    <section className="py-32 border-b border-ink">
+      <div className="grid lg:grid-cols-[240px_1fr] gap-14 items-end mb-16">
+        <div className="font-mono text-[10px] uppercase tracking-[0.20em] text-stone-deep">
+          — Por dentro
+        </div>
+        <div>
+          <h2 className="display-h2">
+            Assim você <em className="display-em" style={{ color: EMERALD }}>opera</em>. Todo dia.
+          </h2>
+          <p className="lede mt-6 max-w-[680px]">
+            A tela inicial da plataforma. Cada módulo é uma porta de entrada limpa
+            pra uma disciplina da escola — sem menu cheio, sem submenu escondido.
+          </p>
+        </div>
+      </div>
+
+      {/* Window frame */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-80px' }}
+        transition={{ duration: 0.5 }}
+        className="border border-ink overflow-hidden bg-paper"
+        style={{ boxShadow: '0 24px 60px -20px rgba(10,9,8,0.18)', borderRadius: 6 }}
+      >
+        {/* Window chrome */}
+        <div
+          className="flex items-center gap-2 px-4 py-3 border-b border-rule"
+          style={{ background: 'var(--paper-deep)' }}
+        >
+          <span className="w-2.5 h-2.5 rounded-full" style={{ background: '#FF5F57' }} />
+          <span className="w-2.5 h-2.5 rounded-full" style={{ background: '#FEBC2E' }} />
+          <span className="w-2.5 h-2.5 rounded-full" style={{ background: '#28C840' }} />
+          <span className="ml-4 font-mono text-[11px] tracking-[0.04em] text-stone-deep">
+            agente.school / launcher
+          </span>
+        </div>
+
+        {/* Launcher content (mirrors LauncherPage.tsx) */}
+        <div className="px-6 lg:px-10 py-8 lg:py-10">
+          {/* Topbar */}
+          <div className="grid grid-cols-1 md:grid-cols-3 items-center pb-5 border-b border-ink font-mono text-[10px] uppercase tracking-[0.06em] gap-2">
+            <div className="text-stone-deep">— Sistema · v1 · {today}</div>
+            <div
+              className="serif-em text-stone-deep text-center"
+              style={{ textTransform: 'none', fontSize: 13 }}
+            >
+              — Plataforma operacional —
+            </div>
+            <div className="text-right text-stone-deep">
+              Em operação <span className="text-iris">●</span> live
+            </div>
+          </div>
+
+          {/* Greeting */}
+          <div className="grid md:grid-cols-[1fr_auto] items-end gap-6 py-10 border-b border-rule">
+            <div>
+              <div className="eyebrow eyebrow-iris mb-5">— Bem-vindo de volta</div>
+              <h3
+                className="font-display font-light text-ink leading-none"
+                style={{
+                  fontSize: 'clamp(36px, 5vw, 64px)',
+                  letterSpacing: '-0.04em',
+                  fontVariationSettings: '"opsz" 144, "SOFT" 50',
+                }}
+              >
+                Olá, <em className="display-em">Diretora</em>
+                <span className="text-iris">.</span>
+              </h3>
+              <p className="serif-em text-stone-deep mt-4" style={{ fontSize: 15 }}>
+                — Direção
+              </p>
+            </div>
+            <div
+              aria-hidden
+              className="w-12 h-12 rounded-full border border-ink flex items-center justify-center font-mono uppercase bg-paper"
+              style={{ fontSize: 11, letterSpacing: '0.08em', color: 'var(--iris)' }}
+            >
+              D
+            </div>
+          </div>
+
+          {/* Module grid header */}
+          <div className="grid lg:grid-cols-[160px_1fr] gap-8 items-end pt-10 pb-7">
+            <div
+              className="font-display italic font-light leading-none text-stone-deep"
+              style={{
+                fontSize: 44,
+                letterSpacing: '-0.04em',
+                fontVariationSettings: '"opsz" 144, "SOFT" 100, "WONK" 1',
+              }}
+            >
+              i.
+              <small
+                className="block font-mono text-[9px] not-italic font-medium uppercase tracking-[0.20em] text-stone-deep mt-2"
+                style={{ fontWeight: 500 }}
+              >
+                Módulos
+              </small>
+            </div>
+            <div>
+              <h4
+                className="font-display font-light text-ink leading-none"
+                style={{
+                  fontSize: 'clamp(22px, 2.6vw, 30px)',
+                  letterSpacing: '-0.035em',
+                  fontVariationSettings: '"opsz" 144, "SOFT" 50',
+                }}
+              >
+                Onde você quer <em className="display-em">trabalhar</em> hoje?
+              </h4>
+              <p className="serif-em text-stone-deep mt-2" style={{ fontSize: 14 }}>
+                — Cada módulo é uma disciplina. Escolha uma e siga.
+              </p>
+            </div>
+          </div>
+
+          {/* Module grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-ink">
+            {PREVIEW_MODULES.map((m) => {
+              const Icon = m.icon;
+              return (
+                <div
+                  key={m.num}
+                  className="group relative bg-paper border-r border-b border-ink p-6 cursor-pointer transition-colors duration-200 hover:bg-ink hover:text-paper"
+                  style={{ minHeight: 170 }}
+                >
+                  <div className="flex items-baseline justify-between mb-5">
+                    <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-deep group-hover:text-paper/60">
+                      — {m.num}
+                    </span>
+                    <ArrowUpRight
+                      className="w-4 h-4 text-stone group-hover:text-paper transition-transform group-hover:rotate-45 group-hover:scale-110"
+                      strokeWidth={2.5}
+                    />
+                  </div>
+                  <Icon
+                    className="w-6 h-6 text-ink group-hover:text-paper mb-4 transition-colors"
+                    strokeWidth={1.5}
+                  />
+                  <h5
+                    className="font-display font-light text-ink group-hover:text-paper leading-tight mb-1.5 transition-colors"
+                    style={{ fontSize: 20, letterSpacing: '-0.025em' }}
+                  >
+                    {m.label}
+                  </h5>
+                  <p className="text-[12px] leading-relaxed text-stone-deep group-hover:text-paper/70 transition-colors">
+                    {m.desc}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
 export default function LandingPage() {
   const [leadOpen, setLeadOpen] = useState(false);
   const [leadIntent, setLeadIntent] = useState<LeadIntent>('demo');
@@ -818,6 +1002,9 @@ export default function LandingPage() {
 
         {/* ============ MÓDULOS ============ */}
         <ModulesSection />
+
+        {/* ============ LAUNCHER PREVIEW ============ */}
+        <LauncherPreview />
 
         {/* ============ JORNADA ============ */}
         <section id="jornada" className="py-32 border-b border-ink">
