@@ -615,7 +615,7 @@ export default function LandingPage() {
         <div className="max-w-[1320px] mx-auto px-8 lg:px-14 h-[88px] flex items-center justify-between">
           <Link
             to="/"
-            aria-label="agente school"
+            aria-label="agente.school"
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1106,7 +1106,7 @@ export default function LandingPage() {
               fontVariationSettings: '"opsz" 144, "SOFT" 50',
             }}
           >
-            agente <em className="display-em" style={{ color: EMERALD }}>school</em>
+            agente
             <span
               aria-hidden
               style={{
@@ -1115,10 +1115,12 @@ export default function LandingPage() {
                 height: '0.13em',
                 borderRadius: '50%',
                 background: EMERALD,
-                marginLeft: '0.1em',
-                verticalAlign: '0.05em',
+                marginLeft: '0.05em',
+                marginRight: '0.08em',
+                verticalAlign: 'baseline',
               }}
             />
+            <em className="display-em" style={{ color: EMERALD }}>school</em>
           </div>
 
           {/* Bottom bar */}
@@ -1139,7 +1141,7 @@ export default function LandingPage() {
               </a>
             </div>
             <div className="md:text-center">
-              © {new Date().getFullYear()} · agente school · todos os direitos reservados
+              © {new Date().getFullYear()} · agente.school · todos os direitos reservados
             </div>
             <div className="md:text-right">
               São Paulo · Rio de Janeiro
