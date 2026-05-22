@@ -633,7 +633,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-2">
             <Link to="/login" className="btn btn-ghost btn-md hidden sm:inline-flex">Entrar</Link>
             <button onClick={() => openLead('demo')} className="btn btn-primary btn-md">
-              Agendar demo <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={2.5} />
+              Agendar diagnóstico <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={2.5} />
             </button>
           </div>
         </div>
@@ -970,7 +970,7 @@ export default function LandingPage() {
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <button onClick={() => openLead('demo')} className="btn btn-iris btn-xl">
-                Agendar demonstração <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} />
+                Agendar diagnóstico <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} />
               </button>
               <Link to="/login" className="btn btn-outline-inverted btn-xl">
                 Já sou cliente · entrar

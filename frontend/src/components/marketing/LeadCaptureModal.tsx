@@ -17,7 +17,7 @@ interface LeadForm {
 }
 
 const INTENT_COPY: Record<LeadIntent, { eyebrow: string; title: string; italic: string; cta: string }> = {
-  demo:      { eyebrow: '— Demonstração',   title: 'Vamos te mostrar a',  italic: 'plataforma',     cta: 'Agendar demonstração' },
+  demo:      { eyebrow: '— Diagnóstico',    title: 'Vamos diagnosticar a sua',  italic: 'escola',     cta: 'Agendar diagnóstico' },
   pequeno:   { eyebrow: '— Plano · 01',     title: 'O',                   italic: 'essencial',      cta: 'Quero começar' },
   medio:     { eyebrow: '— Plano · 02',     title: 'O plano que',         italic: 'cresce',         cta: 'Falar com especialista' },
   grande:    { eyebrow: '— Plano · 03',     title: 'IA, BI e',            italic: 'inteligência',   cta: 'Solicitar demonstração' },
